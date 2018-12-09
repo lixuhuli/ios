@@ -1,0 +1,321 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="libCef">
+      <UniqueIdentifier>{93a25cf6-9bf3-4eab-9569-b85689112c69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libCef\CefBase">
+      <UniqueIdentifier>{fd22a08d-5932-4143-989a-68533ad98223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libCef\include">
+      <UniqueIdentifier>{988fcede-acd3-4181-80f6-9efe648b1095}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\UICefWebkit.h">
+      <Filter>libCef</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\CefBase\CefAppEx.h">
+      <Filter>libCef\CefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\CefBase\CefHandler.h">
+      <Filter>libCef\CefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\CefBase\CEfV8Handler.h">
+      <Filter>libCef\CefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\CefBase\client_app.h">
+      <Filter>libCef\CefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\CefBase\client_app_browser.h">
+      <Filter>libCef\CefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\CefBase\client_app_other.h">
+      <Filter>libCef\CefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\CefBase\client_app_renderer.h">
+      <Filter>libCef\CefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\CefBase\client_renderer.h">
+      <Filter>libCef\CefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\CefBase\client_switches.h">
+      <Filter>libCef\CefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\CefBase\Delegate.h">
+      <Filter>libCef\CefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\CefBase\main_message_loop.h">
+      <Filter>libCef\CefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\CefBase\main_message_loop_multithreaded_win.h">
+      <Filter>libCef\CefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\CefBase\main_message_loop_std.h">
+      <Filter>libCef\CefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\CefBase\util.h">
+      <Filter>libCef\CefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\CefBase\util_win.h">
+      <Filter>libCef\CefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_app.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_auth_callback.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_base.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_browser.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_browser_process_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_callback.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_client.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_command_line.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_context_menu_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_cookie.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_dialog_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_display_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_dom.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_download_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_download_item.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_drag_data.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_drag_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_find_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_focus_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_frame.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_geolocation.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_geolocation_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_jsdialog_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_keyboard_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_life_span_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_load_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_menu_model.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_navigation_entry.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_origin_whitelist.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_pack_resources.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_pack_strings.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_parser.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_path_util.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_print_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_print_settings.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_process_message.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_process_util.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_render_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_render_process_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_request.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_request_context.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_request_context_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_request_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_resource_bundle.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_resource_bundle_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_resource_handler.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_response.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_response_filter.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_runnable.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_sandbox_win.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_scheme.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_ssl_info.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_stream.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_string_visitor.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_task.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_trace.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_urlrequest.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_v8.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_values.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_version.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_web_plugin.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_xml_reader.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+    <ClInclude Include="libCef\include\cef_zip_reader.h">
+      <Filter>libCef\include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="libCef\UICefWebkit.cpp">
+      <Filter>libCef</Filter>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\CefAppEx.cpp">
+      <Filter>libCef\CefBase</Filter>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\CefHandler.cpp">
+      <Filter>libCef\CefBase</Filter>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\CEfV8Handler.cpp">
+      <Filter>libCef\CefBase</Filter>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\client_app.cpp">
+      <Filter>libCef\CefBase</Filter>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\client_app_browser.cpp">
+      <Filter>libCef\CefBase</Filter>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\client_app_other.cpp">
+      <Filter>libCef\CefBase</Filter>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\client_app_renderer.cpp">
+      <Filter>libCef\CefBase</Filter>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\client_renderer.cpp">
+      <Filter>libCef\CefBase</Filter>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\client_switches.cpp">
+      <Filter>libCef\CefBase</Filter>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\main_message_loop.cc">
+      <Filter>libCef\CefBase</Filter>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\main_message_loop_multithreaded_win.cc">
+      <Filter>libCef\CefBase</Filter>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\main_message_loop_std.cc">
+      <Filter>libCef\CefBase</Filter>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\util_win.cc">
+      <Filter>libCef\CefBase</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

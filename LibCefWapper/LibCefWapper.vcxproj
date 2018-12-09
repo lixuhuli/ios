@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CB1DD2D1-94A0-4968-8731-1FD632184E53}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>LibCefWapper</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(ProjectDir)..\lib\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(ProjectDir)..\lib\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;.\libCef;..\..\include\;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
+      <AdditionalDependencies>Duilib.lib;</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>../lib/$(Configuration)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.;.\libCef;..\..\include\;</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>../lib/$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Duilib.lib;</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="libCef\CefBase\CefAppEx.h" />
+    <ClInclude Include="libCef\CefBase\CefHandler.h" />
+    <ClInclude Include="libCef\CefBase\CEfV8Handler.h" />
+    <ClInclude Include="libCef\CefBase\client_app.h" />
+    <ClInclude Include="libCef\CefBase\client_app_browser.h" />
+    <ClInclude Include="libCef\CefBase\client_app_other.h" />
+    <ClInclude Include="libCef\CefBase\client_app_renderer.h" />
+    <ClInclude Include="libCef\CefBase\client_renderer.h" />
+    <ClInclude Include="libCef\CefBase\client_switches.h" />
+    <ClInclude Include="libCef\CefBase\Delegate.h" />
+    <ClInclude Include="libCef\CefBase\main_message_loop.h" />
+    <ClInclude Include="libCef\CefBase\main_message_loop_multithreaded_win.h" />
+    <ClInclude Include="libCef\CefBase\main_message_loop_std.h" />
+    <ClInclude Include="libCef\CefBase\util.h" />
+    <ClInclude Include="libCef\CefBase\util_win.h" />
+    <ClInclude Include="libCef\include\cef_app.h" />
+    <ClInclude Include="libCef\include\cef_auth_callback.h" />
+    <ClInclude Include="libCef\include\cef_base.h" />
+    <ClInclude Include="libCef\include\cef_browser.h" />
+    <ClInclude Include="libCef\include\cef_browser_process_handler.h" />
+    <ClInclude Include="libCef\include\cef_callback.h" />
+    <ClInclude Include="libCef\include\cef_client.h" />
+    <ClInclude Include="libCef\include\cef_command_line.h" />
+    <ClInclude Include="libCef\include\cef_context_menu_handler.h" />
+    <ClInclude Include="libCef\include\cef_cookie.h" />
+    <ClInclude Include="libCef\include\cef_dialog_handler.h" />
+    <ClInclude Include="libCef\include\cef_display_handler.h" />
+    <ClInclude Include="libCef\include\cef_dom.h" />
+    <ClInclude Include="libCef\include\cef_download_handler.h" />
+    <ClInclude Include="libCef\include\cef_download_item.h" />
+    <ClInclude Include="libCef\include\cef_drag_data.h" />
+    <ClInclude Include="libCef\include\cef_drag_handler.h" />
+    <ClInclude Include="libCef\include\cef_find_handler.h" />
+    <ClInclude Include="libCef\include\cef_focus_handler.h" />
+    <ClInclude Include="libCef\include\cef_frame.h" />
+    <ClInclude Include="libCef\include\cef_geolocation.h" />
+    <ClInclude Include="libCef\include\cef_geolocation_handler.h" />
+    <ClInclude Include="libCef\include\cef_jsdialog_handler.h" />
+    <ClInclude Include="libCef\include\cef_keyboard_handler.h" />
+    <ClInclude Include="libCef\include\cef_life_span_handler.h" />
+    <ClInclude Include="libCef\include\cef_load_handler.h" />
+    <ClInclude Include="libCef\include\cef_menu_model.h" />
+    <ClInclude Include="libCef\include\cef_navigation_entry.h" />
+    <ClInclude Include="libCef\include\cef_origin_whitelist.h" />
+    <ClInclude Include="libCef\include\cef_pack_resources.h" />
+    <ClInclude Include="libCef\include\cef_pack_strings.h" />
+    <ClInclude Include="libCef\include\cef_parser.h" />
+    <ClInclude Include="libCef\include\cef_path_util.h" />
+    <ClInclude Include="libCef\include\cef_print_handler.h" />
+    <ClInclude Include="libCef\include\cef_print_settings.h" />
+    <ClInclude Include="libCef\include\cef_process_message.h" />
+    <ClInclude Include="libCef\include\cef_process_util.h" />
+    <ClInclude Include="libCef\include\cef_render_handler.h" />
+    <ClInclude Include="libCef\include\cef_render_process_handler.h" />
+    <ClInclude Include="libCef\include\cef_request.h" />
+    <ClInclude Include="libCef\include\cef_request_context.h" />
+    <ClInclude Include="libCef\include\cef_request_context_handler.h" />
+    <ClInclude Include="libCef\include\cef_request_handler.h" />
+    <ClInclude Include="libCef\include\cef_resource_bundle.h" />
+    <ClInclude Include="libCef\include\cef_resource_bundle_handler.h" />
+    <ClInclude Include="libCef\include\cef_resource_handler.h" />
+    <ClInclude Include="libCef\include\cef_response.h" />
+    <ClInclude Include="libCef\include\cef_response_filter.h" />
+    <ClInclude Include="libCef\include\cef_runnable.h" />
+    <ClInclude Include="libCef\include\cef_sandbox_win.h" />
+    <ClInclude Include="libCef\include\cef_scheme.h" />
+    <ClInclude Include="libCef\include\cef_ssl_info.h" />
+    <ClInclude Include="libCef\include\cef_stream.h" />
+    <ClInclude Include="libCef\include\cef_string_visitor.h" />
+    <ClInclude Include="libCef\include\cef_task.h" />
+    <ClInclude Include="libCef\include\cef_trace.h" />
+    <ClInclude Include="libCef\include\cef_urlrequest.h" />
+    <ClInclude Include="libCef\include\cef_v8.h" />
+    <ClInclude Include="libCef\include\cef_values.h" />
+    <ClInclude Include="libCef\include\cef_version.h" />
+    <ClInclude Include="libCef\include\cef_web_plugin.h" />
+    <ClInclude Include="libCef\include\cef_xml_reader.h" />
+    <ClInclude Include="libCef\include\cef_zip_reader.h" />
+    <ClInclude Include="libCef\UICefWebkit.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="libCef\CefBase\CefAppEx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\CefHandler.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\CEfV8Handler.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\client_app.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\client_app_browser.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\client_app_other.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\client_app_renderer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\client_renderer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\client_switches.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\main_message_loop.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\main_message_loop_multithreaded_win.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\main_message_loop_std.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="libCef\CefBase\util_win.cc">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="libCef\UICefWebkit.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
