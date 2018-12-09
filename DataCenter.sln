@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DataCenter", "DataCenter\DataCenter.vcxproj", "{0B2946B7-FC25-4E18-9DA4-AC333979A644}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_s|Win32 = Debug_s|Win32
+		Debug|Win32 = Debug|Win32
+		Release_s|Win32 = Release_s|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0B2946B7-FC25-4E18-9DA4-AC333979A644}.Debug_s|Win32.ActiveCfg = Debug_s|Win32
+		{0B2946B7-FC25-4E18-9DA4-AC333979A644}.Debug_s|Win32.Build.0 = Debug_s|Win32
+		{0B2946B7-FC25-4E18-9DA4-AC333979A644}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0B2946B7-FC25-4E18-9DA4-AC333979A644}.Debug|Win32.Build.0 = Debug|Win32
+		{0B2946B7-FC25-4E18-9DA4-AC333979A644}.Release_s|Win32.ActiveCfg = Release_s|Win32
+		{0B2946B7-FC25-4E18-9DA4-AC333979A644}.Release_s|Win32.Build.0 = Release_s|Win32
+		{0B2946B7-FC25-4E18-9DA4-AC333979A644}.Release|Win32.ActiveCfg = Release|Win32
+		{0B2946B7-FC25-4E18-9DA4-AC333979A644}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
