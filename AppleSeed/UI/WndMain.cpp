@@ -1,0 +1,1155 @@
+#include "StdAfx.h"
+#include "WndMain.h"
+#include "UICefWebkit.h"
+#include "UICenterHorizontalLayout.h"
+#include "GlobalData.h"
+#include "Ios/IosMgr.h"
+#include "WebCtrlUI.h"
+#include "SoftDefine.h"
+#include "PageDownload.h"
+#include "UrlDefine.h"
+#include "download/download_info.h"
+#include "TaskCenter/TaskCenter.h"
+#include "CommonWnd.h"
+#include "WndVolume.h"
+#include "WndUser.h"
+#include "UserData.h"
+#include "DataPost.h"
+#include "WndUserCenter.h"
+
+#define URL_PACKAGE_NAME_INTEL   "MotherDisc_Intel_1128.7z"
+#define URL_PACKAGE_NAME_AMD     "MotherDisc_AMD_1128.7z"
+
+#define URL_ISO_NAME_INIT_INTEL  "MotherDisc_Intel_1117.vmdk"
+#define URL_ISO_NAME_INIT_AMD    "MotherDisc_AMD_1117.vmdk"
+
+#define URL_ISO_NAME_INTEL       "MotherDisc_Intel_1117_Using.vmdk"
+#define URL_ISO_NAME_AMD         "MotherDisc_AMD_1117_Using.vmdk"
+
+#define DOWNLOAD_PROGRESS_TIME   (int)150
+
+CWndMain::CWndMain()
+ : web_focus_(nullptr)
+ , btn_ios_restart_(nullptr)
+ , btn_ios_home_(nullptr)
+ , web_home_page_(nullptr) 
+ , layout_main_(nullptr)
+ , opt_home_market_(nullptr)
+ , opt_home_bbs_(nullptr)
+ , opt_home_download_(nullptr)
+ , install_system_(nullptr) 
+ , select_folder_(nullptr)
+ , btn_install_sys_(nullptr) 
+ , btn_install_cancel_(nullptr)
+ , layout_install_(nullptr)
+ , progress_install_(nullptr)
+ , lbl_install_status_(nullptr)
+ , lbl_install_speed_(nullptr)
+ , install_loading_(nullptr)
+ , loading_frame_(0)
+ , btn_install_pause_(nullptr)
+ , btn_install_restart_(nullptr) 
+ , btn_ios_volume_(nullptr)
+ , btn_user_icon_(nullptr)
+ , user_mask_ico_(nullptr)
+ , btn_key_(nullptr) 
+ , client_layout_left_(nullptr) 
+ , client_layout_right_(nullptr) 
+ , need_hide_left_layout_(false)
+ , layout_update_(nullptr)
+ , progress_update_(nullptr)
+ , lbl_update_status_(nullptr) {
+    m_dwStyle = UI_WNDSTYLE_DIALOG | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_MINIMIZEBOX;
+    m_bShowShadow = true;
+}
+
+CWndMain::~CWndMain() {
+}
+
+LPCWSTR CWndMain::GetXmlPath() const {
+    return L"WndMain.xml";
+}
+
+LPCTSTR CWndMain::GetWindowClassName() const {
+    return L"AppleSeedWnd";
+}
+
+void CWndMain::InitWindow() {
+    __super::InitWindow();
+
+    CGlobalData::Instance()->SetMainWnd(m_hWnd);
+    CGlobalData::Instance()->SetMainWndPtr(this);
+
+    // 暂时注销  后续扩展
+    //AddNotifyIcon();
+
+    auto rererp = m_pm.FindControl(L"page_download");
+
+    BIND_SUB_PAGE(page_download_, CPageDownloadUI, L"page_download")
+
+    if (web_home_page_) {
+        web_focus_ = web_home_page_->GetCefWebkit();
+    }
+
+    InitTasks();
+
+    CIosMgr::Instance()->CreateWndIos(m_hWnd);
+    
+    string iso_file = GetRunPathA() + "ios\\"+ GetUrlIsoName();
+    if (PathFileExistsA(iso_file.c_str())) {
+        wstring key_file_name = GetDocumentPath() + L"\\serial";
+        if (PathFileExists(key_file_name.c_str()) && CheckEngineKey(key_file_name)) {
+            LoadIosEngine();
+            if (layout_install_) layout_install_->SelectItem(2);
+            loading_frame_ = 0;
+            UpdateLoadingIcon();
+            ::SetTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS, DOWNLOAD_PROGRESS_TIME, nullptr);
+        }
+        else {
+            PopupKeyWindow();
+            if (layout_install_) layout_install_->SelectItem(3);
+        }
+    }
+}
+
+void CWndMain::InitTasks() {
+    MSG msg = { 0 };
+    msg.hwnd = m_hWnd;
+
+    // 验证账号
+    if (CUserData::Instance()->GetAutoLogin() && CUserData::Instance()->HasFileAccount()) {  
+        msg.message = WM_MAINWND_MSG_USERINFO;
+        TaskCenter::CTaskCenter::Instance()->CreateUserInfoTask(msg, CUserData::Instance()->GetFileUserID(), CUserData::Instance()->GetFileUserToken());
+    }
+}
+
+LRESULT CWndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    LRESULT lRes = 0;
+    BOOL bHandled = TRUE;
+
+    switch (uMsg) {
+    case WM_SIZING: lRes = OnSize(wParam, lParam, bHandled); break;
+    case WM_MOVE: lRes = OnMoving(wParam, lParam, bHandled); break;
+    case WM_MAINWND_MSG_DOWNLOAD_MIRRORSYSTEM: lRes = OnDownloadMirrorSystem(wParam, lParam, bHandled); break;
+    case WM_MAINWND_MSG_FILE_UNZIPING: OnMsgFileUnziping(wParam, lParam, bHandled); break;
+    case WM_MAINWND_MSG_FILE_UNZIP: OnMsgFileUnzip(wParam, lParam, bHandled); break;
+    case WM_MAINWND_MSG_EMULATOR_ALREADY: return OnMsgEmulatorAlready(wParam, lParam, bHandled);
+    case WM_MAINWND_MSG_LOAD_IOS_ENGINE: return OnMsgLoadIosEngine(wParam, lParam, bHandled);
+    case WM_MAINWND_MSG_EXIT: return OnMsgExit(wParam, lParam, bHandled);
+    case WM_MAINWND_MSG_USERINFO: return OnMsgUserInfo(wParam, lParam, bHandled);
+    case WM_COPYDATA: return OnMsgCopyData(wParam, lParam);
+    case WM_TIMER: OnTimer(wParam, lParam, bHandled); bHandled = FALSE; break;
+    case WM_MAINWND_MSG_COMMON: return OnMsgCommon(wParam, lParam, bHandled);
+    case WM_MAINWND_MSG_USER_ICO: OnMsgUserIco(wParam, lParam, bHandled); break;
+    case WM_MAINWND_MSG_IOSENGINE_UPDATING: OnMsgIosEngineUpdating(wParam, lParam, bHandled); break;
+    case WM_MAINWND_MSG_IOSENGINE_UPDATE: OnMsgIosEngineUpdate(wParam, lParam, bHandled); break;
+    case WM_KEYDOWN: {
+        bHandled = FALSE;
+        break;
+    }
+    case WM_SETFOCUS: {
+        if (web_focus_ && IsWindow(web_focus_->GetHostWnd())) {
+            POINT pt;
+            GetCursorPos(&pt);
+            ScreenToClient(m_hWnd, &pt);
+
+            RECT rc = { 224, 0, 224 + 290, 39 };
+            if (PtInRect(&rc, pt)) break;
+
+            SetFocus(web_focus_->GetHostWnd());
+
+            return 0;
+        }
+        break;
+    }
+    case WM_CLOSE: OnWndClose(wParam, lParam, bHandled); break;
+    default: bHandled = FALSE; break;
+    }
+
+    if (bHandled) {
+        return lRes;
+    }
+    return __super::HandleMessage(uMsg, wParam, lParam);
+}
+
+void CWndMain::OnFinalMessage(HWND hWnd) {
+    // 暂时注销  后续扩展
+    //RemoveN otifyIcon(); 
+    if (download_info_) {
+        auto http = download_info_->http();
+        if (http) http->NeedStop();
+        download_info_ = nullptr;
+    }
+
+    __super::OnFinalMessage(hWnd);
+    CefQuitMessageLoop();
+}
+
+base::WeakPtr<download::iDownloadInfo> CWndMain::download_info() {
+    if (download_info_) return download_info_->AsWeakPtr();
+    return base::WeakPtr<download::iDownloadInfo>();
+}
+
+LRESULT CWndMain::OnSize(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    QRect *lprc = (QRect*)lParam;
+    //if (lprc) CIosMgr::Instance()->UpdateIosWnd(lprc);
+    return 0;
+}
+
+LRESULT CWndMain::OnMoving(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    //CIosMgr::Instance()->UpdateIosWnd();
+    return 0;
+}
+
+CControlUI* CWndMain::CreateControl(LPCTSTR pstrClass) {
+    if (!pstrClass) return nullptr;
+
+    std::wstring control_name = pstrClass;
+    if (control_name == L"CenterHorizontalLayout") return new CCenterHorizontalLayoutUI();
+    else if (control_name == L"WebCtrl") return new CWebCtrlUI(&m_pm);
+
+    return nullptr;
+}
+
+bool CWndMain::OnBtnClickClose(void* lpParam) {
+    //AppSetting setting;
+    //CDatabaseMgr::Instance()->GetSetting(setting);
+    //if (setting.nExit == 0) {
+    //    ShowWindow(false, false);
+    //    return true;
+    //}
+
+    if (IDOK != ShowMsg(m_hWnd, L"退出", L"确定退出客户端？", MB_OKCANCEL)) return true;
+
+    Exit();
+
+    return true;
+}
+
+bool CWndMain::OnBtnClickMin(void* lpParam) {
+    ::SendMessage(m_hWnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+    return true;
+}
+
+bool CWndMain::OnBtnClickMax(void* lpParam) {
+    ::SendMessage(m_hWnd, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+    return true;
+}
+
+bool CWndMain::OnBtnClickRestore(void* lpParam) {
+    ::SendMessage(m_hWnd, WM_SYSCOMMAND, SC_RESTORE, 0);
+    return true;
+}
+
+bool CWndMain::OnBtnClickIosRestart(void* param) {
+    return true;
+}
+
+bool CWndMain::OnBtnClickIosHome(void* param) {
+    CIosMgr::Instance()->IosHome();
+    return true;
+}
+
+bool CWndMain::OnBtnClickVolume(void* param) {
+    ShowVolumeWnd();
+    return true;
+}
+
+void CWndMain::ShowClientLayoutLeft(bool show) {
+    if (client_layout_left_) client_layout_left_->SetVisible(show);
+}
+
+void CWndMain::ShowUserCenter() {
+    if (!btn_user_icon_) return;
+
+    CWndUserCenter* wnd_user_center = new CWndUserCenter();
+    if (!wnd_user_center) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"malloc user center window failed, nullptr!");
+        return;
+    }
+
+    wnd_user_center->Create(m_hWnd, false);
+
+    QRect rc_user(0, 0, 0, 0);
+    GetClientRect(*wnd_user_center, &rc_user);
+
+    const RECT& rc = btn_user_icon_->GetPos();
+    POINT pt = { (rc.left + rc.right - rc_user.GetWidth()) / 2, rc.bottom + 1 };
+    ClientToScreen(m_hWnd, &pt);
+
+    ::SetForegroundWindow(*wnd_user_center);
+    ::MoveWindow(*wnd_user_center, pt.x, pt.y, rc_user.GetWidth(), rc_user.GetHeight(), FALSE);
+
+    wnd_user_center->ShowWindow(true);
+}
+
+bool CWndMain::OnEnterBtnUser(void* param) {
+    TNotifyUI* notify = (TNotifyUI*)param;
+    if (!notify || !notify->pSender) return true;
+
+    if (CUserData::Instance()->GetUserState() != UsLogin) return true;
+
+    ShowUserCenter();
+
+    return true;
+}
+
+bool CWndMain::OnLeaveBtnUser(void* param) {
+    return true;
+}
+
+bool CWndMain::OnBtnClickUser(void* param) {
+    TNotifyUI* pNotify = (TNotifyUI*)param;
+    if (!pNotify || !pNotify->pSender) return true;
+
+    if (CUserData::Instance()->GetUserState() == UsLogin) ShowUserCenter();
+    else if (CUserData::Instance()->GetUserState() == UsNone)
+        ::PostMessage(m_hWnd, WM_MAINWND_MSG_COMMON, WpCommonLogin, 0);    // 登录
+
+    return true;
+}
+
+void CWndMain::Exit() {
+    RELEASE_SUB_PAGE(page_download_)
+
+    Close();
+}
+
+void CWndMain::OnWndClose(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    if (web_home_page_) web_home_page_->Close();
+
+    web_focus_ = nullptr;
+
+    bHandled = FALSE;
+}
+
+void CWndMain::AddNotifyIcon() {
+    ZeroMemory(&m_nd, sizeof(m_nd));
+    m_nd.cbSize = sizeof(NOTIFYICONDATA);
+    m_nd.hWnd = m_hWnd;
+    m_nd.uID = IDI_APPLESEED;
+    m_nd.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;//|NIF_INFO; 
+    m_nd.uCallbackMessage = WM_MAINWND_MSG_NOTIFYICON;
+    m_nd.hIcon = LoadIcon(CPaintManagerUI::GetInstance(), MAKEINTRESOURCE(IDI_SMALL));
+    m_nd.uTimeout = 500;
+    wcscpy_s(m_nd.szTip, NOTIFY_ICON_NAME);
+    m_nd.szTip[_tcslen(m_nd.szTip)] = '\0';
+    Shell_NotifyIcon(NIM_ADD, &m_nd);
+}
+
+void CWndMain::RemoveNotifyIcon() {
+    Shell_NotifyIcon(NIM_DELETE, &m_nd);
+}
+
+void CWndMain::ExitAccount() {
+    CUserData::Instance()->ClearUserInfo();
+    CUserData::Instance()->ClearAccount();
+
+    UpdateUserUI();
+}
+
+bool CWndMain::OnClickHomePage(void* lpParam) {
+    TNotifyUI* pNotify = (TNotifyUI*)lpParam;
+    if (!pNotify || !pNotify->pSender || !layout_main_ || !web_home_page_) return true;
+
+    COptionUI* pOptHome = dynamic_cast<COptionUI*>(pNotify->pSender);
+    if (!pOptHome) return true;
+
+    auto page = pOptHome->GetTag();
+
+    if (page == layout_main_->GetTag()) {
+        if (page == web_home_page_->GetTag()) {
+            ShowClientLayoutLeft(true);
+            need_hide_left_layout_ = false;
+            web_home_page_->NavigateUrl();
+            web_focus_ = web_home_page_->GetCefWebkit();
+        }
+
+        return true;
+    }
+
+    if (page == web_home_page_->GetTag()) {
+        if (need_hide_left_layout_) ShowClientLayoutLeft(false);
+    }
+
+    SwitchPage(page);
+
+    return true;
+}
+
+bool CWndMain::OnClickHomeBbs(void* lpParam) {
+    TNotifyUI* pNotify = (TNotifyUI*)lpParam;
+    if (!pNotify || !pNotify->pSender || !layout_main_ || !web_home_page_) return true;
+
+    COptionUI* pOptHome = dynamic_cast<COptionUI*>(pNotify->pSender);
+    if (!pOptHome) return true;
+
+    auto page = pOptHome->GetTag();
+
+    if (page == layout_main_->GetTag()) return true;
+
+    layout_main_->SetTag(page);
+
+    ShellExecute(NULL, L"open", URL_IOS_BBS, NULL, NULL, SW_SHOW);
+
+    return true;
+}
+
+bool CWndMain::OnClickHomeDownload(void* lpParam) {
+    TNotifyUI* pNotify = (TNotifyUI*)lpParam;
+    if (!pNotify || !pNotify->pSender || !layout_main_) return true;
+
+    CButtonUI* btn_down_load = dynamic_cast<CButtonUI*>(pNotify->pSender);
+    if (!btn_down_load) return true;
+
+    if (btn_down_load->GetTag() == layout_main_->GetTag()) return true;
+
+    ShowClientLayoutLeft(true);
+
+    SwitchPage(btn_down_load->GetTag());
+
+    return true;
+}
+
+bool CWndMain::OnClickInstallSys(void* param) {
+    TNotifyUI* pNotify = (TNotifyUI*)param;
+    if (!pNotify || !pNotify->pSender) return true;
+
+    if (!install_system_ || !select_folder_) return true;
+
+    install_system_->SetVisible(false);
+    select_folder_->SetVisible(true);
+
+    return true;
+}
+
+bool CWndMain::OnClickInstallCancel(void* param) {
+    TNotifyUI* pNotify = (TNotifyUI*)param;
+    if (!pNotify || !pNotify->pSender) return true;
+
+    if (!install_system_ || !select_folder_) return true;
+
+    install_system_->SetVisible(true);
+    select_folder_->SetVisible(false);
+
+    return true;
+}
+
+bool CWndMain::OnClickGetIsoSys(void* param) {
+    TNotifyUI* pNotify = (TNotifyUI*)param;
+    if (!pNotify || !pNotify->pSender) return true;
+
+    if (!install_system_ || !select_folder_ || !layout_install_) return true;
+
+    install_system_->SetVisible(true);
+    select_folder_->SetVisible(false);
+    layout_install_->SelectItem(1);
+
+    DownloadMirrorSystem();
+
+    return true;
+}
+
+bool CWndMain::OnClickInstallPause(void* param) {
+    TNotifyUI* pNotify = (TNotifyUI*)param;
+    if (!pNotify || !pNotify->pSender || !lbl_install_status_ || !lbl_install_speed_) return true;
+
+    COptionUI *opt_install_pause = (COptionUI*)pNotify->pSender;
+    if (!opt_install_pause) return true;
+
+    if (opt_install_pause->IsSelected() && download_info_) {
+        auto http = download_info_->http();
+        if (http) http->Stop();
+        download_info_ = nullptr;
+        lbl_install_status_->SetText(L"暂停中");
+        lbl_install_speed_->SetText(L"");
+    }
+    else DownloadMirrorSystem();
+
+    return true;
+}
+
+bool CWndMain::OnClickInstallClose(void* param) {
+    if (download_info_) {
+        auto http = download_info_->http();
+        http->NeedStop();
+        download_info_ = nullptr;
+    }
+
+    if (progress_install_) progress_install_->SetValue(0);
+    if (lbl_install_status_) lbl_install_status_->SetText(L"");
+    if (lbl_install_speed_) lbl_install_speed_->SetText(L"");
+    if (btn_install_restart_) btn_install_restart_->SetVisible(false);
+    if (btn_install_pause_) btn_install_pause_->SetVisible(true);
+    if (btn_install_pause_) btn_install_pause_->Selected(true);
+
+    install_system_->SetVisible(false);
+    select_folder_->SetVisible(true);
+    layout_install_->SelectItem(0);
+
+    return true;
+}
+
+bool CWndMain::OnClickInstallSelectKey(void* param) {
+    wstring strPath;
+    ShowSelectFileDlg(m_hWnd, L"txt文件(*.txt)\0*.txt\0", strPath);
+    if (strPath.empty()) return true;
+
+    if (!CheckEngineKey(strPath)) {
+        ShowMsg(m_hWnd, L"提示", L"无效的激活码，请重新选择", MB_OK);
+        PopupKeyWindow();
+        return true;
+    }
+
+    LoadIosEngine();
+    if (layout_install_) layout_install_->SelectItem(2);
+    loading_frame_ = 0;
+    UpdateLoadingIcon();
+    ::SetTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS, DOWNLOAD_PROGRESS_TIME, nullptr);
+
+    return true;
+}
+
+bool CWndMain::OnClickInstallRestart(void* param) {
+    if (btn_install_restart_) btn_install_restart_->SetVisible(false);
+    if (btn_install_pause_) btn_install_pause_->SetVisible(true);
+
+    DownloadMirrorSystem();
+
+    return true;
+}
+
+bool CWndMain::OnBtnClickSnap(void* param) {
+    //bool success = CIosMgr::Instance()->IosSnap("D:\\PC\\trunk\\ios\\bin\\Debug\\Snap\\12.jpg");
+    return true;
+}
+
+bool CWndMain::OnBtnClickRecord(void* param) {
+    return true;
+}
+
+bool CWndMain::OnBtnClickKey(void* param) {
+    CIosMgr::Instance()->UpdateBrowserMode(false);
+    return true;
+}
+
+void CWndMain::LoadIosEngine() {
+    string iso_file = GetRunPathA() + "ios\\"+ GetUrlIsoName();
+    CIosMgr::Instance()->IosEngineOn(iso_file);
+}
+
+void CWndMain::PopupKeyWindow() {
+    auto key_run_path = CGlobalData::Instance()->GetRunPath();
+    key_run_path += L"Z-HW-ID.exe";
+    ShellExecute(nullptr, _T("open"), key_run_path.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+}
+
+void CWndMain::UpdateLoadingIcon() {
+    if (!install_loading_) return;
+
+    CStdString image;
+    image.Format(L"middle/loading_%d.png", loading_frame_);
+
+    install_loading_->SetBkImage(image.GetData());
+}
+
+void CWndMain::UnzipMirrorSystem() {
+    MSG msg = { 0 };
+    msg.hwnd = m_hWnd;
+    msg.message = WM_MAINWND_MSG_FILE_UNZIPING;
+
+    std::wstring strOutDir = CGlobalData::Instance()->GetRunPath() + L"ios";
+    if (!PathFileExists(strOutDir.c_str())) SHCreateDirectory(nullptr, strOutDir.c_str());
+
+    std::wstring save_path = strOutDir +  L"\\" + PublicLib::Utf8ToU(GetUrlPackageName());
+
+    TaskCenter::CTaskCenter::Instance()->CreateUnzipFileTask(msg, WM_MAINWND_MSG_FILE_UNZIP, save_path, strOutDir);
+}
+
+LRESULT CWndMain::OnDownloadMirrorSystem(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    switch (wParam) {
+    case 0: {
+        download_info_ = nullptr;
+        if (lbl_install_status_) lbl_install_status_->SetText(L"下载失败请重试....");
+        if (lbl_install_speed_) lbl_install_speed_->SetText(L"");
+        if (btn_install_restart_) btn_install_restart_->SetVisible(true);
+        if (btn_install_pause_) btn_install_pause_->SetVisible(false);
+        if (progress_install_) progress_install_->SetValue(0);
+    }
+    break;
+    case 1: {
+        if (!download_info_) break;
+        wstring strSpeed = PublicLib::SpeedToString(download_info_->speed());
+        if (lbl_install_speed_) lbl_install_speed_->SetText(strSpeed.c_str());
+
+        CDuiString strStateText;
+        wstring strTotal = PublicLib::SizeToString(download_info_->total_size());
+        wstring strLoad = PublicLib::SizeToString(download_info_->load_size());
+        strStateText.Format(L"已下载 %s/%s", strLoad.c_str(), strTotal.c_str());
+        lbl_install_status_->SetText(strStateText.GetData());
+
+        if (progress_install_) progress_install_->SetValue(lParam);
+    }
+    break;
+    case 2: {
+        download_info_ = nullptr;
+        if (lbl_install_status_) lbl_install_status_->SetText(L"下载完成");
+        if (lbl_install_speed_) lbl_install_speed_->SetText(L"");
+        if (progress_install_) progress_install_->SetValue(100);
+        
+        UnzipMirrorSystem();
+        if (layout_install_) layout_install_->SelectItem(2);
+        loading_frame_ = 0;
+        UpdateLoadingIcon();
+        ::SetTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS, DOWNLOAD_PROGRESS_TIME, nullptr);
+    }
+    break;
+    default:
+        break;
+    }
+
+    return 0;
+}
+
+LRESULT CWndMain::OnMsgFileUnziping(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    return 0;
+}
+
+LRESULT CWndMain::OnMsgFileUnzip(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    if (wParam == 1) {
+        KillTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS);
+        if (layout_install_) layout_install_->SelectItem(0);
+        if (install_system_) install_system_->SetVisible(false);
+        if (select_folder_) select_folder_->SetVisible(true);
+        return 0;
+    } 
+
+    string iso_file = GetRunPathA() + "ios\\"+ GetUrlIsoName();
+    string iso_init_file = GetRunPathA() + "ios\\"+ GetUrlInitIsoName();
+
+    if (!MoveFileA(iso_init_file.c_str(), iso_file.c_str())) {
+        KillTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS);
+        if (layout_install_) layout_install_->SelectItem(0);
+        if (install_system_) install_system_->SetVisible(false);
+        if (select_folder_) select_folder_->SetVisible(true);
+        return 0;
+    }
+
+    std::wstring save_path = CGlobalData::Instance()->GetRunPath() + L"ios\\" + PublicLib::Utf8ToU(GetUrlPackageName());
+    if (PathFileExists(save_path.c_str())) DeleteFile(save_path.c_str());
+
+    wstring key_file_name = GetDocumentPath() + L"\\serial";
+    if (PathFileExists(key_file_name.c_str()) && CheckEngineKey(key_file_name)) {
+        LoadIosEngine();
+        return 0;
+    }
+
+    PopupKeyWindow();
+
+    if (layout_install_) layout_install_->SelectItem(3);
+    KillTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS);
+
+    return 0;
+}
+
+LRESULT CWndMain::OnMsgEmulatorAlready(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    if (layout_install_) layout_install_->SelectItem(4);
+    KillTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS);
+    return 0;
+}
+
+LRESULT CWndMain::OnMsgLoadIosEngine(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    LoadIosEngine();
+    if (layout_install_) layout_install_->SelectItem(2);
+    loading_frame_ = 0;
+    UpdateLoadingIcon();
+    ::SetTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS, DOWNLOAD_PROGRESS_TIME, nullptr);
+    return 0;
+}
+
+LRESULT CWndMain::OnMsgExit(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    Exit();
+    return 0;
+}
+
+LRESULT CWndMain::OnTimer(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    switch (wParam) {
+    case TIMER_ID_DOWNLOAD_PROGRESS: {
+        loading_frame_++;
+        if (loading_frame_ >= 3) loading_frame_ = 0;
+        UpdateLoadingIcon();
+        break;
+    }
+    default:
+        break;
+    }
+    return 0;
+}
+
+void CWndMain::DownloadMirrorSystem() {
+    std::string url = "http://guorenres.5fun.com/mirror/" + GetUrlPackageName();
+    std::wstring save_path = CGlobalData::Instance()->GetRunPath() + L"ios\\";
+    if (!PathFileExists(save_path.c_str())) SHCreateDirectory(nullptr, save_path.c_str());
+
+    save_path += PublicLib::Utf8ToU(GetUrlPackageName());
+
+    if (PathFileExists(save_path.c_str())) {
+        UnzipMirrorSystem();
+        if (layout_install_) layout_install_->SelectItem(2);
+        loading_frame_ = 0;
+        UpdateLoadingIcon();
+        ::SetTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS, DOWNLOAD_PROGRESS_TIME, nullptr);
+        return;
+    }
+
+    bool success = false;
+
+    do {
+        download_info_ = new download::DownloadInfo();
+        if (!download_info_) break;
+
+        auto http = download_info_->http();
+        if (!http) break;
+
+        if (!http->Initialize(url, save_path, TRUE, this, LoadMirrorSystemCallback)) {
+            // 初始化下载失败
+            OUTPUT_XYLOG(LEVEL_ERROR, L"初始化下载任务失败，下载地址：%s，保存路径：%s", PublicLib::Utf8ToU(url).c_str(), save_path.c_str());
+            break;
+        }
+
+        if (!http->Start()) {
+            //  开始下载失败
+            OUTPUT_XYLOG(LEVEL_ERROR, L"开始下载任务失败，下载地址：%s，保存路径：%s", PublicLib::Utf8ToU(url).c_str(), save_path.c_str());
+            break;
+        }
+
+        download_info_->set_save_path(save_path);
+        download_info_->set_url(url);
+
+        success = true;
+    } while(false);
+
+    if (!success) {
+        if (lbl_install_status_) lbl_install_status_->SetText(L"下载失败请重试....");
+        if (lbl_install_speed_) lbl_install_speed_->SetText(L"");
+        if (btn_install_restart_) btn_install_restart_->SetVisible(true);
+        if (btn_install_pause_) btn_install_pause_->SetVisible(false);
+        download_info_ = nullptr;
+    }
+}
+
+void CWndMain::LoadMirrorSystemCallback(PublicLib::EnumDownloadState state, double dltotal, double dlnow) {
+    switch (state) {
+    case PublicLib::STATE_DOWNLOADING: {
+        if (!download_info_) break;
+        if (download_info_->total_size() == 0)
+            download_info_->set_total_size((__int64)dltotal);
+
+        __int64 nAdd = int(dlnow - download_info_->load_size());
+        download_info_->set_load_size((__int64)dlnow);
+        __int64 nCurTime = (__int64)time(NULL);
+
+        if (download_info_->last_time() == 0 || nCurTime == download_info_->last_time()) {
+            download_info_->set_last_time(nCurTime);
+            download_info_->set_size(download_info_->size() + nAdd);
+            break;
+        }
+
+        // 计算下载速度
+        download_info_->set_speed((int)((download_info_->size() / (nCurTime - download_info_->last_time())) / 1024));
+        download_info_->set_size(0);
+        download_info_->set_last_time(nCurTime);
+
+        auto nLoadSize = download_info_->load_size();
+        auto nTotalSize = download_info_->total_size();
+        int nPercent = (nTotalSize == 0) ? 0 : (int)((100 * nLoadSize / nTotalSize));
+
+        ::PostMessage(m_hWnd, WM_MAINWND_MSG_DOWNLOAD_MIRRORSYSTEM, 1, nPercent);
+    }
+    break;
+    case STATE_DOWNLOAD_HAS_FINISHED: {
+        if (!download_info_) break;
+        download_info_->set_date(time(NULL));
+
+        ::PostMessage(m_hWnd, WM_MAINWND_MSG_DOWNLOAD_MIRRORSYSTEM, 2, 100);
+        break;
+    }
+    case STATE_DOWNLOAD_HAS_FAILED: {
+        ::PostMessage(m_hWnd, WM_MAINWND_MSG_DOWNLOAD_MIRRORSYSTEM, 0, 0);
+    }
+    break;
+    default: break;
+    }
+}
+
+void CWndMain::LoadMirrorSystemCallback(PublicLib::EnumDownloadState state, double dltotal, double dlnow, void * Userdata) {
+    auto main_ptr = (CWndMain*)Userdata;
+    if (main_ptr) return main_ptr->LoadMirrorSystemCallback(state, dltotal, dlnow);
+}
+
+void CWndMain::SwitchPage(int page) {
+    if (!layout_main_ || !web_home_page_) return;
+
+    web_focus_ = nullptr;
+
+    layout_main_->SelectItem(page - 1);
+    layout_main_->SetTag(page);
+
+    if (page == web_home_page_->GetTag()) web_focus_ = web_home_page_->GetCefWebkit();
+
+    UpdateTopWebCtrls();
+}
+
+void CWndMain::UpdateTopWebCtrls() {
+    if (nullptr == web_focus_) return;
+    
+    HWND hWnd = web_focus_->GetHostWnd();
+    SetFocus(hWnd);
+}
+
+bool CWndMain::CheckEngineKey(const wstring& key_file) {
+    char* data = nullptr;
+    FILE *file = nullptr;
+    size_t size = 0;
+    do {
+        file = fopen(PublicLib::UToA(key_file).c_str(), "r");
+        if (file == nullptr) break;
+
+        fseek(file, 0, SEEK_END);  
+        size = ftell(file); 
+        if (size <= 0) break;
+
+        data = (char*)malloc(sizeof(char) * size); 
+
+        if (!data) break;
+
+        fseek(file, 0, SEEK_SET);
+        fread(data, 1, size, file);
+    } while(false);
+
+    bool success = false;
+    if (data) {
+        if (CIosMgr::Instance()->IosCheckLicense((char *)data)) {
+            auto file_name = GetDocumentPath() + L"\\serial";
+            CopyFile(key_file.c_str(), file_name.c_str(), FALSE);
+            success = true;
+        }
+    }
+
+    if (data) delete data;
+    if (file) fclose(file);
+
+    return success;
+}
+
+void CWndMain::ShowVolumeWnd() {
+    if (!btn_ios_volume_) return;
+
+    CWndVolume* wnd_volume = new CWndVolume();
+    if (!wnd_volume) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"malloc volume window failed, nullptr!");
+        return;
+    }
+
+    wnd_volume->Create(m_hWnd, false);
+
+    QRect rc_volume(0, 0, 0, 0);
+    GetClientRect(*wnd_volume, &rc_volume);
+
+    const RECT& rc = btn_ios_volume_->GetPos();
+    POINT pt = { (rc.left + rc.right - rc_volume.GetWidth()) / 2, rc.top - rc_volume.GetHeight() - 12 };
+    ClientToScreen(m_hWnd, &pt);
+
+    ::SetForegroundWindow(*wnd_volume);
+    ::MoveWindow(*wnd_volume, pt.x, pt.y, rc_volume.GetWidth(), rc_volume.GetHeight(), FALSE);
+
+    wnd_volume->ShowWindow(true);
+}
+
+void CWndMain::ShowUserWnd() {
+    CWndUser* pWnd = new CWndUser();
+    if (!pWnd) return;
+
+    pWnd->Create(m_hWnd, false);
+    pWnd->CenterWindow();
+    pWnd->ShowModal();
+}
+
+void CWndMain::SelectedHomePage(COptionUI* opt_select) {
+    if (opt_select && layout_main_ && layout_main_->GetTag() != opt_select->GetTag()) {
+        opt_select->Selected(true);
+        SwitchPage(opt_select->GetTag());
+    }
+}
+
+string CWndMain::GetUrlPackageName() {
+    return (CGlobalData::Instance()->GetCpuType() == 0 ? URL_PACKAGE_NAME_INTEL : URL_PACKAGE_NAME_AMD);
+}
+
+string CWndMain::GetUrlInitIsoName() {
+    return (CGlobalData::Instance()->GetCpuType() == 0 ? URL_ISO_NAME_INIT_INTEL : URL_ISO_NAME_INIT_AMD);
+}
+
+string CWndMain::GetUrlIsoName(){
+    return (CGlobalData::Instance()->GetCpuType() == 0 ? URL_ISO_NAME_INTEL : URL_ISO_NAME_AMD);
+}
+
+LRESULT CWndMain::OnMsgUserInfo(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    UINT_PTR nTask = (UINT_PTR)lParam;
+    string strJson;
+    if (!TaskCenter::CTaskCenter::Instance()->GetTaskResult(nTask, strJson)) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"错误的任务ID");
+        return 0;
+    }
+
+    Json::Value vRoot;
+    Json::Reader rd;
+    if (!rd.parse(strJson, vRoot)) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"json解析失败");
+        return 0;
+    }
+
+    string strCode = vRoot["code"].asString();
+    if (strCode.compare("600") != 0) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"获取用户信息失败，code = %s", PublicLib::Utf8ToU(strCode).c_str());
+        wstring str_msg = PublicLib::Utf8ToU(vRoot["msg"].asString());
+        ShowToast(m_hWnd, str_msg.empty() ? L"获取用户信息失败" : str_msg.c_str());
+        return 0;
+    }
+
+    try {
+        int nParamUid = 0;
+        string strParamToken;
+        if (!TaskCenter::CTaskCenter::Instance()->GetUserInfoTaskParam(nTask, nParamUid, strParamToken)) {
+            OUTPUT_XYLOG(LEVEL_ERROR, L"任务中心获取任务信息失败");
+            return 0;
+        }
+
+        bool bUpdateInfo = false;
+        if (!TaskCenter::CTaskCenter::Instance()->IsUpdateUserInfoTask(nTask, bUpdateInfo)) {
+            OUTPUT_XYLOG(LEVEL_ERROR, L"任务中心获取任务信息失败");
+            return 0;
+        }
+
+        Json::Value& vUserInfo = vRoot["data_info"];
+        int nUid = 0;
+        if (vUserInfo["uid"].isInt()) {
+            nUid = vUserInfo["uid"].asInt();
+        }
+        else if (vUserInfo["uid"].isString())  {
+            string str = vUserInfo["uid"].asString();
+            nUid = atoi(str.c_str());
+        }
+
+        string strPhone = vUserInfo["mobile"].asString();
+
+        Json::Value& vUser = CUserData::Instance()->GetUserInfo();
+        Json::Value::Members vecMems = vUserInfo.getMemberNames();
+        for (size_t i = 0; i < vecMems.size(); ++i) {
+            string& strName = vecMems[i];
+            vUser[strName] = vUserInfo[strName];
+        }
+
+        vUser["token"] = strParamToken;
+        vUser["uid"] = nUid;
+        Json::FastWriter fw;
+        string strJson = fw.write(vUser);
+        strcpy_s(((LPCEF_SHARE_DATA)g_shareData)->szUserInfo, strJson.c_str());
+
+#ifdef _DEBUG
+        OutputDebugString(PublicLib::Utf8ToU(strJson).c_str());
+        OutputDebugString(L"\r\n");
+#endif
+
+        if (bUpdateInfo) return 0;
+
+        CUserData::Instance()->SetFileAccount(nUid, strParamToken);
+        CUserData::Instance()->SetAccountPhone(strPhone);
+        CUserData::Instance()->SetUserState(UsLogin);
+
+        wchar_t szUid[20] = { 0 };
+        swprintf_s(szUid, L"%d", nUid);
+        wstring strUserPath = GetAppDataPath() + szUid;
+        SHCreateDirectory(NULL, strUserPath.c_str());
+        CUserData::Instance()->SetUserPath(strUserPath);
+
+        PostUserLogin(nUid);
+
+        UpdateUserUI();
+    }
+    catch (...) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"解析服务器配置失败");
+    }
+
+    return 0;
+}
+
+LRESULT CWndMain::OnMsgCommon(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    switch (wParam) {
+    case WpCommonLogin: ShowUserWnd();break;
+    case WpCommonUserInfo: {
+        need_hide_left_layout_ = true;
+        ShowClientLayoutLeft(false);
+        SelectedHomePage(opt_home_market_);
+        web_home_page_->NavigateUrl(L"http://testguoren.abcs8.com/static/v1/memberCenter.html");
+        break;
+    }
+    case WpCommonSwitchAccount: {
+        ExitAccount();
+        ::PostMessage(m_hWnd, WM_MAINWND_MSG_COMMON, WpCommonLogin, 0);
+        if (web_home_page_) web_home_page_->NavigateUrl();
+        need_hide_left_layout_ = false;
+        SelectedHomePage(opt_home_market_);
+        ShowClientLayoutLeft(true);
+        break;
+    }
+    case WpCommonModifyUserInfo: {
+        uint32_t nUid = CUserData::Instance()->GetFileUserID();
+        string strToken = CUserData::Instance()->GetFileUserToken();
+
+        // 验证账号信息
+        MSG msg = { 0 };
+        msg.hwnd = m_hWnd;
+        msg.message = WM_MAINWND_MSG_USERINFO;
+        TaskCenter::CTaskCenter::Instance()->CreateUserInfoTask(msg, nUid, strToken);
+        break;
+    }
+    default:
+        break;
+    }
+
+    return 0;
+}
+
+void CWndMain::UpdateUserUI(bool bClear/* = false*/) {
+    if (!btn_user_icon_ || !user_mask_ico_) return;
+
+    if (CUserData::Instance()->GetUserState() == UsLogin) {
+        btn_user_icon_->SetToolTip(L"");
+        UpdateUserIco();
+    }
+    else {
+        btn_user_icon_->SetToolTip(L"点击登录");
+        user_mask_ico_->SetVisible(false);
+        btn_user_icon_->SetBkImage(btn_user_icon_->GetUserData().GetData());
+    }
+}
+
+void CWndMain::UpdateUserIco() {
+    if (!btn_user_icon_ || !user_mask_ico_) return;
+
+    Json::Value& vUser = CUserData::Instance()->GetUserInfo();
+    wchar_t szUid[10] = { 0 };
+    try {
+        swprintf_s(szUid, L"%u", vUser["uid"].asInt());
+    }
+    catch (...) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"用户数据中uid类型转换失败");
+    }
+
+    string strName = vUser["avatarUrl"].asString();
+    if (strName.empty()) {
+        user_mask_ico_->SetVisible(false);
+        btn_user_icon_->SetBkImage(btn_user_icon_->GetUserData().GetData());
+        return;
+    }
+
+    string strUrl;
+    if (strName.find("http") != string::npos) strUrl = strName;
+    else {
+        user_mask_ico_->SetVisible(false);
+        btn_user_icon_->SetBkImage(btn_user_icon_->GetUserData().GetData());
+        return;
+    }
+
+    CGlobalData::Instance()->SetUserIcoPath(strUrl);
+    PublicLib::MD5 md5(strUrl);
+    string strMd5 = md5.md5();
+    const wstring &strUserPath = CUserData::Instance()->GetUserPath();
+    wstring strIcoPath = strUserPath + L"\\" + PublicLib::AToU(strMd5) + L".png";
+
+    if (!PathFileExists(strIcoPath.c_str())) {
+        MSG msg;
+        msg.hwnd = m_hWnd;
+        msg.message = WM_MAINWND_MSG_USER_ICO;
+        TaskCenter::CTaskCenter::Instance()->CreateUserIcoTask(msg, PublicLib::Utf8ToU(strUrl), strIcoPath);
+    }
+    else {
+        btn_user_icon_->SetBkImage(strIcoPath.c_str());
+        user_mask_ico_->SetVisible(true);
+    }
+}
+
+LRESULT CWndMain::OnMsgUserIco(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    if (!btn_user_icon_ || !user_mask_ico_) return 0;
+
+    UINT_PTR nTask = (UINT_PTR)lParam;
+    string strRet;
+    if (!TaskCenter::CTaskCenter::Instance()->GetTaskResult(nTask, strRet)) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"错误的任务ID");
+        return 0;
+    }
+
+    if (strRet.compare("1") == 0) {
+        wstring strIcoPath;
+        wstring strIcoUrl;
+        TaskCenter::CTaskCenter::Instance()->GetUserIcoPath(nTask, strIcoPath, strIcoUrl);
+        if (PathFileExists(strIcoPath.c_str())) {
+            btn_user_icon_->SetBkImage(strIcoPath.c_str());
+            user_mask_ico_->SetVisible(true);
+            CUserData::Instance()->RecordLastHead(strIcoPath, strIcoUrl);
+        }
+    }
+    else {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"用户头像下载失败, 使用上一次的头像");
+
+        wstring strIcoPath;
+        wstring strIcoUrl;
+        CUserData::Instance()->GetLastHead(strIcoPath, strIcoUrl);
+        if (PathFileExists(strIcoPath.c_str())) {
+            btn_user_icon_->SetBkImage(strIcoPath.c_str());
+            user_mask_ico_->SetVisible(true);
+
+            Json::Value& vUser = CUserData::Instance()->GetUserInfo();
+            Json::FastWriter fw;
+            string user_json = fw.write(vUser);
+            strcpy_s(((LPCEF_SHARE_DATA)g_shareData)->szUserInfo, user_json.c_str());
+        }
+    }
+
+    return 0;
+}
+
+LRESULT CWndMain::OnMsgIosEngineUpdating(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    if (!layout_update_ || !progress_update_ || !lbl_update_status_) return 0;
+
+    layout_update_->SetVisible(true);
+
+    if (lParam < 0) {
+        progress_update_->SetValue(0);
+
+        CStdString str_progress;
+        str_progress.Format(L"更新失败");
+        lbl_update_status_->SetText(str_progress.GetData());
+    }
+    else {
+        progress_update_->SetValue(lParam);
+
+        CStdString str_progress;
+        str_progress.Format(L"更新中 %d%s", lParam, "%");
+        lbl_update_status_->SetText(str_progress.GetData());
+    }
+
+    return 0;
+}
+
+LRESULT CWndMain::OnMsgIosEngineUpdate(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    if (wParam == 0 || wParam == 1) {
+        if (layout_update_) layout_update_->SetVisible(false);
+        if (progress_update_) progress_update_->SetValue(0);
+        if (lbl_update_status_) lbl_update_status_->SetText(L"");
+    }
+
+    CIosMgr::Instance()->OnPackUpdate(wParam);
+    return 0;
+}

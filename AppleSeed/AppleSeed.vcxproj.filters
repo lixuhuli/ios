@@ -1,0 +1,562 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Public">
+      <UniqueIdentifier>{f5009c7a-ca56-47ea-943a-b236ad328205}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\UI">
+      <UniqueIdentifier>{35ab262a-21f2-4cba-8e69-72a40cbca213}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\UI\Ctrl">
+      <UniqueIdentifier>{70cd6aed-2fd6-4d30-b30a-f28f2231cf21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Ios">
+      <UniqueIdentifier>{3f248478-0d24-4014-8d09-5f8f1ec489ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\UI\Download">
+      <UniqueIdentifier>{4c924acf-ac0a-4f41-8bad-ee5e0d652ddb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Database">
+      <UniqueIdentifier>{29aad4b0-27d4-4517-a632-eb6acc8cd2ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Database\sqlite">
+      <UniqueIdentifier>{ba466318-6fed-4b48-b1b2-a9db5a43acdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Download">
+      <UniqueIdentifier>{06e1cdfb-13e7-49b9-91c6-397adc5fe967}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\TaskCenter">
+      <UniqueIdentifier>{46c8b57a-ffd4-4da2-af33-a001d514256a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\CallBack">
+      <UniqueIdentifier>{447bfaa4-5775-4765-8d8a-f5ca58844116}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\7z">
+      <UniqueIdentifier>{d366ace6-1158-4229-8a16-ba354cd788bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\7z\Windows">
+      <UniqueIdentifier>{277dd872-8be8-4861-99b5-22482af457ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\7z\Archive">
+      <UniqueIdentifier>{ccbf6f93-0dbf-4fa6-b114-6a4fa0143fed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\7z\Interface">
+      <UniqueIdentifier>{1510d9bc-f4a0-45e9-94c9-c7d5fd931044}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\7z\Common">
+      <UniqueIdentifier>{785d8d7b-6ef3-4479-b9b4-b036119add60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\7z\UI Common">
+      <UniqueIdentifier>{b69b0b9b-fab2-45cc-9bea-fc510212d8a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\7z\7-Zip Common">
+      <UniqueIdentifier>{eeb2e7f2-cc9e-4940-8436-e560f6239849}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Download\downloadinfo">
+      <UniqueIdentifier>{92d6776d-d3b1-4739-94f7-d122b3caf6d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\UI\Wnd">
+      <UniqueIdentifier>{06ac35ce-788d-48bc-94a1-ee7a57456d78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\UI\Wnd\msg">
+      <UniqueIdentifier>{ed53ef0e-9027-429a-82ee-cef45ccad11d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Ios\emulatorstateinfo">
+      <UniqueIdentifier>{86ae7d2f-2df0-4390-8fb0-7ac2a15ab6c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\UI\KeyMap">
+      <UniqueIdentifier>{a1b7c0ab-9ef9-4a6e-8b2b-bbb805c19e15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\UI\KeyMap\Wnd">
+      <UniqueIdentifier>{f9a971fc-463e-40ca-838d-281aa373c39a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\UI\KeyMap\Ctrl">
+      <UniqueIdentifier>{da9e0647-0a2b-4a28-bdec-47bbf1b21aee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\UI\KeyMap\drag">
+      <UniqueIdentifier>{dc3e0bbf-0289-4e65-9a91-b3d66a378203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Ios\sceneinfo">
+      <UniqueIdentifier>{33eb1a28-6b6b-4a83-bfe1-5433d067b154}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ExceptionHandler.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DataPost.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="UserData.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalData.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\UICenterHorizontalLayout.h">
+      <Filter>源文件\UI\Ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="Ios\IosMgr.h">
+      <Filter>源文件\Ios</Filter>
+    </ClInclude>
+    <ClInclude Include="Ios\EngineInterface.h">
+      <Filter>源文件\Ios</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WebCtrlUI.h">
+      <Filter>源文件\UI\Ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="MsgDefine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\PageDownload.h">
+      <Filter>源文件\UI\Download</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\PageLayout.h">
+      <Filter>源文件\UI\Ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\DownloadItem.h">
+      <Filter>源文件\UI\Download</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\sqlite3\CppSQLite3.h">
+      <Filter>源文件\Database\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\DatabaseDefine.h">
+      <Filter>源文件\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Database\DatabaseMgr.h">
+      <Filter>源文件\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Download\Task.h">
+      <Filter>源文件\Download</Filter>
+    </ClInclude>
+    <ClInclude Include="Download\TaskCallback.h">
+      <Filter>源文件\Download</Filter>
+    </ClInclude>
+    <ClInclude Include="Download\DownloadList.h">
+      <Filter>源文件\Download</Filter>
+    </ClInclude>
+    <ClInclude Include="Download\DownloadMgr.h">
+      <Filter>源文件\Download</Filter>
+    </ClInclude>
+    <ClInclude Include="Download\HttpCache.h">
+      <Filter>源文件\Download</Filter>
+    </ClInclude>
+    <ClInclude Include="Download\JsHelper.h">
+      <Filter>源文件\Download</Filter>
+    </ClInclude>
+    <ClInclude Include="Download\ThreadMgr.h">
+      <Filter>源文件\Download</Filter>
+    </ClInclude>
+    <ClInclude Include="Download\WebHelper.h">
+      <Filter>源文件\Download</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpInterface.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskCenter\Task.h">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskCenter\TaskCenter.h">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskCenter\TaskEnum.h">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskCenter\TaskGameHall.h">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskCenter\TaskGetUpdateLog.h">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskCenter\TaskIM.h">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskCenter\TaskSearch.h">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskCenter\TaskUnzipGame.h">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskCenter\TaskUser.h">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskCenter\TaskUtils.h">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskCenter\TeaskContest.h">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClInclude>
+    <ClInclude Include="ParamDefine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UrlDefine.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CallBack\callback_base.h">
+      <Filter>源文件\CallBack</Filter>
+    </ClInclude>
+    <ClInclude Include="CallBack\callback_delegate.h">
+      <Filter>源文件\CallBack</Filter>
+    </ClInclude>
+    <ClInclude Include="CallBack\callback_mgr.h">
+      <Filter>源文件\CallBack</Filter>
+    </ClInclude>
+    <ClInclude Include="CallBack\ref_observer_list.h">
+      <Filter>源文件\CallBack</Filter>
+    </ClInclude>
+    <ClInclude Include="CallBack\appleseed_callback.h">
+      <Filter>源文件\CallBack</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskCenter\TaskUnzipFile.h">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClInclude>
+    <ClInclude Include="7z\CPP\Windows\DLL.h">
+      <Filter>源文件\7z\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="7z\CPP\7zip\Archive\IArchive.h">
+      <Filter>源文件\7z\Archive</Filter>
+    </ClInclude>
+    <ClInclude Include="7z\CPP\7zip\ICoder.h">
+      <Filter>源文件\7z\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="7z\CPP\7zip\IDecl.h">
+      <Filter>源文件\7z\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="7z\CPP\7zip\IPassword.h">
+      <Filter>源文件\7z\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="7z\CPP\7zip\IProgress.h">
+      <Filter>源文件\7z\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="7z\CPP\Common\MyCom.h">
+      <Filter>源文件\7z\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="7z\CPP\Windows\FileName.h">
+      <Filter>源文件\7z\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="7z\CPP\Common\MyVector.h">
+      <Filter>源文件\7z\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="7z\CPP\Common\MyString.h">
+      <Filter>源文件\7z\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="7z\CPP\Common\IntToString.h">
+      <Filter>源文件\7z\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="7z\CPP\Windows\FileFind.h">
+      <Filter>源文件\7z\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="7z\CPP\Windows\FileIO.h">
+      <Filter>源文件\7z\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="7z\CPP\Windows\PropVariant.h">
+      <Filter>源文件\7z\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="7z\CPP\7zip\Common\FileStreams.h">
+      <Filter>源文件\7z\7-Zip Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Download\download_info.h">
+      <Filter>源文件\Download\downloadinfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Download\i_download_info.h">
+      <Filter>源文件\Download</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WndMain.h">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WndIos.h">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WndBase.h">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\CommonWnd.h">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WndMsg.h">
+      <Filter>源文件\UI\Wnd\msg</Filter>
+    </ClInclude>
+    <ClInclude Include="Ios\IosThread.h">
+      <Filter>源文件\Ios</Filter>
+    </ClInclude>
+    <ClInclude Include="Ios\i_emulator_state_info.h">
+      <Filter>源文件\Ios</Filter>
+    </ClInclude>
+    <ClInclude Include="Ios\emulator_state_info.h">
+      <Filter>源文件\Ios\emulatorstateinfo</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WndVolume.h">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\KeyMap\KeyWnd.h">
+      <Filter>源文件\UI\KeyMap\Wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\KeyMap\KeyEditUI.h">
+      <Filter>源文件\UI\KeyMap\Ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\KeyMap\NormalUI.h">
+      <Filter>源文件\UI\KeyMap\Ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\KeyMap\RemoteHandleUI.h">
+      <Filter>源文件\UI\KeyMap\Ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\KeyMap\RightMouseMoveUI.h">
+      <Filter>源文件\UI\KeyMap\Ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\KeyMap\dragdrophandle.h">
+      <Filter>源文件\UI\KeyMap\drag</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\KeyMap\ENUMFETC.H">
+      <Filter>源文件\UI\KeyMap\drag</Filter>
+    </ClInclude>
+    <ClInclude Include="Ios\scene_info.h">
+      <Filter>源文件\Ios\sceneinfo</Filter>
+    </ClInclude>
+    <ClInclude Include="Ios\i_scene_info.h">
+      <Filter>源文件\Ios</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WndUser.h">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WndPassword.h">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WndToast.h">
+      <Filter>源文件\UI\Wnd\msg</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WndUserCenter.h">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WndUserItem.h">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\UIWeb.h">
+      <Filter>源文件\UI\Ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WndWebBase.h">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WndWeb.h">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="TaskCenter\TaskIosEngineUpdate.h">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ExceptionHandler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DataPost.cpp">
+      <Filter>Public</Filter>
+    </ClCompile>
+    <ClCompile Include="UserData.cpp">
+      <Filter>Public</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalData.cpp">
+      <Filter>Public</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\UICenterHorizontalLayout.cpp">
+      <Filter>源文件\UI\Ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="Ios\IosMgr.cpp">
+      <Filter>源文件\Ios</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WebCtrlUI.cpp">
+      <Filter>源文件\UI\Ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\PageDownload.cpp">
+      <Filter>源文件\UI\Download</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\PageLayout.cpp">
+      <Filter>源文件\UI\Ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\DownloadItem.cpp">
+      <Filter>源文件\UI\Download</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\sqlite3\CppSQLite3.cpp">
+      <Filter>源文件\Database\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="Database\DatabaseMgr.cpp">
+      <Filter>源文件\Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Download\DownloadList.cpp">
+      <Filter>源文件\Download</Filter>
+    </ClCompile>
+    <ClCompile Include="Download\DownloadMgr.cpp">
+      <Filter>源文件\Download</Filter>
+    </ClCompile>
+    <ClCompile Include="Download\WebHelper.cpp">
+      <Filter>源文件\Download</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskCenter\TaskCenter.cpp">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskCenter\TaskGetUpdateLog.cpp">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskCenter\TaskIM.cpp">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskCenter\TaskUnzipGame.cpp">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClCompile>
+    <ClCompile Include="CallBack\callBack_mgr.cpp">
+      <Filter>源文件\CallBack</Filter>
+    </ClCompile>
+    <ClCompile Include="CallBack\ref_observer_list.cpp">
+      <Filter>源文件\CallBack</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskCenter\TaskUnzipFile.cpp">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClCompile>
+    <ClCompile Include="7z\CPP\Windows\DLL.cpp">
+      <Filter>源文件\7z\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="7z\CPP\Windows\FileName.cpp">
+      <Filter>源文件\7z\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="7z\CPP\Common\MyVector.cpp">
+      <Filter>源文件\7z\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="7z\CPP\Common\MyString.cpp">
+      <Filter>源文件\7z\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="7z\CPP\Common\IntToString.cpp">
+      <Filter>源文件\7z\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="7z\CPP\Windows\FileFind.cpp">
+      <Filter>源文件\7z\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="7z\CPP\Windows\FileIO.cpp">
+      <Filter>源文件\7z\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="7z\CPP\Windows\PropVariant.cpp">
+      <Filter>源文件\7z\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="7z\CPP\7zip\Common\FileStreams.cpp">
+      <Filter>源文件\7z\7-Zip Common</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndMain_CopyData.cpp">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndMain.cpp">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndIos.cpp">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndBase.cpp">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\CommonWnd.cpp">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndMsg.cpp">
+      <Filter>源文件\UI\Wnd\msg</Filter>
+    </ClCompile>
+    <ClCompile Include="Ios\IosThread.cpp">
+      <Filter>源文件\Ios</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndVolume.cpp">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\KeyMap\KeyWnd.cpp">
+      <Filter>源文件\UI\KeyMap\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\KeyMap\KeyEditUI.cpp">
+      <Filter>源文件\UI\KeyMap\Ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\KeyMap\NormalUI.cpp">
+      <Filter>源文件\UI\KeyMap\Ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\KeyMap\RemoteHandleUI.cpp">
+      <Filter>源文件\UI\KeyMap\Ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\KeyMap\RightMouseMoveUI.cpp">
+      <Filter>源文件\UI\KeyMap\Ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\KeyMap\dragdrophandle.cpp">
+      <Filter>源文件\UI\KeyMap\drag</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\KeyMap\ENUMFETC.C">
+      <Filter>源文件\UI\KeyMap\drag</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndUser.cpp">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndPassword.cpp">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndToast.cpp">
+      <Filter>源文件\UI\Wnd\msg</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndUserCenter.cpp">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndUserItem.cpp">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\UIWeb.cpp">
+      <Filter>源文件\UI\Ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndWebBase.cpp">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndWeb.cpp">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="TaskCenter\TaskIosEngineUpdate.cpp">
+      <Filter>源文件\TaskCenter</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AppleSeed.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="AppleSeed.ico">
+      <Filter>资源文件</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Res\Skin.zip" />
+    <None Include="Download\DownloadMgr.inl">
+      <Filter>源文件\Download</Filter>
+    </None>
+  </ItemGroup>
+</Project>

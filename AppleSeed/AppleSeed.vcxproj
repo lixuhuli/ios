@@ -1,0 +1,335 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{74CEC00B-04D7-4AC3-B5B1-034C1EF8DCFD}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>AppleSeed</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v100</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v100</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)..\bin\$(Configuration)\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)..\bin\$(Configuration)\</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>APP_MAIN;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\include\;..\include\libCef;..\include\libCef\include;..\include\libCef\include\base;..\include\PublicLib\json;.\UI;.\;.\7z;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../lib/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libtcmalloc.lib;libprotobufd.lib;LibCefWapper.lib;libcef.lib;libcef_dll_wrapper.lib;PublicLib.lib;Duilib.lib;xImage.lib;sqlite3.lib;jsoncpp_d.lib;DataCenter.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;libopenGLRender.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>APP_MAIN;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>..\include\;..\include\libCef;..\include\libCef\include;..\include\libCef\include\base;..\include\PublicLib\json;.\UI;.\;.\7z;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>../lib/$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libtcmalloc.lib;libprotobuf.lib;LibCefWapper.lib;libcef.lib;libcef_dll_wrapper.lib;PublicLib.lib;Duilib.lib;xImage.lib;sqlite3.lib;jsoncpp.lib;DataCenter.lib;libopenGLRender.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ForceSymbolReferences>__tcmalloc</ForceSymbolReferences>
+    </Link>
+    <PreBuildEvent>
+      <Command>..\..\Tool\7z.exe a .\Res\Skin.zip ..\bin\Debug\Skin\Client\*</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="7z\CPP\7zip\Archive\IArchive.h" />
+    <ClInclude Include="7z\CPP\7zip\Common\FileStreams.h" />
+    <ClInclude Include="7z\CPP\7zip\ICoder.h" />
+    <ClInclude Include="7z\CPP\7zip\IDecl.h" />
+    <ClInclude Include="7z\CPP\7zip\IPassword.h" />
+    <ClInclude Include="7z\CPP\7zip\IProgress.h" />
+    <ClInclude Include="7z\CPP\Common\IntToString.h" />
+    <ClInclude Include="7z\CPP\Common\MyCom.h" />
+    <ClInclude Include="7z\CPP\Common\MyString.h" />
+    <ClInclude Include="7z\CPP\Common\MyVector.h" />
+    <ClInclude Include="7z\CPP\Windows\DLL.h" />
+    <ClInclude Include="7z\CPP\Windows\FileFind.h" />
+    <ClInclude Include="7z\CPP\Windows\FileIO.h" />
+    <ClInclude Include="7z\CPP\Windows\FileName.h" />
+    <ClInclude Include="7z\CPP\Windows\PropVariant.h" />
+    <ClInclude Include="CallBack\callback_base.h" />
+    <ClInclude Include="CallBack\callback_delegate.h" />
+    <ClInclude Include="CallBack\callback_mgr.h" />
+    <ClInclude Include="CallBack\appleseed_callback.h" />
+    <ClInclude Include="CallBack\ref_observer_list.h" />
+    <ClInclude Include="Database\DatabaseDefine.h" />
+    <ClInclude Include="Database\DatabaseMgr.h" />
+    <ClInclude Include="Database\sqlite3\CppSQLite3.h" />
+    <ClInclude Include="DataPost.h" />
+    <ClInclude Include="Download\DownloadList.h" />
+    <ClInclude Include="Download\DownloadMgr.h" />
+    <ClInclude Include="Download\download_info.h" />
+    <ClInclude Include="Download\HttpCache.h" />
+    <ClInclude Include="Download\i_download_info.h" />
+    <ClInclude Include="Download\JsHelper.h" />
+    <ClInclude Include="Download\Task.h" />
+    <ClInclude Include="Download\TaskCallback.h" />
+    <ClInclude Include="Download\ThreadMgr.h" />
+    <ClInclude Include="Download\WebHelper.h" />
+    <ClInclude Include="ExceptionHandler.h" />
+    <ClInclude Include="GlobalData.h" />
+    <ClInclude Include="HttpInterface.h" />
+    <ClInclude Include="Ios\emulator_state_info.h" />
+    <ClInclude Include="Ios\EngineInterface.h" />
+    <ClInclude Include="Ios\IosMgr.h" />
+    <ClInclude Include="Ios\IosThread.h" />
+    <ClInclude Include="Ios\i_emulator_state_info.h" />
+    <ClInclude Include="Ios\i_scene_info.h" />
+    <ClInclude Include="Ios\scene_info.h" />
+    <ClInclude Include="MsgDefine.h" />
+    <ClInclude Include="ParamDefine.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="TaskCenter\Task.h" />
+    <ClInclude Include="TaskCenter\TaskCenter.h" />
+    <ClInclude Include="TaskCenter\TaskEnum.h" />
+    <ClInclude Include="TaskCenter\TaskGameHall.h" />
+    <ClInclude Include="TaskCenter\TaskGetUpdateLog.h" />
+    <ClInclude Include="TaskCenter\TaskIM.h" />
+    <ClInclude Include="TaskCenter\TaskIosEngineUpdate.h" />
+    <ClInclude Include="TaskCenter\TaskSearch.h" />
+    <ClInclude Include="TaskCenter\TaskUnzipFile.h" />
+    <ClInclude Include="TaskCenter\TaskUnzipGame.h" />
+    <ClInclude Include="TaskCenter\TaskUser.h" />
+    <ClInclude Include="TaskCenter\TaskUtils.h" />
+    <ClInclude Include="TaskCenter\TeaskContest.h" />
+    <ClInclude Include="UI\CommonWnd.h" />
+    <ClInclude Include="UI\DownloadItem.h" />
+    <ClInclude Include="UI\KeyMap\dragdrophandle.h" />
+    <ClInclude Include="UI\KeyMap\ENUMFETC.H" />
+    <ClInclude Include="UI\KeyMap\KeyEditUI.h" />
+    <ClInclude Include="UI\KeyMap\KeyWnd.h" />
+    <ClInclude Include="UI\KeyMap\NormalUI.h" />
+    <ClInclude Include="UI\KeyMap\RemoteHandleUI.h" />
+    <ClInclude Include="UI\KeyMap\RightMouseMoveUI.h" />
+    <ClInclude Include="UI\PageDownload.h" />
+    <ClInclude Include="UI\PageLayout.h" />
+    <ClInclude Include="UI\UICenterHorizontalLayout.h" />
+    <ClInclude Include="UI\UIWeb.h" />
+    <ClInclude Include="UI\WebCtrlUI.h" />
+    <ClInclude Include="UI\WndBase.h" />
+    <ClInclude Include="UI\WndIos.h" />
+    <ClInclude Include="UI\WndMain.h" />
+    <ClInclude Include="UI\WndMsg.h" />
+    <ClInclude Include="UI\WndPassword.h" />
+    <ClInclude Include="UI\WndToast.h" />
+    <ClInclude Include="UI\WndUser.h" />
+    <ClInclude Include="UI\WndUserCenter.h" />
+    <ClInclude Include="UI\WndUserItem.h" />
+    <ClInclude Include="UI\WndVolume.h" />
+    <ClInclude Include="UI\WndWeb.h" />
+    <ClInclude Include="UI\WndWebBase.h" />
+    <ClInclude Include="UrlDefine.h" />
+    <ClInclude Include="UserData.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="7z\CPP\7zip\Common\FileStreams.cpp" />
+    <ClCompile Include="7z\CPP\Common\IntToString.cpp" />
+    <ClCompile Include="7z\CPP\Common\MyString.cpp" />
+    <ClCompile Include="7z\CPP\Common\MyVector.cpp" />
+    <ClCompile Include="7z\CPP\Windows\DLL.cpp" />
+    <ClCompile Include="7z\CPP\Windows\FileFind.cpp" />
+    <ClCompile Include="7z\CPP\Windows\FileIO.cpp" />
+    <ClCompile Include="7z\CPP\Windows\FileName.cpp" />
+    <ClCompile Include="7z\CPP\Windows\PropVariant.cpp" />
+    <ClCompile Include="CallBack\callBack_mgr.cpp" />
+    <ClCompile Include="CallBack\ref_observer_list.cpp" />
+    <ClCompile Include="Database\DatabaseMgr.cpp" />
+    <ClCompile Include="Database\sqlite3\CppSQLite3.cpp" />
+    <ClCompile Include="DataPost.cpp" />
+    <ClCompile Include="Download\DownloadList.cpp" />
+    <ClCompile Include="Download\DownloadMgr.cpp" />
+    <ClCompile Include="Download\WebHelper.cpp" />
+    <ClCompile Include="ExceptionHandler.cpp" />
+    <ClCompile Include="GlobalData.cpp" />
+    <ClCompile Include="Ios\IosMgr.cpp" />
+    <ClCompile Include="Ios\IosThread.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TaskCenter\TaskCenter.cpp" />
+    <ClCompile Include="TaskCenter\TaskGetUpdateLog.cpp" />
+    <ClCompile Include="TaskCenter\TaskIM.cpp" />
+    <ClCompile Include="TaskCenter\TaskIosEngineUpdate.cpp" />
+    <ClCompile Include="TaskCenter\TaskUnzipFile.cpp" />
+    <ClCompile Include="TaskCenter\TaskUnzipGame.cpp" />
+    <ClCompile Include="UI\CommonWnd.cpp" />
+    <ClCompile Include="UI\DownloadItem.cpp" />
+    <ClCompile Include="UI\KeyMap\dragdrophandle.cpp" />
+    <ClCompile Include="UI\KeyMap\ENUMFETC.C">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="UI\KeyMap\KeyEditUI.cpp" />
+    <ClCompile Include="UI\KeyMap\KeyWnd.cpp" />
+    <ClCompile Include="UI\KeyMap\NormalUI.cpp" />
+    <ClCompile Include="UI\KeyMap\RemoteHandleUI.cpp" />
+    <ClCompile Include="UI\KeyMap\RightMouseMoveUI.cpp" />
+    <ClCompile Include="UI\PageDownload.cpp" />
+    <ClCompile Include="UI\PageLayout.cpp" />
+    <ClCompile Include="UI\UICenterHorizontalLayout.cpp" />
+    <ClCompile Include="UI\UIWeb.cpp" />
+    <ClCompile Include="UI\WebCtrlUI.cpp" />
+    <ClCompile Include="UI\WndBase.cpp" />
+    <ClCompile Include="UI\WndIos.cpp" />
+    <ClCompile Include="UI\WndMain.cpp" />
+    <ClCompile Include="UI\WndMain_CopyData.cpp" />
+    <ClCompile Include="UI\WndMsg.cpp" />
+    <ClCompile Include="UI\WndPassword.cpp" />
+    <ClCompile Include="UI\WndToast.cpp" />
+    <ClCompile Include="UI\WndUser.cpp" />
+    <ClCompile Include="UI\WndUserCenter.cpp" />
+    <ClCompile Include="UI\WndUserItem.cpp" />
+    <ClCompile Include="UI\WndVolume.cpp" />
+    <ClCompile Include="UI\WndWeb.cpp" />
+    <ClCompile Include="UI\WndWebBase.cpp" />
+    <ClCompile Include="UserData.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AppleSeed.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="AppleSeed.ico" />
+    <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Download\DownloadMgr.inl" />
+    <None Include="Res\Skin.zip" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
