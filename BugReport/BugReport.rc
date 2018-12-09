@@ -47,12 +47,12 @@ BEGIN
         BLOCK "080404b0"
         BEGIN
             VALUE "CompanyName", "嘉兴游辰网络科技有限公司"
-            VALUE "FileDescription", "悟饭游戏厅错误上报程序"
+            VALUE "FileDescription", "果仁模拟器错误上报程序"
             VALUE "FileVersion", "1.2.0.811"
             VALUE "InternalName", "BugReport.exe"
             VALUE "LegalCopyright", "Copyright (C) 2017"
             VALUE "OriginalFilename", "BugReport.exe"
-            VALUE "ProductName", "悟饭游戏厅错误上报程序"
+            VALUE "ProductName", "果仁模拟器错误上报程序"
             VALUE "ProductVersion", "1.2.0.811"
         END
     END
