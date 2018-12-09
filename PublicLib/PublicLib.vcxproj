@@ -1,0 +1,383 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug_s|Win32">
+      <Configuration>Debug_s</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release_s|Win32">
+      <Configuration>Release_s</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{642E82D4-735E-4E60-9B6C-CB57D95B84C0}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>PublicLib</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_s|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release_s|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(ProjectDir)..\lib\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">
+    <OutDir>$(ProjectDir)..\lib\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(ProjectDir)..\lib\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_s|Win32'">
+    <OutDir>$(ProjectDir)..\lib\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>./;../include;./ThreadMgr</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy /y .\MD5\md5.h .\..\..\include\PublicLib\md5.h
+copy /y .\StrHelper\StrHelper.h .\..\..\include\PublicLib\StrHelper.h
+copy /y .\Http\HttpLib.h .\..\..\include\PublicLib\HttpLib.h
+copy /y .\ThreadMgr\ThreadMgr.h .\..\..\include\PublicLib\ThreadMgr.h
+copy /y .\FileZip\FileZip.h .\..\..\include\PublicLib\FileZip.h
+copy /y .\System\System.h .\..\..\include\PublicLib\System.h
+copy /y .\Log\XYLog.h .\..\..\include\PublicLib\XYLog.h
+copy /y .\FileHelper\FileHelper.h .\..\..\include\PublicLib\FileHelper.h
+copy /y .\Common\Common.h .\..\..\include\PublicLib\Common.h
+copy /y .\Shortcut\Shortcut.h .\..\..\include\PublicLib\Shortcut.h
+copy /y .\ProcessHelper\ProcessHelper.h .\..\..\include\PublicLib\ProcessHelper.h
+copy /y .\IEProxy\IEProxy.h .\..\..\include\PublicLib\IEProxy.h
+copy /y .\WinHttp\HttpClient.h .\..\..\include\PublicLib\HttpClient.h
+copy /y .\DeCompress\DeCompress.h .\..\..\include\PublicLib\DeCompress.h</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>拷贝头文件</Message>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalLibraryDirectories>../../lib/$(Configuration)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>./;../include;./ThreadMgr</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy /y .\MD5\md5.h .\..\..\include\PublicLib\md5.h
+copy /y .\StrHelper\StrHelper.h .\..\..\include\PublicLib\StrHelper.h
+copy /y .\Http\HttpLib.h .\..\..\include\PublicLib\HttpLib.h
+copy /y .\ThreadMgr\ThreadMgr.h .\..\..\include\PublicLib\ThreadMgr.h
+copy /y .\FileZip\FileZip.h .\..\..\include\PublicLib\FileZip.h
+copy /y .\System\System.h .\..\..\include\PublicLib\System.h
+copy /y .\Log\XYLog.h .\..\..\include\PublicLib\XYLog.h
+copy /y .\FileHelper\FileHelper.h .\..\..\include\PublicLib\FileHelper.h
+copy /y .\Common\Common.h .\..\..\include\PublicLib\Common.h
+copy /y .\Shortcut\Shortcut.h .\..\..\include\PublicLib\Shortcut.h
+copy /y .\ProcessHelper\ProcessHelper.h .\..\..\include\PublicLib\ProcessHelper.h
+copy /y .\IEProxy\IEProxy.h .\..\..\include\PublicLib\IEProxy.h
+copy /y .\WinHttp\HttpClient.h .\..\..\include\PublicLib\HttpClient.h
+copy /y .\DeCompress\DeCompress.h .\..\..\include\PublicLib\DeCompress.h</Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>拷贝头文件</Message>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalLibraryDirectories>../../lib/$(Configuration)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>./;../include;./ThreadMgr</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy /y .\MD5\md5.h .\..\..\include\PublicLib\md5.h
+copy /y .\StrHelper\StrHelper.h .\..\..\include\PublicLib\StrHelper.h
+copy /y .\Http\HttpLib.h .\..\..\include\PublicLib\HttpLib.h
+copy /y .\ThreadMgr\ThreadMgr.h .\..\..\include\PublicLib\ThreadMgr.h
+copy /y .\FileZip\FileZip.h .\..\..\include\PublicLib\FileZip.h
+copy /y .\System\System.h .\..\..\include\PublicLib\System.h
+copy /y .\Log\XYLog.h .\..\..\include\PublicLib\XYLog.h
+copy /y .\FileHelper\FileHelper.h .\..\..\include\PublicLib\FileHelper.h
+copy /y .\Shortcut\Shortcut.h .\..\..\include\PublicLib\Shortcut.h
+copy /y .\ProcessHelper\ProcessHelper.h .\..\..\include\PublicLib\ProcessHelper.h
+copy /y .\IEProxy\IEProxy.h .\..\..\include\PublicLib\IEProxy.h
+copy /y .\WinHttp\HttpClient.h .\..\..\include\PublicLib\HttpClient.h
+copy /y .\DeCompress\DeCompress.h .\..\..\include\PublicLib\DeCompress.h</Command>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalLibraryDirectories>../../lib/$(Configuration)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_s|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>./;../include;./ThreadMgr</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy /y .\MD5\md5.h .\..\..\include\PublicLib\md5.h
+copy /y .\StrHelper\StrHelper.h .\..\..\include\PublicLib\StrHelper.h
+copy /y .\Http\HttpLib.h .\..\..\include\PublicLib\HttpLib.h
+copy /y .\ThreadMgr\ThreadMgr.h .\..\..\include\PublicLib\ThreadMgr.h
+copy /y .\FileZip\FileZip.h .\..\..\include\PublicLib\FileZip.h
+copy /y .\System\System.h .\..\..\include\PublicLib\System.h
+copy /y .\Log\XYLog.h .\..\..\include\PublicLib\XYLog.h
+copy /y .\FileHelper\FileHelper.h .\..\..\include\PublicLib\FileHelper.h
+copy /y .\Shortcut\Shortcut.h .\..\..\include\PublicLib\Shortcut.h
+copy /y .\ProcessHelper\ProcessHelper.h .\..\..\include\PublicLib\ProcessHelper.h
+copy /y .\IEProxy\IEProxy.h .\..\..\include\PublicLib\IEProxy.h
+copy /y .\WinHttp\HttpClient.h .\..\..\include\PublicLib\HttpClient.h
+copy /y .\DeCompress\DeCompress.h .\..\..\include\PublicLib\DeCompress.h</Command>
+    </PostBuildEvent>
+    <Lib>
+      <AdditionalLibraryDirectories>../../lib/$(Configuration)</AdditionalLibraryDirectories>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Common\Common.h" />
+    <ClInclude Include="DeCompress\7zRes\7z.h" />
+    <ClInclude Include="DeCompress\7zRes\7zAlloc.h" />
+    <ClInclude Include="DeCompress\7zRes\7zBuf.h" />
+    <ClInclude Include="DeCompress\7zRes\7zCrc.h" />
+    <ClInclude Include="DeCompress\7zRes\7zFile.h" />
+    <ClInclude Include="DeCompress\7zRes\7zVersion.h" />
+    <ClInclude Include="DeCompress\7zRes\Bcj2.h" />
+    <ClInclude Include="DeCompress\7zRes\Bra.h" />
+    <ClInclude Include="DeCompress\7zRes\CpuArch.h" />
+    <ClInclude Include="DeCompress\7zRes\Lzma2Dec.h" />
+    <ClInclude Include="DeCompress\7zRes\LzmaDec.h" />
+    <ClInclude Include="DeCompress\7zRes\Ppmd.h" />
+    <ClInclude Include="DeCompress\7zRes\Ppmd7.h" />
+    <ClInclude Include="DeCompress\7zRes\Types.h" />
+    <ClInclude Include="DeCompress\DeCompress.h" />
+    <ClInclude Include="DeCompress\Unzip\unzip.h" />
+    <ClInclude Include="FileHelper\FileHelper.h" />
+    <ClInclude Include="FileZip\FileZip.h" />
+    <ClInclude Include="Http\HttpLib.h" />
+    <ClInclude Include="IEProxy\IEproxy.h" />
+    <ClInclude Include="Log\Log.h" />
+    <ClInclude Include="Log\XYLog.h" />
+    <ClInclude Include="MD5\md5.h" />
+    <ClInclude Include="ProcessHelper\ProcessHelper.h" />
+    <ClInclude Include="Shortcut\Shortcut.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StrHelper\StrHelper.h" />
+    <ClInclude Include="System\System.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="ThreadMgr\SE.h" />
+    <ClInclude Include="ThreadMgr\ThreadMgr.h" />
+    <ClInclude Include="tinyxml\tinystr.h" />
+    <ClInclude Include="tinyxml\tinyxml.h" />
+    <ClInclude Include="VersionHelper.h" />
+    <ClInclude Include="WinHttp\HttpClient.h" />
+    <ClInclude Include="WinHttp\winhttp.h" />
+    <ClInclude Include="xml\Markup.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Common\Common.cpp" />
+    <ClCompile Include="DeCompress\7zRes\7zAlloc.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\7zBuf.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\7zCrc.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\7zCrcOpt.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\7zDec.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\7zFile.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\7zIn.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\7zStream.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\Bcj2.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\Bra.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\Bra86.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\BraIA64.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\CpuArch.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\Lzma2Dec.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\LzmaDec.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\Ppmd7.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\Ppmd7Dec.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\Ppmd7Enc.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="DeCompress\DeCompress.cpp" />
+    <ClCompile Include="DeCompress\Unzip\unzip.cpp" />
+    <ClCompile Include="FileHelper\FileHelper.cpp" />
+    <ClCompile Include="FileZip\FileZip.cpp" />
+    <ClCompile Include="Http\HttpLib.cpp" />
+    <ClCompile Include="IEProxy\IEproxy.cpp" />
+    <ClCompile Include="Log\Log.cpp" />
+    <ClCompile Include="Log\XYLog.cpp" />
+    <ClCompile Include="MD5\md5.cpp" />
+    <ClCompile Include="ProcessHelper\ProcessHelper.cpp" />
+    <ClCompile Include="Shortcut\Shortcut.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_s|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="StrHelper\StrHelper.cpp" />
+    <ClCompile Include="System\System.cpp" />
+    <ClCompile Include="ThreadMgr\SE.cpp" />
+    <ClCompile Include="ThreadMgr\ThreadMgr.cpp" />
+    <ClCompile Include="tinyxml\tinystr.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="tinyxml\tinyxml.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="tinyxml\tinyxmlerror.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="tinyxml\tinyxmlparser.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="WinHttp\HttpClient.cpp" />
+    <ClCompile Include="xml\Markup.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

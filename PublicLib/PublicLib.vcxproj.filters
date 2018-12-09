@@ -1,0 +1,315 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="源文件\md5">
+      <UniqueIdentifier>{dd111f27-3eba-41f8-9c27-7e2526187730}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Http">
+      <UniqueIdentifier>{293a0145-9e9c-4365-a1d2-84482f068b10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\ThreadMgr">
+      <UniqueIdentifier>{7d4221be-a0f9-4582-a8cd-dc034f528be5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\FileZip">
+      <UniqueIdentifier>{6c4d30e1-a83b-46ad-8605-f1ae7e0b5a23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Log">
+      <UniqueIdentifier>{a4511aea-f244-4975-ae73-24155d4ec75b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\StrHelper">
+      <UniqueIdentifier>{17d79fae-90c2-4034-af08-132e73d6ea21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\FileHelper">
+      <UniqueIdentifier>{d32e8e1b-a90b-4cec-8236-be81c80d4131}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Common">
+      <UniqueIdentifier>{c8a5a185-536e-4eaf-85c7-1e38611b6c8c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\xml">
+      <UniqueIdentifier>{32bafa92-5fe1-4cf3-8b68-330ab1815361}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Shortcut">
+      <UniqueIdentifier>{6e8ea8e4-125f-4660-8cf1-40198e7dbbf8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\System">
+      <UniqueIdentifier>{e9609764-7834-495f-9aee-0a2d57f74bd3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Process">
+      <UniqueIdentifier>{4d4568ab-4e4d-405b-a108-c0a2aaf6a6bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\WinHttp">
+      <UniqueIdentifier>{f43ec3ca-6439-4404-8aac-62c1fe06174d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\IEProxy">
+      <UniqueIdentifier>{0e7d4cf6-fda9-4a52-9f8a-ecbcfeaff671}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\DeCompress">
+      <UniqueIdentifier>{01fca768-8043-48e1-8e21-56097ee8ddcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\DeCompress\unZip">
+      <UniqueIdentifier>{3b037b03-13b6-43b8-8d0a-f0d2e4df80c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\DeCompress\7zRes">
+      <UniqueIdentifier>{8d9ed592-8923-4ec6-80a1-df8692a00a60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Tinyxml">
+      <UniqueIdentifier>{195c083c-f7de-4c75-8648-6c7bf70e8137}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MD5\md5.h">
+      <Filter>源文件\md5</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadMgr\ThreadMgr.h">
+      <Filter>源文件\ThreadMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadMgr\SE.h">
+      <Filter>源文件\ThreadMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="Http\HttpLib.h">
+      <Filter>源文件\Http</Filter>
+    </ClInclude>
+    <ClInclude Include="FileZip\FileZip.h">
+      <Filter>源文件\FileZip</Filter>
+    </ClInclude>
+    <ClInclude Include="Log\Log.h">
+      <Filter>源文件\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Log\XYLog.h">
+      <Filter>源文件\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="StrHelper\StrHelper.h">
+      <Filter>源文件\StrHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="FileHelper\FileHelper.h">
+      <Filter>源文件\FileHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Common.h">
+      <Filter>源文件\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="xml\Markup.h">
+      <Filter>源文件\xml</Filter>
+    </ClInclude>
+    <ClInclude Include="Shortcut\Shortcut.h">
+      <Filter>源文件\Shortcut</Filter>
+    </ClInclude>
+    <ClInclude Include="System\System.h">
+      <Filter>源文件\System</Filter>
+    </ClInclude>
+    <ClInclude Include="ProcessHelper\ProcessHelper.h">
+      <Filter>源文件\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="WinHttp\HttpClient.h">
+      <Filter>源文件\WinHttp</Filter>
+    </ClInclude>
+    <ClInclude Include="WinHttp\winhttp.h">
+      <Filter>源文件\WinHttp</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\7zRes\7z.h">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\7zRes\7zAlloc.h">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\7zRes\7zBuf.h">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\7zRes\7zCrc.h">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\7zRes\7zFile.h">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\7zRes\7zVersion.h">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\7zRes\Bcj2.h">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\7zRes\Bra.h">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\7zRes\CpuArch.h">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\7zRes\Lzma2Dec.h">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\7zRes\LzmaDec.h">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\7zRes\Ppmd.h">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\7zRes\Ppmd7.h">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\7zRes\Types.h">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\Unzip\unzip.h">
+      <Filter>源文件\DeCompress\unZip</Filter>
+    </ClInclude>
+    <ClInclude Include="DeCompress\DeCompress.h">
+      <Filter>源文件\DeCompress</Filter>
+    </ClInclude>
+    <ClInclude Include="IEProxy\IEproxy.h">
+      <Filter>源文件\IEProxy</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml\tinystr.h">
+      <Filter>源文件\Tinyxml</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml\tinyxml.h">
+      <Filter>源文件\Tinyxml</Filter>
+    </ClInclude>
+    <ClInclude Include="VersionHelper.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MD5\md5.cpp">
+      <Filter>源文件\md5</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadMgr\ThreadMgr.cpp">
+      <Filter>源文件\ThreadMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadMgr\SE.cpp">
+      <Filter>源文件\ThreadMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Http\HttpLib.cpp">
+      <Filter>源文件\Http</Filter>
+    </ClCompile>
+    <ClCompile Include="FileZip\FileZip.cpp">
+      <Filter>源文件\FileZip</Filter>
+    </ClCompile>
+    <ClCompile Include="Log\Log.cpp">
+      <Filter>源文件\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="Log\XYLog.cpp">
+      <Filter>源文件\Log</Filter>
+    </ClCompile>
+    <ClCompile Include="StrHelper\StrHelper.cpp">
+      <Filter>源文件\StrHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="FileHelper\FileHelper.cpp">
+      <Filter>源文件\FileHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Common.cpp">
+      <Filter>源文件\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="xml\Markup.cpp">
+      <Filter>源文件\xml</Filter>
+    </ClCompile>
+    <ClCompile Include="Shortcut\Shortcut.cpp">
+      <Filter>源文件\Shortcut</Filter>
+    </ClCompile>
+    <ClCompile Include="System\System.cpp">
+      <Filter>源文件\System</Filter>
+    </ClCompile>
+    <ClCompile Include="ProcessHelper\ProcessHelper.cpp">
+      <Filter>源文件\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="WinHttp\HttpClient.cpp">
+      <Filter>源文件\WinHttp</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\7zAlloc.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\7zBuf.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\7zCrc.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\7zCrcOpt.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\7zDec.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\7zFile.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\7zIn.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\7zStream.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\Bcj2.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\Bra.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\Bra86.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\BraIA64.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\CpuArch.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\Lzma2Dec.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\LzmaDec.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\Ppmd7.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\Ppmd7Dec.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\7zRes\Ppmd7Enc.c">
+      <Filter>源文件\DeCompress\7zRes</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\Unzip\unzip.cpp">
+      <Filter>源文件\DeCompress\unZip</Filter>
+    </ClCompile>
+    <ClCompile Include="DeCompress\DeCompress.cpp">
+      <Filter>源文件\DeCompress</Filter>
+    </ClCompile>
+    <ClCompile Include="IEProxy\IEproxy.cpp">
+      <Filter>源文件\IEProxy</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml\tinystr.cpp">
+      <Filter>源文件\Tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml\tinyxml.cpp">
+      <Filter>源文件\Tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml\tinyxmlerror.cpp">
+      <Filter>源文件\Tinyxml</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml\tinyxmlparser.cpp">
+      <Filter>源文件\Tinyxml</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
