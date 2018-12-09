@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window size="321,646" caption="0,0,0,75" bktrans="true">
+	<Font name="微软雅黑" size="12" />
+	<Font name="思源黑体" size="14" />
+	<Font name="微软雅黑" size="16" />
+	<Font name="微软雅黑" size="22" bold="true"/>
+	<Font name="宋体" size="14" />
+	<Font name="宋体" size="12" />
+	
+	<VerticalLayout	bkimage="file='bk.png'">
+		<HorizontalLayout height="75">
+		  <Control />
+		  
+			<Button name="btn_close" tooltip="关闭" visible="false" padding="0,24,0,0" showcursor="true" width="32" height="32" normalimage="file='btn_close_nor.png'" hotimage="file='btn_close_hot.png'" pushedimage="file='btn_close_nor.png'"/>
+			
+			<Control width="20" />
+		</HorizontalLayout>
+		
+		<Control height="180" />
+		
+		<Control width="50" height="62" padding="135,0,0,0" bkimage="file='logo.png'" />
+		
+		<Control height="20" />
+		
+		<VerticalLayout height="36" name="slogan" visible="false" >
+		  <Control width="140" height="36" padding="90,0,0,0" bkimage="file='slogan.png'" />
+		</VerticalLayout>
+		
+		<Control height="40" />
+		
+		<HorizontalLayout height="160" > 
+		  <TabLayout name="tab_main">
+		    <VerticalLayout>
+					<Control />
+					<Button name="btn_create" width="159" height="30" padding="81,0,0,0" showcursor="true" normalimage="btn_create_nor.png" hotimage="btn_create_hot.png" pushedimage="btn_create_nor.png"/>
+					
+					<Control height="10" />
+					
+					<Button name="btn_exit" width="159" height="30" padding="81,0,0,0" showcursor="true" normalimage="file='btn_exit_nor.png'" hotimage="btn_exit_nor.png" pushedimage="btn_exit_nor.png"/>
+					<Control height="50"/>
+				</VerticalLayout>
+				
+				<VerticalLayout>
+					<HorizontalLayout height="22">
+						<Control />
+						
+						<Edit name="edit_path" width="160" height="22" textcolor="#FF616161" nativebkcolor="#FFDCDCDC" textpadding="8,2,8,2" font="1" bkimage="edit_bk.png"/>
+						
+						<Control width="4"/>
+						
+						<Button name="btn_select" showcursor="true" textcolor="#FF000000" width="70" height="22" normalimage="btn_select_nor.png" hotimage="btn_select_hot.png" pushedimage="btn_select_nor.png"/>
+						
+						<Control />
+					</HorizontalLayout>
+					
+					<Control />
+					
+					<Button name="btn_install" showcursor="true" height="30" width="159" padding="81,0,0,0" normalimage="btn_install_nor.png" hotimage="btn_install_hot.png" pushedimage="btn_install_nor.png"/>
+					
+					<Control height="10" />
+					
+					<Button name="btn_cancel" width="159" height="30" padding="81,0,0,0" showcursor="true" normalimage="file='btn_cancel_nor.png'" hotimage="btn_cancel_nor.png" pushedimage="btn_cancel_nor.png"/>
+					  
+					<Control height="50"/>
+				</VerticalLayout>
+				
+				<VerticalLayout>
+					<Control />
+					
+					<HorizontalLayout width="215" height="20" padding="53,0,0,0">
+					  <Control />
+					  
+						<Progress name="progress" width="160" height="5" padding="0,7,0,0" bkimage="progress_bk.png" foreimage="progress.png" min="0" max="100" value="0" isstretchfore="false"/>
+						    
+						<Button name="btn_install_restart" visible="false" width="20" height="20" padding="10,0,0,0" showcursor="true" normalimage="btn_install_restart_nor.png" />
+						    
+						<Button name="btn_install_close" visible="false" width="20" height="20" padding="5,0,0,0" showcursor="true" normalimage="btn_install_close_nor.png"/>
+						
+						<Control />
+					</HorizontalLayout>
+					
+					<Control height="8" />
+					
+					<Label name="lbl_status" text="正在安装" visible="false" height="18" font="0" textcolor="#FF000000" align="center" valign="center"/>
+					
+					<Control height="80" />
+				</VerticalLayout>
+				
+				<VerticalLayout>
+					<Control />
+					<Button name="btn_run" width="159" height="30" padding="81,0,0,0" showcursor="true" normalimage="btn_run_nor.png" hotimage="btn_run_hot.png" pushedimage="btn_run_nor.png"/>
+					
+					<Control height="20" visible="false" />
+					
+					<Option name="opt_bootrun" visible="false" width="90" height="18" padding="180,0,0,0" text="开机启动" textpadding="20,0,0,0" font="4" textcolor="#FF000000" align="left" valign="center" normalimage="file='opt_nor.png' dest='0,0,16,16'" selectedimage="file='opt_sel.png' dest='0,0,16,16'" selected="true" drawtextplus="false"/>
+					
+					<Control height="10" />
+					
+					<Button name="btn_exit2" width="159" height="30" padding="81,0,0,0" showcursor="true" normalimage="file='btn_exit_nor.png'" hotimage="btn_exit_nor.png" pushedimage="btn_exit_nor.png"/>
+					
+					<Control height="50"/>
+				</VerticalLayout>
+		  </TabLayout>
+		</HorizontalLayout>
+		
+		<Control />
+	</VerticalLayout>
+</Window>

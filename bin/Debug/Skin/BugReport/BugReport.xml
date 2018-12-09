@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window size="412,312" caption="0,0,0,250" ><!--378, 238-->
+	<Font name="微软雅黑" size="12" />
+	
+  	<VerticalLayout bkcolor="#FFFFFFFF">
+    	<HorizontalLayout height="96">
+ 			<Button name="btn_close" float="true" pos="381,0,0,0" width="31" height="29" normalimage="file='btn_close.png' source='0,0,31,29'" hotimage="file='btn_close.png' source='0,29,31,58'" pushedimage="file='btn_close.png' source='0,58,31,87'" />
+			<Label name="Question_Icon" float="true" pos="43,27,0,0" height="70" width="70" bkimage="icon.png"/>
+			<Text name="text_title" float="true" pos="125,39,361,53" font="0" mouse="false" textcolor="#FF333333" />
+			<Text float="true" pos="125,59,361,73" font="0" mouse="false" textcolor="#FF333333" text="表示抱歉！" />
+		</HorizontalLayout>  	
+   		<HorizontalLayout float="true" pos="20,96,0,0" width="370" height="134" bordersize="1" bordercolor="#FFe3e6eb" >
+   			<Text float="true" pos="18,16,0,0" width="340" height="14" font="0" mouse="false" textcolor="#FF666666" text="对您遇到的问题我们深表歉意，希望您发送错误报告，以让我们" />
+			<Text float="true" pos="18,36,0,0" width="340" height="14" font="0" mouse="false" textcolor="#FF666666" text="更好的解决类似的问题，感谢您的使用和厚爱。" />
+    	</HorizontalLayout>
+		<HorizontalLayout  float="true" pos="1,251,0,0" width="410" height="60" bkcolor="#fff3f7fb" >
+			<TabLayout height="60" name="tab_send">   
+				<HorizontalLayout >
+					<CheckBox name="checkbox_send" selected="true" float="true" pos="20,23,0,0" width="110" height="14" normalimage="file='B08.png' source='0,0,14,14' dest='0,0,14,14' xtiled='true' ytiled='true'" hotimage="file='B08.png' source='0,14,14,28' dest='0,0,14,14' xtiled='true' ytiled='true'" selectedimage="file='B08.png' source='0,28,14,42' dest='0,0,14,14' xtiled='true' ytiled='true' " font="0" text="发送错误" align="left" valign="center" textcolor="ff666666" textpadding="26,0,0,2"/>
+					<CheckBox name="checkbox_restart" selected="true" float="true" pos="118,23,0,0" width="110" height="14" normalimage="file='B08.png' source='0,0,14,14' dest='0,0,14,14' xtiled='true' ytiled='true'" hotimage="file='B08.png' source='0,14,14,28' dest='0,0,14,14' xtiled='true' ytiled='true'" selectedimage="file='B08.png' source='0,28,14,42' dest='0,0,14,14' xtiled='true' ytiled='true'" font="0" text="重启程序" align="left" valign="center" textcolor="ff666666"  textpadding="26,0,0,2"/>
+					<Button name="btn_ok" text="确认" float="true" pos="321,14,0,0" align="center" valign="center" textcolor="#FFFFFFFF" hottextcolor="#FFFFFFFF" pushedtextcolor="#FFFFFFFF" disabledtextcolor="#FFB3B3B3" font="0" width="70" height="32" normalimage="file='B03.png' source='0,0,70,32' dest='0,0,70,32'" hotimage="file='B03.png' source='0,32,70,64' dest='0,0,70,32'" pushedimage="file='B03.png' source='0,64,70,96' dest='0,0,70,32'" disabledimage="file='B03.png' source='0,96,70,128' dest='0,0,70,32'" />
+				</HorizontalLayout>					
+				<HorizontalLayout>
+					<ButtonGif name="icon_loading" NormalGifFile="processing.gif" width="16" height="16" padding="22,12,0,0" mouse="false" />
+					<Text text="正在发送报告" font="0" textcolor="#FF666666" padding="5,14,0,0" />
+				</HorizontalLayout>
+			</TabLayout>
+		</HorizontalLayout>		
+  	</VerticalLayout>
+</Window>

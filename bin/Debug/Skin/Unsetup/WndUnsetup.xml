@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window size="599,422" caption="0,0,0,270" roundcorner="4,4">
+	<Font name="宋体" size="12" />
+	<Font name="微软雅黑" size="16" />
+	<Font name="微软雅黑" size="22" bold="true"/>
+
+	<VerticalLayout bkimage="bk.png">
+		<HorizontalLayout>
+			<Button name="btn_sys_min" tooltip="最小化" showcursor="true" float="true" pos="539,0,0,0" width="30" height="30" normalimage="file='btn_min_nor.png' dest='10,14,19,16'" hotimage="file='btn_min_hot.png' dest='10,14,19,16'" pushedimage="file='btn_min_hot.png' dest='10,14,19,16'" />
+			<Button name="btn_sys_close" tooltip="关闭" showcursor="true" float="true" pos="569,0,0,0" width="30" height="30" normalimage="file='btn_close_nor.png' dest='10,10,19,19'" hotimage="file='btn_close_hot.png' dest='10,10,19,19'" pushedimage="file='btn_close_hot.png' dest='10,10,19,19'"/>
+		</HorizontalLayout>
+		<HorizontalLayout height="150">
+			<TabLayout name="tab_select">
+				<VerticalLayout><!--客服-->
+					<Control />
+					<Label text="游戏少？不会用？请咨询我们客服帮您解决" height="20" font="1" textcolor="#FF000000" align="center" valign="center"/>
+					<Control height="10"/>
+					<Button name="btn_help" width="260" height="48" showcursor="true" normalimage="btn_ask_nor.png" hotimage="btn_ask_hot.png" pushedimage="btn_ask_nor.png" padding="170,0,0,0" font="2" textcolor="#FF000000"/>
+					<Control height="10"/>
+					<HorizontalLayout height="21">
+						<Control />
+						<Button name="btn_back1" width="71" bkimage="btn_bk.png" disabledimage="btn_dis.png" text="上一步" font="0" textcolor="#FF000000" disabledtextcolor="#FFBFBFBF" showcursor="true" enabled="false"/>
+						<Control width="78"/>
+						<Button name="btn_next1" width="71" bkimage="btn_bk.png" text="下一步" font="0" textcolor="#FF000000" showcursor="true"/>
+						<Control />
+					</HorizontalLayout>
+					<Control height="30"/>
+				</VerticalLayout>
+				<VerticalLayout><!--重装-->
+					<Control />
+					<Label text="某些软件可能导致运行异常，重新安装即可解决" height="20" font="1" textcolor="#FF000000" align="center" valign="center"/>
+					<Control height="10"/>
+					<Button name="btn_reinstall" width="260" height="48" showcursor="true" normalimage="btn_reinst_nor.png" hotimage="btn_reinst_hot.png" pushedimage="btn_reinst_nor.png" padding="170,0,0,0" font="2" textcolor="#FF000000"/>
+					<Control height="10"/>
+					<HorizontalLayout height="21">
+						<Control />
+						<Button name="btn_back2" width="71" bkimage="btn_bk.png" text="上一步" font="0" textcolor="#FF000000" disabledtextcolor="#FFBFBFBF" showcursor="true"/>
+						<Control width="78"/>
+						<Button name="btn_next2" width="71" bkimage="btn_bk.png" text="下一步" font="0" textcolor="#FF000000" showcursor="true"/>
+						<Control />
+					</HorizontalLayout>
+					<Control height="30"/>
+				</VerticalLayout>
+				<VerticalLayout><!--狠心卸载-->
+					<Control />
+					<Label text="感谢与你一起度过的美好时光" height="20" font="1" textcolor="#FF000000" align="center" valign="center"/>
+					<Control height="10"/>
+					<Button name="btn_uninstall" width="260" height="48" showcursor="true" normalimage="btn_uninst_nor.png" hotimage="btn_uninst_hot.png" pushedimage="btn_uninst_nor.png" padding="170,0,0,0" font="2" textcolor="#FF000000"/>
+					<Control height="10"/>
+					<HorizontalLayout height="21">
+						<Control />
+						<Button name="btn_back3" width="71" bkimage="btn_bk.png" text="上一步" font="0" textcolor="#FF000000" disabledtextcolor="#FFBFBFBF" showcursor="true"/>
+						<Control width="78"/>
+						<Button name="btn_next3" width="71" bkimage="btn_bk.png" disabledimage="btn_dis.png" text="下一步" font="0" textcolor="#FF000000" showcursor="true" enabled="false"/>
+						<Control />
+					</HorizontalLayout>
+					<Control height="30"/>
+				</VerticalLayout>
+				<VerticalLayout><!--卸载中-->
+					<Control />
+					<Label name="lbl_status" text="正在卸载悟饭游戏厅" height="20" font="1" textcolor="#FF000000" align="center" valign="center"/>
+					<Control height="20" />
+					<HorizontalLayout width="541" height="23" padding="30,0,0,0" bkimage="progress_bk.png" >
+						<Progress name="progress" float="true" pos="1,1,0,0" width="539" height="21" foreimage="progress.png" min="0" max="100" value="0" isstretchfore="false"/>
+						<Label name="lbl_progress" float="true" pos="0,0,0,0" width="541" height="23" font="1" textcolor="#FF000000" align="center" valign="center"/>
+					</HorizontalLayout>
+					<Control height="50" />
+				</VerticalLayout>
+				<VerticalLayout><!--卸载完成-->
+					<Control />
+					<Label name="lbl_status" text="感谢您的支持，期待您下次使用悟饭游戏厅" height="20" font="1" textcolor="#FF000000" align="center" valign="center"/>
+					<Control height="10" />
+					<Button name="btn_finish" width="260" height="48" showcursor="true" normalimage="btn_finish_nor.png" hotimage="btn_finish_hot.png" pushedimage="btn_finish_nor.png" padding="170,0,0,0" font="2" textcolor="#FF000000"/>
+					<Control height="10" />
+					<Option name="opt_del_config" width="140" height="16" padding="230,0,0,0" text="同时删除游戏文件" textpadding="18,0,0,0" font="0" textcolor="#FF9D9D9F" selectedtextcolor="#FF8D98B0" align="left" valign="center" normalimage="file='opt_nor.png' dest='0,0,16,16'" selectedimage="file='opt_sel.png' dest='0,0,16,16'"/>
+					<Control height="36"/>
+				</VerticalLayout>
+			</TabLayout>
+		</HorizontalLayout>
+	</VerticalLayout>
+</Window>

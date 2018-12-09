@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window>
+  <TabLayout inset="20,60,20,0">
+    <PageLayout name="layout_page_game" item_width="130" item_height="173" dis_ver="10" align_edge="true" autocalcheight="false" />
+    
+    <VerticalLayout>
+			<Control />
+			<HorizontalLayout height="40">
+		    <Control />
+				<HorizontalLayout width="180">
+					<Control width="28" height="31" padding="0,4,0,0" bkimage="download/logo.png" />
+					<Control width="12" />
+					<Control width="140" bkimage="download/logo_text.png" /> 
+				</HorizontalLayout>
+			  <Control />
+			</HorizontalLayout>
+			<Control />
+		</VerticalLayout>
+		
+  </TabLayout>
+</Window>

@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window >
+	<TabLayout name="web_tab_store">
+		  <VerticalLayout bkcolor="0xFFDCDCDC"><!--加载中-->
+		    <Control />
+			  <HorizontalLayout height="85">
+				  <Control />
+				  <VerticalLayout width="150">
+				    <ButtonGif GifFile="public/loading.gif" width="50" height="65" padding="50,0,0,0" />
+					  <Control height="4" />
+					  <Label height="16" text="努力加载中" align="center" textcolor="#FF666666" font="0"/>
+				  </VerticalLayout>
+				  <Control />
+			  </HorizontalLayout>
+			  <Control />
+		  </VerticalLayout>
+		
+		  <VerticalLayout><!--加载失败-->
+			  <Control />
+			  <HorizontalLayout height="177">
+				  <Control />
+				  <VerticalLayout width="219">
+					  <Control width="91" height="78" padding="64,0,0,0" bkimage="public/error.png"/>
+					  
+					  <Control height="22"/>
+					  
+					  <Control height="25" bkimage="file='public/net_retry_text.png' dest='0,4,219,21'" />
+					  
+					  <Control height="23"/>
+					  
+					  <Button name="btn_web_refresh" width="95" height="29" padding="62,0,0,0" normalimage="public/btn_web_refresh.png" showcursor="true"/>
+				  </VerticalLayout>
+				  <Control />
+			  </HorizontalLayout>
+			  <Control />
+		  </VerticalLayout>
+		
+		  <VerticalLayout>
+			  <CefWebUI name="web_cef_kit"/>
+			</VerticalLayout>
+		
+	</TabLayout>
+</Window>

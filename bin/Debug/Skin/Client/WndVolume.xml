@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="153,21" >
+	<Font name="微软雅黑" size="12" />
+	
+	<VerticalLayout height="21">
+	  <Slider name="slider_volume" max="100" value="40" width="153" height="21" isstretchfore="true" thumbsize="16,21" 
+				  bkimage="file='bottom/slider_bk.png' dest='0,8,153,13' corner='2,2,2,2'" 
+				  foreimage="file='bottom/fore.png' corner='2,10,2,10'" 
+				  thumbimage="file='bottom/thumb.png'" 
+				  thumbhotimage="file='bottom/thumb.png'" 
+				  thumbpushedimage="file='bottom/thumb.png'" /> 
+	</VerticalLayout>
+</Window>

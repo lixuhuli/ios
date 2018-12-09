@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="654,499" caption="0,0,0,57">
+	<Font name="微软雅黑" size="12" />
+	<Font name="微软雅黑" size="14" />
+	<Font name="微软雅黑" size="16" />
+	<Font name="微软雅黑" size="18" />
+	<Font name="微软雅黑" size="20" />
+	<Font name="微软雅黑" size="36" />
+
+	<VerticalLayout bkimage="file='user/bk_image.png' corner='17,17,17,17'" inset="17,17,17,17">
+	  <HorizontalLayout height="40">
+	    <Control />
+	    
+			<Button name="btn_close" tooltip="关闭" showcursor="true" width="16" height="15" padding="0,12,0,0" normalimage="file='user/close_nor.png'" hotimage="file='user/close_hot.png'" pushedimage="file='user/close_nor.png'" />
+			
+			<Control width="12" />
+		</HorizontalLayout>
+		
+		<Web name="web_user_item" inset=""/>
+		
+	</VerticalLayout>
+</Window>

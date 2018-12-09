@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="240,142" roundcorner="4,4">
+	<Font name="微软雅黑" size="16" />
+	
+	<VerticalLayout bkimage="file='msg/toast_bk.png' corner='8,8,8,8'">
+		<Label name="lbl_text" padding="0,61,0,0" height="20" font="0" align="center" valign="center" textcolor="#FFFFFFFF"/>
+	</VerticalLayout>
+</Window>

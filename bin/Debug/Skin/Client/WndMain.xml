@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="1336,829" mininfo="1336,829" sizebox="4,4,4,4" caption="0,0,0,60">
+	<Font name="微软雅黑" size="12" />
+	<Font name="微软雅黑" size="14" />
+	<Font name="微软雅黑" size="16" />
+	<Font name="微软雅黑" size="18" />
+	<Font name="微软雅黑" size="20" />
+	<Font name="微软雅黑" size="10" />
+	<Font name="微软雅黑" size="24" />
+	<Font name="微软雅黑" size="12" strikeout="true"/>
+	<Font name="宋体" size="12" />
+	<Font name="微软雅黑" size="16" bold="true"/><!--9-->
+	<Font name="宋体" size="14" />
+	<Font name="微软雅黑" size="18" bold="true"/>
+	<Font name="微软雅黑" size="16" bold="true"/>
+	<Font name="思源黑体" size="14" />
+	
+	<Default name="HScrollBar" value="showbutton1=&quot;false&quot; showbutton2=&quot;false&quot; thumbnormalimage=&quot;file=&apos;scroll_bk1.png&apos; corner=&apos;1,1,1,1&apos;&quot;  railnormalimage=&quot;file=&apos;scroll_bk1.png&apos; corner=&apos;1,1,1,1&apos;&quot; bknormalimage=&quot;file=&apos;scroll_fore1.png&apos; corner=&apos;1,1,1,1&apos;&quot; height=&quot;4&quot; "/>
+	
+	
+	<VerticalLayout bkimage="file='public/bk_image.png'">
+		<HorizontalLayout height="60" bkimage="file='top/top.png'" >
+		  <Control width="8"/>
+		  
+		  <Control width="115" height="24" padding="0,8,0,0" bkimage="file='top/logo.png'" />
+		  
+		  <Control />
+			
+			<Option name="opt_home_market" text="商店" tag="1" width="32" height="47" padding="0,8,0,0" textpadding="0,35,0,0," align="center" valign="center" font="0" normalimage="file='top/btn_shopping_nor.png' dest='0,0,32,32'" hotimage="file='top/btn_shopping_hot.png' dest='0,0,32,32'" selectedimage="file='top/btn_shopping_hot.png' dest='0,0,32,32'" group="page_home" selected="true" showcursor="true"  animation="false"/>
+			
+			<Control width="70"/>
+			
+			<!--Option name="opt_home_vip" text="会员" tag="4" width="32" height="47" padding="0,8,0,0" textpadding="0,35,0,0," align="center" valign="center" font="0" normalimage="file='top/btn_vip_nor.png' dest='0,0,32,32'" hotimage="file='top/btn_vip_hot.png' dest='0,0,32,32'" selectedimage="file='top/btn_vip_hot.png' dest='0,0,32,32'" group="page_home" selected="true" showcursor="true"  animation="false"/>
+			
+			<Control width="70"/!-->
+			
+			<Option name="opt_home_bbs" text="论坛" tag="3" width="32" height="47" padding="0,8,0,0" textpadding="0,35,0,0," align="center" valign="center" font="0" normalimage="file='top/btn_bbs_nor.png' dest='0,0,32,32'" hotimage="file='top/btn_bbs_hot.png' dest='0,0,32,32'" selectedimage="file='top/btn_bbs_hot.png' dest='0,0,32,32'" group="page_home" showcursor="true"  animation="false"/>
+			
+			<Control width="70"/>
+			
+			<Option name="opt_home_download" text="下载" tag="2" width="32" height="47" padding="0,8,0,0" textpadding="0,35,0,0," align="center" valign="center" font="0" normalimage="file='top/btn_download_nor.png' dest='0,0,32,32'" hotimage="file='top/btn_download_hot.png' dest='0,0,32,32'" selectedimage="file='top/btn_download_hot.png' dest='0,0,32,32'" group="page_home" showcursor="true"  animation="false"/>
+			
+			<Control width="70"/>
+			
+			<Control />
+			
+			<HorizontalLayout width="44" height="44" padding="0,8,0,0" >
+				<Button name="lbl_user_ico" bkimage="file='user/default_head.png'" userdata="file='user/default_head.png'" width="42" height="42" padding="1,1,0,0" showcursor="true" enabled="true" />
+				
+				<Control name="user_mask_ico" float="true" pos="0,0,44,44" width="44" height="44" bkimage="file='user/ico_mask.png'" mouse="false" visible="false" />
+			</HorizontalLayout>
+			
+			<Control width="18"/>
+			
+			<HorizontalLayout height="15" width="55" padding="0,10,0,0" >
+			  <Button name="btn_sys_min" tooltip="最小化" width="19" height="15" showcursor="true" normalimage="file='top\btn_min_nor.png' dest='0,7,19,9'" hotimage="file='top\btn_min_hot.png' dest='0,7,19,9'" pushedimage="file='top\btn_min_nor.png' dest='0,7,19,9'" animation="true"/>	
+			  
+			  <Control width="10"/>
+			  
+			  <Button name="btn_sys_max" tooltip="最大化" width="19" height="15" showcursor="true" normalimage="file='top\btn_max_nor.png'" hotimage="file='top\btn_max_hot.png'" pushedimage="file='top\btn_max_nor.png'" visible="false" animation="true"/>
+			  
+			  <Button name="btn_sys_restore" tooltip="还原" width="19" height="15" showcursor="true" normalimage="file='top\btn_restore_nor.png'" hotimage="file='top\btn_restore_hot.png'" pushedimage="file='top\btn_restore_nor.png'" visible="false" animation="true"/>
+			  
+			  <Control width="10" visible="false" />
+			  
+			  <Button name="btn_sys_close" tooltip="关闭" width="16" height="15" showcursor="true" normalimage="file='top\btn_close_nor.png'" hotimage="file='top\btn_close_hot.png'" pushedimage="file='top\btn_close_nor.png'" animation="false" />
+			  
+			  <Control width="10"/>
+		  </HorizontalLayout>
+		</HorizontalLayout>
+		
+		<HorizontalLayout>
+      <HorizontalLayout name="client_layout_left" width="506" >
+		    <Control width="60" />
+		  
+		    <Control width="20" />
+		  
+		    <VerticalLayout	padding="0,30,0,0" width="321" height="646" bkimage="file='middle/bk.png'">
+		      <Control height="75"/>
+		    
+		      <VerticalLayout name="install_system" visible="true">
+		        <Control height="181"/>
+		    
+		        <Control width="50" height="62" padding="135,0,0,0" bkimage="file='middle/logo.png'" />
+		    
+		        <Control height="20" />
+		    
+		        <VerticalLayout height="36" name="slogan" >
+		          <Control width="140" height="36" padding="90,0,0,0" bkimage="file='middle/slogan.png'" />
+		        </VerticalLayout>
+		        
+		        <TabLayout name="layout_install">
+		          <VerticalLayout>
+		            <Control />
+		          
+		            <Button name="btn_install_sys" width="159" height="30" padding="81,0,0,0" showcursor="true" normalimage="middle/btn_install_nor.png" hotimage="middle/btn_install_hot.png" pushedimage="middle/btn_install_nor.png"/>
+		          
+		            <Control height="80" />
+		          </VerticalLayout>
+		        
+		          <VerticalLayout>
+		            <Control height="50" />
+					
+					      <HorizontalLayout height="20" padding="53,0,0,0"  >
+						      <Progress name="progress_install" width="160" height="5" padding="0,7,0,0" bkimage="middle/progress_bk.png" foreimage="middle/progress.png" min="0" max="100" value="0" isstretchfore="false"/>
+						    
+						      <Control width="10" />
+						    
+						      <Option name="btn_install_pause" width="20" height="20" showcursor="true" normalimage="middle/btn_install_play_nor.png" selectedimage="middle/btn_install_pause_nor.png" selected="true" />
+						    
+						      <Button name="btn_install_restart" visible="false" width="20" height="20" showcursor="true" normalimage="middle/btn_install_restart_nor.png" />
+						    
+						      <Control width="5" />
+						    
+						      <Button name="btn_install_close" width="20" height="20" showcursor="true" normalimage="middle/btn_install_close_nor.png"/>
+					      </HorizontalLayout>
+					    
+					      <Control height="4" />
+					    
+					      <HorizontalLayout height="20" padding="53,0,0,0">
+					        <Label name="lbl_install_status" text="" height="20" font="0" width="140" textcolor="#FF262626" />
+					    
+					        <Label name="lbl_install_speed" text="" height="20" font="0" width="75" align="right" textcolor="#FF262626" />
+					      </HorizontalLayout>
+					
+					      <Control />
+		          </VerticalLayout>
+		        
+		          <VerticalLayout>
+		            <Control />
+		          
+		            <Control name="install_loading" width="40" height="40" padding="140,0,0,0" bkimage="middle/loading_1.png" />
+		          
+		            <Control height="80" />
+		          </VerticalLayout>
+		        
+		          <VerticalLayout>
+		            <Control />
+		          
+					      <Button name="btn_install_select_key" width="159" height="30" padding="81,0,0,0" showcursor="true" normalimage="middle/btn_select_key_nor.png" hotimage="middle/btn_select_key_hot.png" pushedimage="middle/btn_select_key_hot.png"/>
+					
+					      <Control height="80"/>
+		          </VerticalLayout>
+		        
+		          <VerticalLayout>
+		            <Control height="50" />
+		            
+		            <VerticalLayout name="layout_update" visible="false" >
+		              <Control height="7" />
+		              
+		              <Progress name="progress_update" width="160" height="5" padding="80,0,0,0" bkimage="middle/progress_bk.png" foreimage="middle/progress.png" min="0" max="100" value="0" isstretchfore="false"/>
+		              
+		              <Control height="12" />
+					    
+					        <Label name="lbl_update_status" text="更新中" width="140" height="20" padding="80,0,0,0" font="0" width="140" textcolor="#FF262626" />
+					      </VerticalLayout>
+					      
+					      <Control />
+		          </VerticalLayout>
+		        </TabLayout>
+		      </VerticalLayout>
+		    
+		      <VerticalLayout name="select_folder" inset="23,0,18,0" visible="false">
+		        <HorizontalLayout height="42" >
+		          <Option name="opt_user_submit" height="41" width="139" text="用户上传" font="2" textcolor="#FF8A8A8A" bottombordersize="1" bordercolor="0xFFD8D8D8" hottextcolor="#FF262626" selectedtextcolor="#FF262626" group="opt_submit" selected="true" showcursor="false"/>
+		        
+		          <Control height="42" width="1" bkcolor="0xFFD8D8D8" />
+		        
+		          <Option name="opt_local_submit" height="41" width="140" text="本地上传" font="2" textcolor="#FF8A8A8A" hottextcolor="#FF262626" selectedtextcolor="#FF262626" group="opt_submit" enabled="false" showcursor="false"/>
+		        </HorizontalLayout>
+		      
+		        <Control height="24" />
+		      
+		        <HorizontalLayout height="22">
+		          <Control />
+		        
+		          <Edit name="edit_iso_sys_1" readonly="true" width="160" height="22" text="mother_disc.vmdk" textcolor="#FF6C6C6C" nativebkcolor="#FFD8D8D8" textpadding="8,2,8,2" font="13" bkimage="middle/edit_bk.png" />
+		        
+		          <Control width="8" />
+		        
+		          <Button name="btn_get_iso_sys_1" width="70" height="22" showcursor="true" normalimage="middle/btn_recommend_nor.png" hotimage="middle/btn_recommend_hot.png" pushedimage="middle/btn_recommend_hot.png"/>
+		        
+		          <Control />
+		        </HorizontalLayout>
+		      
+		        <Control height="8" />
+		      
+		        <HorizontalLayout height="22">
+		          <Control width="28" />
+		        
+		          <Label text="镜像系统：2.47G" height="22" font="0" textcolor="#FF6C6C6C" width="150"/>
+		        
+		          <Control width="6" />
+		        
+		          <Label text="由小番茄上传" height="22" font="0" textcolor="#FF6C6C6C" width="84"/>
+		        
+		          <Control />
+		        </HorizontalLayout>
+		      
+		        <Control height="32" />
+		      
+		        <HorizontalLayout height="22">
+		          <Control />
+		        
+		          <Edit name="edit_iso_sys_2" readonly="true" width="160" height="22" text="mother_disc.vmdk" textcolor="#FF6C6C6C" nativebkcolor="#FFD8D8D8" textpadding="8,2,8,2" font="13" bkimage="middle/edit_bk.png" />
+		        
+		          <Control width="8" />
+		        
+		          <Button name="btn_get_iso_sys_2" width="70" height="22" showcursor="true" normalimage="middle/btn_get_sys_nor.png" hotimage="middle/btn_get_sys_hot.png" pushedimage="middle/btn_get_sys_hot.png"/>
+		        
+		          <Control />
+		        </HorizontalLayout>
+		      
+		        <Control height="8" />
+		      
+		        <HorizontalLayout height="22">
+		          <Control width="28" />
+		        
+		          <Label text="镜像系统：2.47G" height="22" font="0" textcolor="#FF6C6C6C" width="150"/>
+		        
+		          <Control width="6" />
+		        
+		          <Label text="由王尔德上传" height="22" font="0" textcolor="#FF6C6C6C" width="84"/>
+		        
+		          <Control />
+		        </HorizontalLayout>
+		      
+		        <Control height="32" />
+		      
+		        <HorizontalLayout height="22">
+		          <Control />
+		        
+		          <Edit name="edit_iso_sys_3" readonly="true" width="160" height="22" text="mother_disc.vmdk" textcolor="#FF6C6C6C" nativebkcolor="#FFD8D8D8" textpadding="8,2,8,2" font="13" bkimage="middle/edit_bk.png" />
+		        
+		          <Control width="8" />
+		        
+		          <Button name="btn_get_iso_sys_3" width="70" height="22" showcursor="true" normalimage="middle/btn_get_sys_nor.png" hotimage="middle/btn_get_sys_hot.png" pushedimage="middle/btn_get_sys_hot.png"/>
+		        
+		          <Control />
+		        </HorizontalLayout>
+		      
+		        <Control height="8" />
+		      
+		        <HorizontalLayout height="22">
+		          <Control width="28" />
+		        
+		          <Label text="镜像系统：2.47G" height="22" font="0" textcolor="#FF6C6C6C" width="150" />
+		        
+		          <Control width="6" />
+		        
+		          <Label text="由云中鹤上传" height="22" font="0" textcolor="#FF6C6C6C" width="84" />
+		        
+		          <Control />
+		        </HorizontalLayout>
+		      
+		        <Control />
+		      
+		        <Button name="btn_install_cancel" width="159" height="30" padding="58,0,0,0" showcursor="true" normalimage="middle/btn_cancel_nor.png" hotimage="middle/btn_cancel_hot.png" pushedimage="middle/btn_cancel_hot.png"/>
+		      
+		        <Control height="80" />
+		      
+		      </VerticalLayout>
+		    
+		      <HorizontalLayout height="75" >
+		        <Control />
+		      
+		        <Button name="btn_install_home" width="45" height="45" padding="0,15,0,0" showcursor="true" />
+		      
+		        <Control />
+		      </HorizontalLayout>
+
+			  </VerticalLayout>
+			
+			  <Control width="105"/>
+      </HorizontalLayout>
+		
+		  <HorizontalLayout name="client_layout_right">
+		    <TabLayout name="layout_main" tag="1" >
+		      <WebCtrl name="page_market" initurl="http://testguoren.abcs8.com/static/v1/home_index.html?type=1" needwait="false" inset="1,0,1,1" tag="1" />
+		      
+		      <VerticalLayout name="page_download" tag="3" inset="0,0,60,0" />
+			  </TabLayout>
+			</HorizontalLayout>
+	  </HorizontalLayout>
+		
+		<HorizontalLayout height="60" bkimage="file='top/bottom.png'" >
+		  <Control width="150" />
+		  
+		  <VerticalLayout	width="30" height="44" padding="0,9,0,0" >
+		    <Button name="btn_ios_restart" width="22" height="23" padding="4,0,0,0" showcursor="true" normalimage="file='bottom\btn_restart_nor.png'" hotimage="file='bottom\btn_restart_hot.png'" pushedimage="file='bottom\btn_restart_nor.png'" animation="false" />
+			  
+			  <Control height="3" />
+			  
+			  <Label height="18" width="30" font="0" align="center" textcolor="#FF7B7B7B" endellipsis="true" text="重启" />
+			</VerticalLayout>
+			
+			<Control width="20"/>
+			
+			<VerticalLayout	width="44" height="44" padding="0,9,0,0" >
+		    <Button name="btn_ios_home" width="22" height="23" padding="11,0,0,0" showcursor="true" normalimage="file='bottom\btn_home_nor.png'" hotimage="file='bottom\btn_home_hot.png'" pushedimage="file='bottom\btn_home_nor.png'" animation="false" />
+			  
+			  <Control height="3" />
+			  
+			  <Label height="18" width="44" font="0" align="center" textcolor="#FF7B7B7B" endellipsis="true" text="HOME" />
+			</VerticalLayout>
+			
+			<Control width="20"/>
+			
+			<VerticalLayout	width="30" height="44" padding="0,9,0,0" >
+		    <Button name="btn_ios_volume" width="22" height="23" padding="4,0,0,0" showcursor="true" normalimage="file='bottom\btn_volume_nor.png'" hotimage="file='bottom\btn_volume_hot.png'" pushedimage="file='bottom\btn_volume_nor.png'" animation="false" />
+			  
+			  <Control height="3" />
+			  
+			  <Label height="18" width="30" font="0" align="center" textcolor="#FF7B7B7B" endellipsis="true" text="音量" />
+			</VerticalLayout>
+			
+			<Control width="20"/>
+			
+			<VerticalLayout	width="30" height="44" padding="0,9,0,0" >
+		    <Button name="btn_ios_nearest" width="22" height="23" padding="4,0,0,0" showcursor="true" normalimage="file='bottom\btn_nearest_nor.png'" hotimage="file='bottom\btn_nearest_hot.png'" pushedimage="file='bottom\btn_nearest_nor.png'" animation="false" />
+			  
+			  <Control height="3" />
+			  
+			  <Label height="18" width="30" font="0" align="center" textcolor="#FF7B7B7B" endellipsis="true" text="最近" />
+			</VerticalLayout>
+			
+			<Control width="110"/>
+			
+			<Control height="36" width="1" padding="0,12,0,0" bkcolor="0xFFA8A8A8"/>
+			
+			<Control width="28"/>
+			
+			<Button name="btn_key" tooltip="键盘" width="35" height="20" padding="0,20,0,0" showcursor="true" normalimage="file='bottom/btn_key.png'" hotimage="file='bottom/btn_key.png'" pushedimage="file='bottom/btn_key.png'" animation="false" />
+		  
+		  <Control width="40"/>
+		  
+		  <Button name="btn_multi" tooltip="多开" width="27" height="27" padding="0,17,0,0" showcursor="true" normalimage="file='bottom/btn_multi.png'" hotimage="file='bottom/btn_multi.png'" pushedimage="file='bottom/btn_multi.png'" animation="false" />
+		  
+		  <Control width="40"/>
+		  
+		  <Button name="btn_position" tooltip="定位" width="26" height="30" padding="0,15,0,0" showcursor="true" normalimage="file='bottom/btn_position.png'" hotimage="file='bottom/btn_position.png'" pushedimage="file='bottom/btn_position.png'" animation="false" />
+		  
+		  <Control width="40"/>
+		  
+		  <Button name="btn_snap" tooltip="截图" width="31" height="28" padding="0,16,0,0" showcursor="true" normalimage="file='bottom/btn_snap.png'" hotimage="file='bottom/btn_snap.png'" pushedimage="file='bottom/btn_snap.png'" animation="false" />
+		  
+		  <Control width="40"/>
+		  
+		  <Button name="btn_record" tooltip="录像" width="33" height="20" padding="0,20,0,0" showcursor="true" normalimage="file='bottom/btn_record.png'" hotimage="file='bottom/btn_record.png'" pushedimage="file='bottom/btn_record.png'" animation="false" />
+		  
+		</HorizontalLayout>
+		
+	</VerticalLayout>
+</Window>

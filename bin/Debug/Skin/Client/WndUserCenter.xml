@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="105,79">
+	<Font name="微软雅黑" size="12" bold="false" italic="false" default="true" />
+	<Font name="微软雅黑" size="13" />
+	<Font name="微软雅黑" size="14" />
+	<Font name="微软雅黑" size="16" />
+	<Font name="微软雅黑" size="18" />
+	<Font name="微软雅黑" size="20" />
+	<Font name="微软雅黑" size="24" />
+	<Font name="宋体" size="12" />
+	
+	<VerticalLayout bkimage="file='UserCenter/bk_image.png'" inset="9,8,9,10" width="105" height="79">
+	  <Control height="5"/>
+	  
+	  <Button name="personal_setting" text="个人资料"  height="28" textcolor="#FF4A4A4A" hottextcolor="#FFF36600" font="0"/>
+	  
+	  <Control height="1"/>
+	  
+	  <Button name="personal_switch_account" text="切换账号" height="28" textcolor="#FF4A4A4A" hottextcolor="#FFF36600" font="0"/>
+	</VerticalLayout>
+</Window>

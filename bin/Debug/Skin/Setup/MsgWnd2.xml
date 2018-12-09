@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="561,269" caption="0,0,0,269">
+	<Font name="微软雅黑" size="18"/>
+	<Font name="微软雅黑" size="12"/>
+	
+    <VerticalLayout bkcolor="#FFE1E1E1">
+		<Control height="50"/>
+		<Control padding="251,0,0,0" width="58" height="58" bkimage="icon.png"/>
+		<Control height="19"/>
+		<Label name="text_msg" height="20" align="center" textcolor="#FF000000" font="0"/>
+		<Control height="30"/>
+		<HorizontalLayout height="43">
+			<Control width="103"/>
+			<Button name="btn_no" text="取消" width="174" textcolor="#FF000000" showcursor="true" normalimage="file='btn_msg_nor.png'" hotimage="file='btn_msg_hot.png'" pushedimage="file='btn_msg_nor.png'" font="0"/>
+			<Control width="7"/>
+			<Button name="btn_ok" text="确定" width="174" textcolor="#FF000000" showcursor="true" normalimage="file='btn_msg_nor.png'" hotimage="file='btn_msg_hot.png'" pushedimage="file='btn_msg_nor.png'" font="0"/>
+		</HorizontalLayout>
+		<Control />
+	</VerticalLayout>
+</Window>

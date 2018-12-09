@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="445,305" caption="0,0,0,200" bktrans="true">
+	<Font name="微软雅黑" size="14" />
+	<Font name="微软雅黑" size="16" />
+	<Font name="微软雅黑" size="18" />
+	<Font name="微软雅黑" size="24" />
+	
+	<VerticalLayout inset="32,32,32,32" bkimage="file='msg/bk_image.png'" >
+	  <VerticalLayout height="168">
+	    <Control />
+	    
+	    <Label name="lbl_text" padding="20,0,20,0" textcolor="#FF616161" endellipsis="true" font="3" align="center" valign="center" />
+	    
+	    <Control />
+	  </VerticalLayout>
+	  
+	  <Control height="1" bkcolor="0xFFDBDBDB" />
+	  
+	  <HorizontalLayout>
+	    <Button name="btn_ok" text="确 定" textcolor="#FF767676" font="2" showcursor="true"/>
+	    
+	    <Control name="ctrl_division" width="1" bkcolor="0xFFDBDBDB" />
+	    
+	    <Button name="btn_cancel" text="取消" textcolor="#FF767676" font="2" showcursor="true"/>
+	  </HorizontalLayout>
+	  
+	</VerticalLayout>
+</Window>

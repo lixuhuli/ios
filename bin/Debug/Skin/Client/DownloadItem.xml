@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window>
+  <DownloadItem width="130" height="173" >
+    <Control name="label_icon" width="130" height="130" />
+    <Control name="progress_percent" width="130" height="130" tag="372" bkimage="file='download/bk.png'" userdata="file='download/loading/bk.png'" float="true" pos="0,0,130,130" visible="false"/>
+
+    <Button name="btn_pause" tag="0" width="130" height="130" float="true" pos="0,0,130,130" />
+    
+    <Control height="6" />
+    
+    <Label name="label_discribe" height="20" tag="35" font="0" align="left" valign="top" singleline="false" textcolor="#FF404040" endellipsis="true" />
+  </DownloadItem>
+</Window>

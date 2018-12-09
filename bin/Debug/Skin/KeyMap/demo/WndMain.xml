@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="1440,800" mininfo="1440,800" sizebox="4,4,4,4" caption="0,0,0,40">
+	<Font name="微软雅黑" size="12" />
+	<Font name="微软雅黑" size="14" />
+	<Font name="微软雅黑" size="16" />
+	<Font name="微软雅黑" size="18" />
+	<Font name="微软雅黑" size="20" />
+	<Font name="微软雅黑" size="10" />
+	<Font name="微软雅黑" size="24" />
+	<Font name="微软雅黑" size="12" strikeout="true"/>
+	<Font name="宋体" size="12" />
+	<Font name="微软雅黑" size="16" bold="true"/><!--9-->
+	<Font name="宋体" size="14" />
+	<Font name="微软雅黑" size="18" bold="true"/>
+	<Font name="微软雅黑" size="16" bold="true"/>
+	
+	<Default name="HScrollBar" value="showbutton1=&quot;false&quot; showbutton2=&quot;false&quot; thumbnormalimage=&quot;file=&apos;scroll_bk1.png&apos; corner=&apos;1,1,1,1&apos;&quot;  railnormalimage=&quot;file=&apos;scroll_bk1.png&apos; corner=&apos;1,1,1,1&apos;&quot; bknormalimage=&quot;file=&apos;scroll_fore1.png&apos; corner=&apos;1,1,1,1&apos;&quot; height=&quot;4&quot; "/>
+	
+	
+	<VerticalLayout bkimage="file='demo/bk_image.png'">
+	  <HorizontalLayout height="32" bkimage="public/top.png">
+    	
+      <Control width="20"/>
+			
+			<Label text="果仁模拟器" textcolor="#FFE6E6E6" font="0" width="300" align="left" valign="center" />
+      
+      <Control />
+      
+      <Button name="btn_close" tooltip="关闭" showcursor="true" width="30" height="30" padding="0,1,0,0" normalimage="file='public/close_nor.png' dest='9,9,21,21'" hotimage="file='public/close_hot.png' dest='9,9,21,21'" pushedimage="file='public/close_nor.png' dest='9,9,21,21'"/>
+      
+      <Control width="10" />
+    </HorizontalLayout>
+    
+    <HorizontalLayout>
+      <Control />
+      
+      <VerticalLayout width="40">
+        <Control height="54" />
+        
+        <Button name="key_btn" tooltip="键盘操控" width="30" height="28" padding="6,0,0,0" showcursor="true" normalimage="file='demo/pane/key_btn_nor.png'" hotimage="file='demo/pane/key_btn_hot.png'" pushedimage="file='demo/pane/key_btn_nor.png'" animation="true" />
+        
+      </VerticalLayout>
+    </HorizontalLayout>
+
+	</VerticalLayout>
+</Window>
