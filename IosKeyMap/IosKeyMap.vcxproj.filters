@@ -1,0 +1,125 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{08db4261-3341-4a3f-bf85-fc97bcef5e40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="drag">
+      <UniqueIdentifier>{e6d5bb4a-73e9-49ef-b4cd-c2ea2aeafb87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\ctrl">
+      <UniqueIdentifier>{fb2d06fc-eb01-4c71-9383-a3c37a657d0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Public">
+      <UniqueIdentifier>{b0c4c42c-8630-4d69-8df9-d9e244d31c01}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IosKeySdk.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IosKeyImpl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WndBase.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\KeyWnd.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="drag\dragdrophandle.h">
+      <Filter>drag</Filter>
+    </ClInclude>
+    <ClInclude Include="drag\ENUMFETC.H">
+      <Filter>drag</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\RemoteHandleUI.h">
+      <Filter>UI\ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\NormalUI.h">
+      <Filter>UI\ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\RightMouseMoveUI.h">
+      <Filter>UI\ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\KeyEditUI.h">
+      <Filter>UI\ctrl</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalData.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IosKeyMap.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IosKeyImpl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndBase.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\KeyWnd.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="drag\dragdrophandle.cpp">
+      <Filter>drag</Filter>
+    </ClCompile>
+    <ClCompile Include="drag\ENUMFETC.C">
+      <Filter>drag</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\RemoteHandleUI.cpp">
+      <Filter>UI\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\NormalUI.cpp">
+      <Filter>UI\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\RightMouseMoveUI.cpp">
+      <Filter>UI\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\KeyEditUI.cpp">
+      <Filter>UI\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalData.cpp">
+      <Filter>Public</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="IosKeyMap.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Res\Skin.zip" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Root>
+    <Scene rotateAngle="0" id="com.tencent.tmgp.sgame" opacity="50" height="720" width="1280" horizonFlag="1">
+        <Item type="12" pos="159,539" height="70" width="130" slider="24">
+            <Key description="右键行走" value="-9" keyString="鼠标右键">
+                <Point>209,574</Point>
+            </Key>
+            <Key description="中断行走" value="88" keyString="X">
+                <Point>209,574</Point>
+            </Key>
+        </Item>
+        <Item type="1" pos="622,621" height="50" width="70" finger_count="1">
+            <Key description="回城" value="66" keyString="B">
+                <Point>647,646</Point>
+            </Key>
+        </Item>
+        <Item type="1" pos="718,619" height="50" width="70" finger_count="1">
+            <Key description="自定义技能" value="18" keyString="Alt">
+                <Point>743,644</Point>
+            </Key>
+        </Item>
+        <Item type="1" pos="862,533" height="50" width="70" finger_count="1">
+            <Key description="技能加点" value="49" keyString="1">
+                <Point>887,558</Point>
+            </Key>
+        </Item>
+        <Item type="1" pos="1073,322" height="50" width="70" finger_count="1">
+            <Key description="技能加点" value="51" keyString="3">
+                <Point>1098,347</Point>
+            </Key>
+        </Item>
+        <Item type="1" pos="939,399" height="50" width="70" finger_count="1">
+            <Key description="技能加点" value="50" keyString="2">
+                <Point>964,424</Point>
+            </Key>
+        </Item>
+        <Item type="1" pos="1143,587" height="50" width="70" finger_count="1">
+            <Key description="普通攻击" value="32" keyString="空格">
+                <Point>1168,612</Point>
+            </Key>
+        </Item>
+        <Item type="1" pos="1224,68" height="50" width="70" finger_count="1">
+            <Key description="进攻" value="112" keyString="F1 ">
+                <Point>1249,93</Point>
+            </Key>
+        </Item>
+        <Item type="1" pos="1224,124" height="50" width="70" finger_count="1">
+            <Key description="撤退" value="113" keyString="F2 ">
+                <Point>1249,149</Point>
+            </Key>
+        </Item>
+        <Item type="1" pos="1226,183" height="50" width="70" finger_count="1">
+            <Key description="集合" value="114" keyString="F3 ">
+                <Point>1251,208</Point>
+            </Key>
+        </Item>
+        <Item type="1" pos="109,261" height="50" width="70" finger_count="1">
+            <Key description="预购第一件装备" value="52" keyString="4">
+                <Point>134,286</Point>
+            </Key>
+        </Item>
+        <Item type="8" pos="889,596" right_move_stop="0" height="70" width="124" slider="250">
+            <Key description="技能智能施法" value="81" keyString="Q">
+                <Point>954,631</Point>
+            </Key>
+        </Item>
+        <Item type="8" pos="969,464" right_move_stop="0" height="70" width="124" slider="250">
+            <Key description="技能智能施法" value="87" keyString="W">
+                <Point>1034,499</Point>
+            </Key>
+        </Item>
+        <Item type="8" pos="1104,384" right_move_stop="0" height="70" width="124" slider="250">
+            <Key description="技能智能施法" value="69" keyString="E">
+                <Point>1169,419</Point>
+            </Key>
+        </Item>
+        <Item type="9" pos="11,273" height="70" width="94" macro="size 1280 720HUAN_HANGpressHUAN_HANGclick 47 303HUAN_HANGreleaseHUAN_HANGclick 1228 53HUAN_HANG">
+            <Key description="商店" value="20" keyString="Cap">
+                <Point>46,308</Point>
+            </Key>
+        </Item>
+        <Item type="9" pos="221,195" height="70" width="94" macro="size 1280 720HUAN_HANGpressHUAN_HANGclick 256 209HUAN_HANGreleaseHUAN_HANGclick 609 488HUAN_HANG">
+            <Key description="放大缩小地图" value="192" keyString="`">
+                <Point>256,230</Point>
+            </Key>
+        </Item>
+        <Item type="9" pos="1160,1" height="70" width="94" macro="size 1280 720HUAN_HANGpressHUAN_HANGclick 1191 27HUAN_HANGreleaseHUAN_HANGclick 1229 110HUAN_HANG">
+            <Key description="对阵详情" value="9" keyString="Tab">
+                <Point>1195,36</Point>
+            </Key>
+        </Item>
+        <Item type="1" pos="111,338" height="50" width="70" finger_count="1">
+            <Key description="预购第二件装备" value="53" keyString="5">
+                <Point>132,367</Point>
+                <Point>132,368</Point>
+            </Key>
+        </Item>
+        <Item type="1" pos="1036,625" height="50" width="70" finger_count="1">
+            <Key description="补刀" value="65" keyString="A">
+                <Point>1061,650</Point>
+            </Key>
+        </Item>
+        <Item type="1" pos="1203,485" height="50" width="70" finger_count="1">
+            <Key description="推塔" value="68" keyString="D">
+                <Point>1228,510</Point>
+            </Key>
+        </Item>
+        <Item type="1" pos="1134,254" height="50" width="70" finger_count="1">
+            <Key description="装备技能" value="70" keyString="F">
+                <Point>1159,279</Point>
+            </Key>
+        </Item>
+        <Item type="1" pos="816,620" height="50" width="70" finger_count="1">
+            <Key description="自定义技能" value="78" keyString="N">
+                <Point>841,645</Point>
+            </Key>
+        </Item>
+    </Scene>
+</Root>
