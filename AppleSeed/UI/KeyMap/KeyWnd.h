@@ -47,11 +47,15 @@ protected:
 
     virtual LRESULT OnSetCursor(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
+    virtual void OnFinalMessage(HWND hWnd);
+
     bool OnClickBtnClose(void* lpParam);
     bool OnBtnToolHandle(void* param);
     bool OnBtnToolNormal(void* param);
     bool OnBtnToolRightRun(void* param);
-    virtual void OnFinalMessage(HWND hWnd);
+    bool OnBtnSave(void* param);
+    bool OnBtnDelete(void* param);
+    
 
 
     BEGIN_INIT_CTRL()
@@ -67,6 +71,7 @@ protected:
         BIND_CTRL_CLICK(L"btn_tool_handle", &CKeyWnd::OnBtnToolHandle)
         BIND_CTRL_CLICK(L"btn_tool_normal", &CKeyWnd::OnBtnToolNormal)
         BIND_CTRL_CLICK(L"opt_right_run", &CKeyWnd::OnBtnToolRightRun)
+        BIND_CTRL_CLICK(L"btn_save", &CKeyWnd::OnBtnSave)
     END_BIND_CTRL()
 
 protected:

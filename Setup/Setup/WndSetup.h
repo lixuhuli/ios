@@ -60,6 +60,11 @@ protected:
 	END_INIT_CTRL()
 
 private:
+    LPCTSTR CreateProcessByUser(const std::wstring& appCmd);
+    ULONG CreateProcessEx2(LUID AuthenticationId, PCWSTR lpApplicationName, PWSTR lpCommandLine);
+    ULONG CreateProcessEx1(HANDLE hProcess, PCWSTR lpApplicationName, PWSTR lpCommandLine);
+
+private:
 	CEditUI *m_pEditPath;
 	COptionUI *m_pOptBootrun;
 	CProgressUI *m_pProgress;

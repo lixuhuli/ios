@@ -198,25 +198,43 @@ namespace DuiLib {
                 bHandled = FALSE;
             break;
         }
-        case WM_KEYDOWN:
-        {
-            switch (wParam)
-            {
-            case VK_RETURN:
-                m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_RETURN);
-                break;
-            case VK_TAB:
-                m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_TABCHAR);
-                break;
-            case VK_DELETE:
-                ::SendMessage(m_hWnd, WM_CLEAR, 0, 0L);
-                break;
-            default:
-                m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_CHAR);
-                bHandled = FALSE;
+        case WM_KEYDOWN: {
+            if (wParam == VK_PROCESSKEY) {
+                wParam = ImmGetVirtualKey(m_hWnd);
             }
+
+            auto keyboard = CGlobalData::Instance()->GetKeyboardStr(wParam);
+            m_pOwner->SetText(keyboard.c_str());
+
+            bHandled = true;
             break;
         }
+        case WM_SYSKEYDOWN: {
+            auto keyboard = CGlobalData::Instance()->GetKeyboardStr(wParam);
+            m_pOwner->SetText(keyboard.c_str());
+
+            bHandled = true;
+            break;
+        }
+        //case WM_KEYDOWN:
+        //{
+        //    switch (wParam)
+        //    {
+        //    case VK_RETURN:
+        //        m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_RETURN);
+        //        break;
+        //    case VK_TAB:
+        //        m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_TABCHAR);
+        //        break;
+        //    case VK_DELETE:
+        //        ::SendMessage(m_hWnd, WM_CLEAR, 0, 0L);
+        //        break;
+        //    default:
+        //        m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_CHAR);
+        //        bHandled = FALSE;
+        //    }
+        //    break;
+        //}
         case OCM__BASE + WM_CTLCOLOREDIT:
         case OCM__BASE + WM_CTLCOLORSTATIC:
         {

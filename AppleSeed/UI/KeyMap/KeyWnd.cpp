@@ -171,6 +171,10 @@ bool CKeyWnd::OnBtnToolRightRun(void* param) {
     return true;
 }
 
+bool CKeyWnd::OnBtnSave(void* param) {
+    return true;
+}
+
 LRESULT CKeyWnd::OnSetCursor(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     return 0;
 }

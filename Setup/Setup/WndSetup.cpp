@@ -4,7 +4,7 @@
 #include "WndMsgbox.h"
 #include "RegBoot.h"
 #include <DataCenter\DataCenterApi.h>
-
+#include <Tlhelp32.h>
 
 enum {
 	WM_MSG_BASE = WM_USER + 611,
@@ -294,7 +294,9 @@ bool CWndSetup::OnNotifyBtnRun(void* lpParam)
 	if (pNotify->sType == DUI_MSGTYPE_CLICK)
 	{
 		wstring strPath = CSetupModule::Instance()->GetInstallPath() + SOFT_ROOT_DIR + L"\\" + EXE_MAIN;
-		ShellExecute(NULL, L"open", strPath.c_str(), NULL, NULL, SW_SHOW);
+
+        CreateProcessByUser(strPath);
+
 		BootRun();
 		Close();
 	}
@@ -365,4 +367,184 @@ void CWndSetup::BootRun()
 		strCmd.append(L" /bootrun");
 		AddBootRun(REG_ROOT_NAME, strCmd);
 	}
+}
+
+LPCTSTR CWndSetup::CreateProcessByUser(const std::wstring& appCmd) {
+    PWSTR lpApplicationName = nullptr;
+
+    std::wstring s = appCmd;
+
+    PWSTR lpCommandLine = (PWSTR)s.c_str();
+
+    wchar_t errStr[MAX_PATH] ;
+
+    HANDLE hToken;
+
+    ULONG err = NOERROR;
+
+    if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken)) {
+        union {
+            TOKEN_ELEVATION_TYPE tet;
+            TOKEN_LINKED_TOKEN tlt;
+        };
+
+        ULONG rcb;
+
+        if (GetTokenInformation(hToken, TokenElevationType, &tet, sizeof(tet), &rcb))
+        {
+            if (tet == TokenElevationTypeFull)
+            {
+                if (GetTokenInformation(hToken, TokenLinkedToken, &tlt, sizeof(tlt), &rcb))
+                {
+                    TOKEN_STATISTICS ts;
+
+                    BOOL fOk = GetTokenInformation(tlt.LinkedToken, TokenStatistics, &ts, sizeof(ts), &rcb);
+
+                    CloseHandle(tlt.LinkedToken);
+
+                    if (fOk)
+                    {
+                        err = CreateProcessEx2(ts.AuthenticationId,
+                            lpApplicationName,
+                            lpCommandLine);
+                    }
+                    else
+                    {
+                        err = GetLastError();
+                    }
+                }
+                else
+                {
+                    err = GetLastError();
+                }
+            }
+            else
+            {
+                err = ERROR_ALREADY_ASSIGNED;
+                PublicLib::ShellExecuteRunas(lpCommandLine, nullptr, nullptr);
+            }
+        }
+        else
+        {
+            err = GetLastError();
+        }
+
+        CloseHandle(hToken);
+    }
+    else
+    {
+        err = GetLastError();
+    }
+
+    wsprintf(errStr, L"%lld", err);
+    std::wstring errCode(errStr);
+    return errCode.c_str();
+}
+
+ULONG CWndSetup::CreateProcessEx2(LUID AuthenticationId, PCWSTR lpApplicationName, PWSTR lpCommandLine) {
+    ULONG err = ERROR_NOT_FOUND;
+
+    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+
+    if (hSnapshot != INVALID_HANDLE_VALUE)
+    {
+        PROCESSENTRY32W pe = { sizeof(pe) };
+
+        ULONG rcb;
+
+        if (Process32First(hSnapshot, &pe))
+        {
+            err = ERROR_NOT_FOUND;
+            BOOL found = FALSE;
+
+            do
+            {
+                if (pe.th32ProcessID && pe.th32ParentProcessID)
+                {
+                    if (HANDLE hProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_CREATE_PROCESS, FALSE, pe.th32ProcessID))
+                    {
+                        HANDLE hToken;
+
+                        if (OpenProcessToken(hProcess, TOKEN_QUERY, &hToken))
+                        {
+                            TOKEN_STATISTICS ts;
+
+                            if (GetTokenInformation(hToken, TokenStatistics, &ts, sizeof(ts), &rcb))
+                            {
+                                if (ts.AuthenticationId.LowPart == AuthenticationId.LowPart &&
+                                    ts.AuthenticationId.HighPart == AuthenticationId.HighPart)
+                                {
+                                    found = TRUE;
+
+                                    err = CreateProcessEx1(hProcess,
+                                        lpApplicationName,
+                                        lpCommandLine);
+                                }
+                            }
+                            CloseHandle(hToken);
+                        }
+
+                        CloseHandle(hProcess);
+                    }
+                }
+
+            } while (!found && Process32Next(hSnapshot, &pe));
+        }
+        else
+        {
+            err = GetLastError();
+        }
+
+        CloseHandle(hSnapshot);
+    }
+    else
+    {
+        err = GetLastError();
+    }
+
+    return err;
+}
+
+ULONG CWndSetup::CreateProcessEx1(HANDLE hProcess, PCWSTR lpApplicationName, PWSTR lpCommandLine) {
+    SIZE_T Size = 0;
+
+    STARTUPINFOEX si = { sizeof(si) };
+    PROCESS_INFORMATION pi;
+
+    InitializeProcThreadAttributeList(0, 1, 0, &Size);
+
+    ULONG err = GetLastError();
+
+    if (err = ERROR_INSUFFICIENT_BUFFER)
+    {
+        si.lpAttributeList = (PPROC_THREAD_ATTRIBUTE_LIST)alloca(Size);
+
+        if (InitializeProcThreadAttributeList(si.lpAttributeList, 1, 0, &Size))
+        {
+            if (UpdateProcThreadAttribute(si.lpAttributeList, 0,
+                PROC_THREAD_ATTRIBUTE_PARENT_PROCESS, &hProcess, sizeof(hProcess), 0, 0) &&
+                CreateProcessW(lpApplicationName, lpCommandLine, 0, 0, 0,
+                EXTENDED_STARTUPINFO_PRESENT, 0, 0, &si.StartupInfo, &pi))
+            {
+                CloseHandle(pi.hThread);
+                CloseHandle(pi.hProcess);
+            }
+            else
+            {
+                err = GetLastError();
+            }
+
+            DeleteProcThreadAttributeList(si.lpAttributeList);
+        }
+        else
+        {
+            err = GetLastError();
+        }
+    }
+    else
+    {
+        err = GetLastError();
+    }
+
+    return err;
 }
