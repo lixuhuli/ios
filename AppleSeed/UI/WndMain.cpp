@@ -533,9 +533,9 @@ bool CWndMain::OnBtnClickKey(void* param) {
     return true;
 }
 
-void CWndMain::LoadIosEngine() {
+bool CWndMain::LoadIosEngine() {
     string iso_file = GetRunPathA() + "ios\\"+ GetUrlIsoName();
-    CIosMgr::Instance()->IosEngineOn(iso_file);
+    return CIosMgr::Instance()->IosEngineOn(iso_file);
 }
 
 void CWndMain::PopupKeyWindow() {

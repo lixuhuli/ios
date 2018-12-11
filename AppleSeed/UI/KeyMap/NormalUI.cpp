@@ -3,7 +3,7 @@
 
 CNormalUI::CNormalUI()
  : m_uButtonState(0)
- , btn_hand_close_(nullptr) {
+ , btn_hand_close_(nullptr){
     ptLastMouse.x = ptLastMouse.y = 0;
     ::ZeroMemory(&m_rcNewPos, sizeof(m_rcNewPos));
 }

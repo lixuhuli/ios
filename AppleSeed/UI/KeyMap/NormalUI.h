@@ -1,7 +1,11 @@
 #pragma once
+#include "KeyEditUI.h"
 
 #define  UI_NORMAL   L"Normal"
 
+namespace DuiLib {
+    class CKeyEditUI;
+}
 class CNormalUI :
     public CHorizontalLayoutUI {
 public:
@@ -17,6 +21,9 @@ public:
     virtual void SetPos(RECT rc) override;
 
     UINT GetControlFlags() const;
+
+public:
+    virtual CKeyEditUI* edit_key() { return edit_key_; };
 
 protected:
     void    OnLButtonDown(UINT nFlags, QPoint point);
@@ -34,6 +41,7 @@ protected:
     END_BIND_CTRL()
 
     BEGIN_INIT_CTRL()
+        DECLARE_CTRL_TYPE_PAGE(edit_key_, CKeyEditUI, this, L"edit_key")
     END_INIT_CTRL()
 
 private:
@@ -43,6 +51,6 @@ private:
     POINT ptLastMouse;
     RECT m_rcNewPos;
     CButtonUI* btn_hand_close_;
-
+    CKeyEditUI* edit_key_;
 };
 

@@ -263,7 +263,7 @@ void CIosMgr::OnForegroundAppChanged(uintptr_t param1, uintptr_t param2) {
     const char *context = (char *)param1;
     if (!context || !ios_wnd_) return;
 
-    if (strcmp(context, "com.juzi.ballsglobal") == 0) {
+    if (strcmp(context, "com.tencent.smoba") == 0) {
         if (!wnd_in_mainwnd_) {
             CreateKeyWnd(*ios_wnd_);
         }

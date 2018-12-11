@@ -204,16 +204,23 @@ namespace DuiLib {
             }
 
             auto keyboard = CGlobalData::Instance()->GetKeyboardStr(wParam);
-            m_pOwner->SetText(keyboard.c_str());
 
-            bHandled = true;
+            m_pOwner->SetKeyValue(wParam);
+            m_pOwner->SetText(keyboard.c_str());
+            m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_CHARCHANGED);
+
+            bHandled = TRUE;
             break;
         }
         case WM_SYSKEYDOWN: {
             auto keyboard = CGlobalData::Instance()->GetKeyboardStr(wParam);
-            m_pOwner->SetText(keyboard.c_str());
 
-            bHandled = true;
+            m_pOwner->SetKeyValue(wParam);
+            m_pOwner->SetText(keyboard.c_str());
+            m_pOwner->GetManager()->SendNotify(m_pOwner, DUI_MSGTYPE_CHARCHANGED);
+
+
+            bHandled = TRUE;
             break;
         }
         //case WM_KEYDOWN:
@@ -345,6 +352,7 @@ namespace DuiLib {
         , m_dwCaretColor(0)
         , m_bShowDefMenu(true)
         , m_bRbtnupMenu(false)
+        , m_KeyValue(0)
         , m_pEditBkImage(new CDuiImage())
     {
         SetTextPadding(CDuiRect(4, 3, 4, 3));

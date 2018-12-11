@@ -86,15 +86,15 @@ void CGlobalData::GetCpuInfo() {
 void CGlobalData::InitKeyboardMapping() {
     // 以下是以获取的键盘值为key
     keyboard_mapping_[VK_ESCAPE] = L"ESC";//保留作为快捷键
-    keyboard_mapping_[VK_F1] = L"F1";
-    keyboard_mapping_[VK_F2] = L"F2";
-    keyboard_mapping_[VK_F3] = L"F3";
-    keyboard_mapping_[VK_F4] = L"F4";
-    keyboard_mapping_[VK_F5] = L"F5";
-    keyboard_mapping_[VK_F6] = L"F6";
-    keyboard_mapping_[VK_F7] = L"F7";
-    keyboard_mapping_[VK_F8] = L"F8";
-    keyboard_mapping_[VK_F9] = L"F9";
+    keyboard_mapping_[VK_F1] = L"F1 ";
+    keyboard_mapping_[VK_F2] = L"F2 ";
+    keyboard_mapping_[VK_F3] = L"F3 ";
+    keyboard_mapping_[VK_F4] = L"F4 ";
+    keyboard_mapping_[VK_F5] = L"F5 ";
+    keyboard_mapping_[VK_F6] = L"F6 ";
+    keyboard_mapping_[VK_F7] = L"F7 ";
+    keyboard_mapping_[VK_F8] = L"F8 ";
+    keyboard_mapping_[VK_F9] = L"F9 ";
     keyboard_mapping_[VK_F10] = L"F10";
     keyboard_mapping_[VK_F11] = L"F11";
     keyboard_mapping_[VK_F12] = L"F12";
@@ -158,7 +158,7 @@ void CGlobalData::InitKeyboardMapping() {
     keyboard_mapping_[VK_CONTROL] = L"Ctrl";
     keyboard_mapping_[VK_LWIN] = L"L_W";
     keyboard_mapping_[VK_MENU] = L"Alt";/* left Alt */
-    keyboard_mapping_[VK_SPACE] = L"Spa";
+    keyboard_mapping_[VK_SPACE] = L"空格";
     keyboard_mapping_[VK_RWIN] = L"R_W";
     keyboard_mapping_[VK_APPS] = L"Aps";
 

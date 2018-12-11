@@ -71,6 +71,8 @@ namespace emulator {
         void loadScene(const char* keyXmlFile);
         void saveScene(const char* keyXmlFile);
 
+        void AddItem(const ItemInfo& item) { m_items.push_back(item); }
+
         void right_mouse_on(const std::string& key_string, int value) {
             //ItemInfo item;
             //item.itemType = RIGHT_MOUSE_MOVE;
@@ -93,11 +95,50 @@ namespace emulator {
             //return;
         }
 
-    private:
-        std::vector<KeyInfo>::iterator GetKeyInfo(int key_value) {
+        bool set_normal_key(int src_value, int org_value, const std::string& key_string) {
+            auto it  = GetKeyInfo(NORMAL_KEY, src_value);
+            if (!it._Ptr) return false;
+
+            it->nValue = org_value;
+            it->strKeyString = key_string;
+            return true;
+        }
+
+        std::vector<ItemInfo> GetKeyItemGather(const ItemType& type) {
+            std::vector<ItemInfo> items;
+
             auto it = m_items.begin();
             for (; it != m_items.end(); it++) {
-                if (it->itemType == RIGHT_MOUSE_MOVE) {
+                if (it->itemType == type) {
+                    items.push_back(*it);
+                }
+            }
+
+            return items;
+        }
+
+        bool DeleteKey(const ItemType& type, int key_value) {
+            auto it = m_items.begin();
+            for (; it != m_items.end(); it++) {
+                if (it->itemType == type) {
+                    auto itr = it->keys.begin();
+                    for (; itr != it->keys.end(); itr++) {
+                        if (itr->nValue == key_value) {
+                            m_items.erase(it);
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+    private:
+        std::vector<KeyInfo>::iterator GetKeyInfo(const ItemType& type, int key_value) {
+            auto it = m_items.begin();
+            for (; it != m_items.end(); it++) {
+                if (it->itemType == type) {
                     auto itr = it->keys.begin();
                     for (; itr != it->keys.end(); itr++) {
                         if (itr->nValue == key_value) {

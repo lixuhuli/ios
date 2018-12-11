@@ -56,6 +56,7 @@ protected:
     bool OnBtnSave(void* param);
     bool OnBtnDelete(void* param);
     
+    bool OnEditKeyChanged(void* param);
 
 
     BEGIN_INIT_CTRL()
@@ -79,6 +80,10 @@ protected:
 
 private:
     void OnDragDrop();
+
+    void LoadNormalKey();
+
+    CControlUI* CreateNormalKey();
 
 private:
     CButtonUI* btn_tool_handle_;

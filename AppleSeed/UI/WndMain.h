@@ -180,7 +180,7 @@ private:
     string GetUrlInitIsoName();
     string GetUrlIsoName();
 
-    void LoadIosEngine();
+    bool LoadIosEngine();
 
     void PopupKeyWindow();
 

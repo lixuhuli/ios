@@ -5,6 +5,8 @@
 
 #define  UI_KEY_EDIT   L"KeyEdit"
 
+#define DUI_MSGTYPE_CHARCHANGED            (_T("charchanged"))
+
 namespace DuiLib {
     class CKeyEditWnd;
     class CKeyEditUI;
@@ -78,6 +80,9 @@ namespace DuiLib {
         void	ReleaseEditImage();//释放背景位图对象
         HWND	GetEditWnd();
 
+        virtual int GetKeyValue() const { return m_KeyValue; };
+        virtual void SetKeyValue(int value) { m_KeyValue = value; };
+
     protected:
         CKeyEditWnd*	m_pWindow;
         CDuiImage*	m_pEditBkImage;//用于edit窗口 背景
@@ -98,6 +103,7 @@ namespace DuiLib {
         bool	m_bShowDefMenu;
         CDuiString m_szDefText;
         DWORD	m_dwDefTextColor;
+        int     m_KeyValue;
     };
 
     class CKeyEditWnd : public CWndBase, public IMessageFilterUI
