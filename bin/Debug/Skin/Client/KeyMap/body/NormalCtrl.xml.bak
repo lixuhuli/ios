@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Window >
-	<Normal width="60" height="40" float="true" >
-	  <KeyEdit name="edit_key" width="39" height="39" font="0" padding="0,1,0,0" maxchar="1" align="center" textpadding="4,0,4,0" bkimage="file='KeyMap/body/normal/normal_circle.png'" nativebkcolor="0xFF555555" textcolor="0xFF666666"/>
-	  <Control width="2" />
-	  <Button name="btn_hand_close" width="19" height="19" padding="0,0,0,0" normalimage="KeyMap/body/btn_close_nor.png"  showcursor="false" />
-	</Normal>
-</Window>

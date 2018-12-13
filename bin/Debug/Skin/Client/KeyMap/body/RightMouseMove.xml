@@ -1,8 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Window >
-	<Normal width="60" height="40" float="true" >
-	  <Edit name="edit_key" width="39" height="39" padding="0,1,0,0" bkimage="file='body/normal/normal_circle.png' fade='100'" nativebkcolor="0x00262626" textcolor="0x00222222"/>
-	  <Control width="2" />
-	  <Button name="btn_hand_close" width="19" height="19" padding="0,0,0,0" normalimage="body/btn_close_nor.png"  showcursor="false" />
-	</Normal>
+	<RightMouseMove width="224" height="110" float="true" >
+	  <Slider name="slider_mouse" min="10" max="40" value="24" width="17" height="110" isstretchfore="true" hor="false" thumbsize="17,11" 
+		  bkimage="file='KeyMap/body/RightMove/slider_bk.png' corner='1,1,1,1' dest='7,0,10,110'" 
+		  foreimage="file='KeyMap/body/RightMove/fore.png' corner='8,1,8,1'" 
+			thumbimage="file='KeyMap/body/RightMove/thumb.png'" 
+			thumbhotimage="file='KeyMap/body/RightMove/thumb.png'" 
+			thumbpushedimage="file='KeyMap/body/RightMove/thumb.png'" /> 
+			
+	  <Control width="36" />
+	  
+	  <Control width="62" height="93" padding="0,8,0,0" bkimage="file='KeyMap/body/RightMove/mouse_copy.png'" />
+	  
+	  <Control width="36" />
+				  
+	  <KeyEdit name="edit_key" width="73" height="73" font="2" padding="0,18,0,0" maxchar="1" align="center" textpadding="4,0,4,0" bkimage="file='KeyMap/body/RightMove/circle.png'" nativebkcolor="0xFF555555" textcolor="0xFFFFFFFF"/>
+	</RightMouseMove>
 </Window>
