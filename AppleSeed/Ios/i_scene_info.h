@@ -50,6 +50,9 @@ namespace emulator {
         , public base::RefCountedThreadSafe<iSceneInfo> {
     public:
         virtual ~iSceneInfo() {}
+
+        virtual int screen_width() = 0;
+        virtual int screen_height() = 0;
     };
 }
 

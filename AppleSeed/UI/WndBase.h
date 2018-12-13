@@ -117,7 +117,7 @@ public:
 	
 	virtual UINT GetClassStyle() const { return UI_CLASSSTYLE_DIALOG; }
 	virtual void OnFinalMessage(HWND hWnd);
-	virtual HWND Create(HWND hParentWnd, bool child = false, int nPosX = 0, int nPosY = 0);
+	virtual HWND Create(HWND hParentWnd, bool child = false, int nPosX = 0, int nPosY = 0, int cx = 0, int cy = 0);
 	virtual HWND CreateModalWnd(HWND hParentWnd, bool bUseTopModal = true, int nPosX = 0, int nPosY = 0);
 
 protected:

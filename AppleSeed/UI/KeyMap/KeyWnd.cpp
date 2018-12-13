@@ -54,7 +54,7 @@ void CKeyWnd::InitWindow() {
     //}
 
     scene_info_ = new emulator::SceneInfo();
-    scene_info_->loadScene("D:\\PC\\trunk\\ios\\bin\\Debug\\sgame");
+    scene_info_->loadScene("D:\\IOS\\ios\\bin\\Debug\\sgame");
 
     scene_bak_info_ = scene_info_;
 
@@ -167,14 +167,14 @@ bool CKeyWnd::OnBtnToolRightRun(void* param) {
     if (!key_body_) return true;
 
     CDialogBuilder builder;
-    auto normal_ctrl = (CNormalUI*)builder.Create(L"body/RightMouseMove.xml", (UINT)0, this, &m_pm);
-    if (!normal_ctrl) return true;
-    key_body_->Add(normal_ctrl);
+    auto right_ctrl = (CRightMouseMoveUI*)builder.Create(L"KeyMap/body/RightMouseMove.xml", (UINT)0, this, &m_pm);
+    if (!right_ctrl) return true;
+    key_body_->Add(right_ctrl);
 
     auto rc_body = key_body_->GetPos();
 
-    auto width = normal_ctrl->GetFixedWidth();
-    auto height = normal_ctrl->GetFixedHeight();
+    auto width = right_ctrl->GetFixedWidth();
+    auto height = right_ctrl->GetFixedHeight();
 
     QRect rc;
     rc.left = (rc_body.left + rc_body.right - width) / 2;
@@ -182,12 +182,24 @@ bool CKeyWnd::OnBtnToolRightRun(void* param) {
     rc.top = (rc_body.top + rc_body.bottom - height) / 2;
     rc.bottom = rc.top + height;
 
-    normal_ctrl->SetPos(rc);
+    right_ctrl->SetPos(rc);
 
     return true;
 }
 
 bool CKeyWnd::OnBtnSave(void* param) {
+    if (!scene_info_ || !scene_bak_info_) return true;
+
+    scene_info_ = scene_bak_info_;
+
+    wstring file_path = CGlobalData::Instance()->GetRunPath() + L"ioskeymap";
+
+    if (!PathFileExists(file_path.c_str())) SHCreateDirectory(NULL, file_path.c_str());
+
+    file_path += L"\\com.tencent.smoba";
+
+    scene_info_->saveScene(PublicLib::UToUtf8(file_path).c_str());
+
     return true;
 }
 
@@ -260,6 +272,13 @@ bool CKeyWnd::OnEditKeyChanged(void* param) {
 
     if (edit_key->GetTag() == edit_key->GetKeyValue()) return true;
 
+    auto screen_width = scene_info_->screen_width();
+    auto screen_height = scene_info_->screen_height();
+    if (screen_width <= 0 || screen_height <= 0) return true;
+
+    QRect rc_body = key_body_->GetPos();
+    if (rc_body.GetWidth() == 0 || rc_body.GetHeight() == 0) return true;
+
     wstring keyboard = edit_key->GetText().GetData();
 
     if (keyboard.empty()) return true;
@@ -278,8 +297,8 @@ bool CKeyWnd::OnEditKeyChanged(void* param) {
 
         emulator::ItemInfo item;
         item.itemType = emulator::NORMAL_KEY;
-        item.nItemPosX = rc.left;
-        item.nItemPosY = rc.top;
+        item.nItemPosX = rc.left * screen_width / rc_body.GetWidth();
+        item.nItemPosY = rc.top * screen_height / rc_body.GetHeight();
         item.nItemFingerCount = 1;
         item.nItemWidth = rc.GetWidth();
         item.nItemHeight = rc.GetHeight();
@@ -305,22 +324,26 @@ bool CKeyWnd::OnEditKeyChanged(void* param) {
 void CKeyWnd::LoadNormalKey() {
     if (!scene_info_ || !key_body_) return;
 
+    auto screen_width = scene_info_->screen_width();
+    auto screen_height = scene_info_->screen_height();
+
+    if (screen_width <= 0 || screen_height <= 0) return;
+
+    QRect rc_body;
+    GetWindowRect(m_hWnd, &rc_body);
+
     auto items = scene_info_->GetKeyItemGather(emulator::NORMAL_KEY);
-
     auto it = items.begin();
-
     for (; it != items.end(); it++) {
         auto normal_ctrl = (CNormalUI*)CreateNormalKey();
         if (!normal_ctrl) break;
-
-        auto rc_body = key_body_->GetPos();
 
         auto width = normal_ctrl->GetFixedWidth();
         auto height = normal_ctrl->GetFixedHeight();
 
         QRect rc;
-        rc.left = it->nItemPosX;
-        rc.top = it->nItemPosY;
+        rc.left = it->nItemPosX * rc_body.GetWidth() / screen_width;
+        rc.top = it->nItemPosY * rc_body.GetHeight() /  screen_height;
         rc.right = rc.left + width;
         rc.bottom = rc.top + height;
 

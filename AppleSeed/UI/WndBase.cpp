@@ -36,7 +36,7 @@ void CWndBase::OnFinalMessage(HWND hWnd)
 	delete this;
 }
 
-HWND CWndBase::Create(HWND hParentWnd, bool child/* = false*/, int nPosX /*= 0*/, int nPosY /*= 0*/) {
+HWND CWndBase::Create(HWND hParentWnd, bool child/* = false*/, int nPosX /*= 0*/, int nPosY /*= 0*/, int cx/* = 0*/, int cy/* = 0*/) {
 	if (m_bShowOnTaskbar)
 	{
 		m_dwStyle = UI_WNDSTYLE_DIALOG | WS_MINIMIZEBOX;
@@ -46,7 +46,7 @@ HWND CWndBase::Create(HWND hParentWnd, bool child/* = false*/, int nPosX /*= 0*/
     m_dwStyle = child ? UI_WNDSTYLE_CHILD : m_dwStyle;
 
 	CDuiString strWndName = GetWndName();
-	CWindowWnd::Create(hParentWnd, strWndName, m_dwStyle, m_dwExStyle, nPosX, nPosY, 0, 0, 0);
+	CWindowWnd::Create(hParentWnd, strWndName, m_dwStyle, m_dwExStyle, nPosX, nPosY, cx, cy, 0);
 	return m_hWnd;
 }
 

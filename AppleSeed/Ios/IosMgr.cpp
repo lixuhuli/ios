@@ -440,12 +440,13 @@ void CIosMgr::CreateKeyWnd(HWND hParentWnd) {
     }
 
     key_wnd_ = new CKeyWnd;
-    if (!key_wnd_) return;
+    if (!key_wnd_ || !ios_wnd_) return;
 
-    key_wnd_->Create(hParentWnd);
+    QRect rc;
+    GetWindowRect(*ios_wnd_, &rc);
+
+    key_wnd_->Create(hParentWnd, false, rc.left, rc.top, rc.GetWidth(), rc.GetHeight());
     key_wnd_->ShowWindow(true);
-
-    UpdateKeyWnd(nullptr);
 }
 
 void CIosMgr::UpdateKeyWnd(const QRect* lprc/* = nullptr*/) {

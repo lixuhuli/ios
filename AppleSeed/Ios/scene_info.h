@@ -68,6 +68,9 @@ namespace emulator {
             return new SceneInfo(*this);
         }
 
+        virtual int screen_width() override { return m_nSceneWidth; }
+        virtual int screen_height() override { return m_nSceneHeight; }
+
         void loadScene(const char* keyXmlFile);
         void saveScene(const char* keyXmlFile);
 

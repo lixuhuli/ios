@@ -1,4 +1,5 @@
 #pragma once
+#include "KeyEditUI.h"
 
 #define  UI_RIGHT_MOUSEMOVE   L"RightMouseMove"
 
@@ -30,10 +31,11 @@ protected:
     bool    OnClickBtnClose(void* param);
 
     BEGIN_BIND_CTRL()
-        BIND_CTRL_CLICK_PAGE(L"btn_hand_close", this, &CRightMouseMoveUI::OnClickBtnClose)
+        //BIND_CTRL_CLICK_PAGE(L"btn_hand_close", this, &CRightMouseMoveUI::OnClickBtnClose)
     END_BIND_CTRL()
 
     BEGIN_INIT_CTRL()
+        //DECLARE_CTRL_TYPE_PAGE(edit_key_, CKeyEditUI, this, L"edit_key")
     END_INIT_CTRL()
 
 private:
@@ -43,6 +45,7 @@ private:
     POINT ptLastMouse;
     RECT m_rcNewPos;
     CButtonUI* btn_hand_close_;
+    CKeyEditUI* edit_key_;
 
 };
 

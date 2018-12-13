@@ -32,7 +32,7 @@
 #define GetInstalledAppInfo				Export0012
 #define GetInputPosition				Export0013
 #define InputString						Export0014
-
+#define LoadKeyMap						Export0015
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -109,7 +109,7 @@ OGLAPI int GetInputPosition(uint32_t *x, uint32_t *y);				// Get the input posit
 																	// Returning 0 means OK, otherwise there is no current input in the current context.
 
 OGLAPI int InputString(const char *string);							// Input the string. The string MUST be UTF-8 encoded. Returning 0 means OK.
-
+OGLAPI int LoadKeyMap(const char *string);                          // Load key map file. The string MUST be UTF-8 encoded. Returning 0 means OK.
 #ifdef __cplusplus
 }
 #endif
