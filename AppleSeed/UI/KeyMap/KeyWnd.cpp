@@ -8,6 +8,7 @@
 #include "Ios/IosMgr.h"
 #include "Ios/scene_info.h"
 #include "GlobalData.h"
+#include "IntelligentUI.h"
 
 CKeyWnd::CKeyWnd()
  : btn_tool_handle_(nullptr)
@@ -54,7 +55,7 @@ void CKeyWnd::InitWindow() {
     //}
 
     scene_info_ = new emulator::SceneInfo();
-    scene_info_->loadScene("D:\\IOS\\ios\\bin\\Debug\\sgame");
+    scene_info_->loadScene("D:\\IOS\\ios\\bin\\Debug\\ioskeymap\\com.tencent.smoba");
 
     scene_bak_info_ = scene_info_;
 
@@ -62,7 +63,7 @@ void CKeyWnd::InitWindow() {
 
     if (btn_tool_handle_) btn_tool_handle_->OnEvent += MakeDelegate(this, &CKeyWnd::OnToolEvent);
 
-    LoadNormalKey();
+    LoadKeyItems();
 }
 
 void CKeyWnd::SetBrowserMode(bool browser_mode) {
@@ -163,13 +164,29 @@ bool CKeyWnd::OnBtnToolNormal(void* param) {
     return true;
 }
 
-bool CKeyWnd::OnBtnToolRightRun(void* param) {
-    if (!key_body_) return true;
+DuiLib::CControlUI* CKeyWnd::CreateRightMouse() {
+    if (!key_body_) return nullptr;
 
     CDialogBuilder builder;
     auto right_ctrl = (CRightMouseMoveUI*)builder.Create(L"KeyMap/body/RightMouseMove.xml", (UINT)0, this, &m_pm);
-    if (!right_ctrl) return true;
+    if (!right_ctrl) return nullptr;
+
     key_body_->Add(right_ctrl);
+
+    auto edit_key = right_ctrl->edit_key();
+    if (edit_key) edit_key->Subscribe(DUI_MSGTYPE_CHARCHANGED, MakeDelegate(this, &CKeyWnd::OnEditRightMouseChanged));
+
+    auto slider_mouse = right_ctrl->slider_mouse();
+    if (slider_mouse) slider_mouse->Subscribe(DUI_MSGTYPE_VALUECHANGED, MakeDelegate(this, &CKeyWnd::OnSliderRightMouseValueChanged));
+
+    return right_ctrl;
+}
+
+bool CKeyWnd::OnBtnToolRightRun(void* param) {
+    if (!key_body_) return true;
+
+    auto right_ctrl = CreateRightMouse();
+    if (!right_ctrl) return true;
 
     auto rc_body = key_body_->GetPos();
 
@@ -187,6 +204,49 @@ bool CKeyWnd::OnBtnToolRightRun(void* param) {
     return true;
 }
 
+DuiLib::CControlUI* CKeyWnd::CreateIntelligent() {
+    if (!key_body_) return nullptr;
+
+    CDialogBuilder builder;
+    auto intelligent_ctrl = (CIntelligentUI*)builder.Create(L"KeyMap/body/IntelligentCtrl.xml", (UINT)0, this, &m_pm);
+    if (!intelligent_ctrl) return nullptr;
+
+    key_body_->Add(intelligent_ctrl);
+
+    auto edit_key = intelligent_ctrl->edit_key();
+    if (edit_key) edit_key->Subscribe(DUI_MSGTYPE_CHARCHANGED, MakeDelegate(this, &CKeyWnd::OnEditIntelligentChanged));
+
+    auto slider_mouse = intelligent_ctrl->slider_mouse();
+    if (slider_mouse) slider_mouse->Subscribe(DUI_MSGTYPE_VALUECHANGED, MakeDelegate(this, &CKeyWnd::OnSliderIntelligentChanged));
+
+    auto opt_switch = intelligent_ctrl->opt_switch();
+    if (opt_switch) opt_switch->Subscribe(DUI_MSGTYPE_CLICK, MakeDelegate(this, &CKeyWnd::OnOptIntelligentSwitch));
+
+    return intelligent_ctrl;
+}
+
+bool CKeyWnd::OnBtnToolIntelligent(void* param) {
+    if (!key_body_) return true;
+
+    auto intelligent_ctrl = (CIntelligentUI*)CreateIntelligent();
+    if (!intelligent_ctrl) return true;
+
+    auto rc_body = key_body_->GetPos();
+
+    auto width = intelligent_ctrl->GetFixedWidth();
+    auto height = intelligent_ctrl->GetFixedHeight();
+
+    QRect rc;
+    rc.left = (rc_body.left + rc_body.right - width) / 2;
+    rc.right = rc.left + width;
+    rc.top = (rc_body.top + rc_body.bottom - height) / 2;
+    rc.bottom = rc.top + height;
+
+    intelligent_ctrl->SetPos(rc);
+
+    return true;
+}
+
 bool CKeyWnd::OnBtnSave(void* param) {
     if (!scene_info_ || !scene_bak_info_) return true;
 
@@ -199,6 +259,8 @@ bool CKeyWnd::OnBtnSave(void* param) {
     file_path += L"\\com.tencent.smoba";
 
     scene_info_->saveScene(PublicLib::UToUtf8(file_path).c_str());
+
+    CIosMgr::Instance()->UpdateKeyMap(file_path);
 
     return true;
 }
@@ -245,6 +307,7 @@ CControlUI* CKeyWnd::CreateControl(LPCTSTR pstrClass) {
     else if (control_name == L"Normal") return new CNormalUI();
     else if (control_name == L"RightMouseMove") return new CRightMouseMoveUI();
     else if (control_name == L"KeyEdit") return new CKeyEditUI();
+    else if (control_name == L"Intelligent") return new CIntelligentUI();
 
     return nullptr;
 }
@@ -283,7 +346,7 @@ bool CKeyWnd::OnEditKeyChanged(void* param) {
 
     if (keyboard.empty()) return true;
 
-    if (scene_bak_info_->DeleteKey(emulator::NORMAL_KEY, edit_key->GetKeyValue())) {
+    if (scene_bak_info_->DeleteKey(edit_key->GetKeyValue())) {
         auto key_string = CGlobalData::Instance()->GetKeyboardStr(edit_key->GetKeyValue());
         auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
         if (normal_ctrl) key_body_->Remove(normal_ctrl);
@@ -321,7 +384,129 @@ bool CKeyWnd::OnEditKeyChanged(void* param) {
     return true;
 }
 
-void CKeyWnd::LoadNormalKey() {
+bool CKeyWnd::OnEditRightMouseChanged(void* param) {
+    TNotifyUI* pNotify = (TNotifyUI*)param;
+    if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_) return true;
+
+    CKeyEditUI* edit_key = dynamic_cast<CKeyEditUI*>(pNotify->pSender);
+    if (!edit_key) return true;
+
+    if (edit_key->GetTag() == edit_key->GetKeyValue()) return true;
+
+    auto screen_width = scene_info_->screen_width();
+    auto screen_height = scene_info_->screen_height();
+    if (screen_width <= 0 || screen_height <= 0) return true;
+
+    QRect rc_body = key_body_->GetPos();
+    if (rc_body.GetWidth() == 0 || rc_body.GetHeight() == 0) return true;
+
+    wstring keyboard = edit_key->GetText().GetData();
+
+    if (keyboard.empty()) return true;
+
+    if (scene_bak_info_->DeleteKey(edit_key->GetKeyValue())) {
+        auto key_string = CGlobalData::Instance()->GetKeyboardStr(edit_key->GetKeyValue());
+        auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
+        if (normal_ctrl) key_body_->Remove(normal_ctrl);
+    }
+
+    auto right_mouse = edit_key->GetParent();
+    if (!right_mouse) return true;
+
+    if (scene_bak_info_->set_right_mouse_key(edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard))) {
+        edit_key->SetTag(edit_key->GetKeyValue());
+        right_mouse->SetName(keyboard.c_str());
+    }
+
+    return true;
+}
+
+bool CKeyWnd::OnEditIntelligentChanged(void* param) {
+    TNotifyUI* pNotify = (TNotifyUI*)param;
+    if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_) return true;
+
+    CKeyEditUI* edit_key = dynamic_cast<CKeyEditUI*>(pNotify->pSender);
+    if (!edit_key) return true;
+
+    if (edit_key->GetTag() == edit_key->GetKeyValue()) return true;
+
+    auto screen_width = scene_info_->screen_width();
+    auto screen_height = scene_info_->screen_height();
+    if (screen_width <= 0 || screen_height <= 0) return true;
+
+    QRect rc_body = key_body_->GetPos();
+    if (rc_body.GetWidth() == 0 || rc_body.GetHeight() == 0) return true;
+
+    wstring keyboard = edit_key->GetText().GetData();
+
+    if (keyboard.empty()) return true;
+
+    if (scene_bak_info_->DeleteKey(edit_key->GetKeyValue())) {
+        auto key_string = CGlobalData::Instance()->GetKeyboardStr(edit_key->GetKeyValue());
+        auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
+        if (normal_ctrl) key_body_->Remove(normal_ctrl);
+    }
+
+    auto intelligent = edit_key->GetParent();
+    if (!intelligent) return true;
+
+    if (scene_bak_info_->set_intelligent_key(edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard))) {
+        edit_key->SetTag(edit_key->GetKeyValue());
+        intelligent->SetName(keyboard.c_str());
+    }
+
+    return true;
+}
+
+bool CKeyWnd::OnSliderRightMouseValueChanged(void* param) {
+    TNotifyUI* pNotify = (TNotifyUI*)param;
+    if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_) return true;
+
+    CSliderUI* slider_mouse = dynamic_cast<CSliderUI*>(pNotify->pSender);
+    if (!slider_mouse) return true;
+
+    scene_bak_info_->set_right_mouse_value(slider_mouse->GetValue());
+
+    return true;
+}
+
+bool CKeyWnd::OnSliderIntelligentChanged(void* param) {
+    TNotifyUI* pNotify = (TNotifyUI*)param;
+    if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_) return true;
+
+    CSliderUI* slider_mouse = dynamic_cast<CSliderUI*>(pNotify->pSender);
+    if (!slider_mouse) return true;
+
+    auto intelligent = (CIntelligentUI*)slider_mouse->GetParent();
+    if (!intelligent) return true;
+
+    auto edit_key = intelligent->edit_key();
+    if (!edit_key) return true;
+
+    scene_bak_info_->set_intelligent_value(edit_key->GetKeyValue(), slider_mouse->GetValue());
+
+    return true;
+}
+
+bool CKeyWnd::OnOptIntelligentSwitch(void* param) {
+    TNotifyUI* pNotify = (TNotifyUI*)param;
+    if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_) return true;
+
+    COptionUI* opt_switch = dynamic_cast<COptionUI*>(pNotify->pSender);
+    if (!opt_switch) return true;
+
+    auto intelligent = (CIntelligentUI*)opt_switch->GetParent()->GetParent();
+    if (!intelligent) return true;
+
+    auto edit_key = intelligent->edit_key();
+    if (!edit_key) return true;
+
+    scene_bak_info_->set_intelligent_switch_on(edit_key->GetKeyValue(), !opt_switch->IsSelected());
+
+    return true;
+}
+
+void CKeyWnd::LoadKeyItems() {
     if (!scene_info_ || !key_body_) return;
 
     auto screen_width = scene_info_->screen_width();
@@ -332,31 +517,95 @@ void CKeyWnd::LoadNormalKey() {
     QRect rc_body;
     GetWindowRect(m_hWnd, &rc_body);
 
-    auto items = scene_info_->GetKeyItemGather(emulator::NORMAL_KEY);
+    auto items = scene_info_->GetKeyItems();
     auto it = items.begin();
     for (; it != items.end(); it++) {
-        auto normal_ctrl = (CNormalUI*)CreateNormalKey();
-        if (!normal_ctrl) break;
+        if (it->itemType == emulator::NORMAL_KEY) {
+            if (it->keys.size() < 1) continue;
 
-        auto width = normal_ctrl->GetFixedWidth();
-        auto height = normal_ctrl->GetFixedHeight();
+            auto normal_ctrl = (CNormalUI*)CreateNormalKey();
+            if (!normal_ctrl) continue;
 
-        QRect rc;
-        rc.left = it->nItemPosX * rc_body.GetWidth() / screen_width;
-        rc.top = it->nItemPosY * rc_body.GetHeight() /  screen_height;
-        rc.right = rc.left + width;
-        rc.bottom = rc.top + height;
+            auto width = normal_ctrl->GetFixedWidth();
+            auto height = normal_ctrl->GetFixedHeight();
 
-        normal_ctrl->SetPos(rc);
-        normal_ctrl->SetName(PublicLib::Utf8ToU(it->keys[0].strKeyString).c_str());
+            QRect rc;
+            rc.left = it->nItemPosX * rc_body.GetWidth() / screen_width;
+            rc.top = it->nItemPosY * rc_body.GetHeight() /  screen_height;
+            rc.right = rc.left + width;
+            rc.bottom = rc.top + height;
 
-        auto edit_key = normal_ctrl->edit_key();
+            normal_ctrl->SetPos(rc);
+            normal_ctrl->SetName(PublicLib::Utf8ToU(it->keys[0].strKeyString).c_str());
 
-        if (edit_key) {
-            edit_key->SetTag(it->keys[0].nValue);
-            edit_key->SetKeyValue(it->keys[0].nValue);
-            edit_key->CControlUI::SetText(PublicLib::Utf8ToU(it->keys[0].strKeyString).c_str());
+            auto edit_key = normal_ctrl->edit_key();
+
+            if (edit_key) {
+                edit_key->SetTag(it->keys[0].nValue);
+                edit_key->SetKeyValue(it->keys[0].nValue);
+                edit_key->CControlUI::SetText(PublicLib::Utf8ToU(it->keys[0].strKeyString).c_str());
+            }
         }
+        else if (it->itemType == emulator::RIGHT_MOUSE_MOVE) {
+            if (it->keys.size() < 2) continue;
+
+            auto right_ctrl = (CRightMouseMoveUI*)CreateRightMouse();
+            if (!right_ctrl) continue;
+
+            auto width = right_ctrl->GetFixedWidth();
+            auto height = right_ctrl->GetFixedHeight();
+
+            QRect rc;
+            rc.left = it->nItemPosX * rc_body.GetWidth() / screen_width;
+            rc.top = it->nItemPosY * rc_body.GetHeight() /  screen_height;
+            rc.right = rc.left + width;
+            rc.bottom = rc.top + height;
+
+            right_ctrl->SetPos(rc);
+            right_ctrl->SetName(PublicLib::Utf8ToU(it->keys[1].strKeyString).c_str());
+
+            auto edit_key = right_ctrl->edit_key();
+            if (edit_key) {
+                edit_key->SetTag(it->keys[1].nValue);
+                edit_key->SetKeyValue(it->keys[1].nValue);
+                edit_key->CControlUI::SetText(PublicLib::Utf8ToU(it->keys[1].strKeyString).c_str());
+            }
+
+            auto slider_mouse = right_ctrl->slider_mouse();
+            if (slider_mouse) slider_mouse->SetValue(it->nItemSlider);
+        }
+        else if (it->itemType == emulator::INTELLIGENT_CASTING_KEY) {
+            if (it->keys.size() < 1) continue;
+
+            auto intelligent_ctrl = (CIntelligentUI*)CreateIntelligent();
+            if (!intelligent_ctrl) continue;
+
+            auto width = intelligent_ctrl->GetFixedWidth();
+            auto height = intelligent_ctrl->GetFixedHeight();
+
+            QRect rc;
+            rc.left = it->nItemPosX * rc_body.GetWidth() / screen_width;
+            rc.top = it->nItemPosY * rc_body.GetHeight() /  screen_height;
+            rc.right = rc.left + width;
+            rc.bottom = rc.top + height;
+
+            intelligent_ctrl->SetPos(rc);
+            intelligent_ctrl->SetName(PublicLib::Utf8ToU(it->keys[0].strKeyString).c_str());
+
+            auto edit_key = intelligent_ctrl->edit_key();
+            if (edit_key) {
+                edit_key->SetTag(it->keys[0].nValue);
+                edit_key->SetKeyValue(it->keys[0].nValue);
+                edit_key->CControlUI::SetText(PublicLib::Utf8ToU(it->keys[0].strKeyString).c_str());
+            }
+
+            auto slider_mouse = intelligent_ctrl->slider_mouse();
+            if (slider_mouse) slider_mouse->SetValue(it->nItemSlider);
+
+            auto opt_switch = intelligent_ctrl->opt_switch();
+            if (opt_switch) opt_switch->Selected(it->nItemRightMoveStop == 0);
+        }
+        
     }
 
 }

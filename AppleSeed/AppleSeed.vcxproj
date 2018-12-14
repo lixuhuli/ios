@@ -226,6 +226,7 @@
     <ClInclude Include="UI\DownloadItem.h" />
     <ClInclude Include="UI\KeyMap\dragdrophandle.h" />
     <ClInclude Include="UI\KeyMap\ENUMFETC.H" />
+    <ClInclude Include="UI\KeyMap\IntelligentUI.h" />
     <ClInclude Include="UI\KeyMap\KeyEditUI.h" />
     <ClInclude Include="UI\KeyMap\KeyWnd.h" />
     <ClInclude Include="UI\KeyMap\NormalUI.h" />
@@ -293,6 +294,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UI\KeyMap\IntelligentUI.cpp" />
     <ClCompile Include="UI\KeyMap\KeyEditUI.cpp" />
     <ClCompile Include="UI\KeyMap\KeyWnd.cpp" />
     <ClCompile Include="UI\KeyMap\NormalUI.cpp" />

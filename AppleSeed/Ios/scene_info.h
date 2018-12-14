@@ -107,7 +107,51 @@ namespace emulator {
             return true;
         }
 
-        std::vector<ItemInfo> GetKeyItemGather(const ItemType& type) {
+        bool set_right_mouse_key(int src_value, int org_value, const std::string& key_string) {
+            auto it  = GetKeyInfo(RIGHT_MOUSE_MOVE, src_value);
+            if (!it._Ptr) return false;
+
+            it->nValue = org_value;
+            it->strKeyString = key_string;
+            return true;
+        }
+
+        bool set_right_mouse_value(int value) {
+            auto it = m_items.begin();
+            for (; it != m_items.end(); it++) {
+                if (it->itemType == RIGHT_MOUSE_MOVE) {
+                    it->nItemSlider = value;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        bool set_intelligent_value(int src_value, int value) {
+            auto it  = GetItemInfo(INTELLIGENT_CASTING_KEY, src_value);
+            if (it == m_items.end()) return false;
+            it->nItemSlider = value;
+            return false;
+        }
+
+        bool set_intelligent_key(int src_value, int org_value, const std::string& key_string) {
+            auto it  = GetKeyInfo(INTELLIGENT_CASTING_KEY, src_value);
+            if (!it._Ptr) return false;
+
+            it->nValue = org_value;
+            it->strKeyString = key_string;
+            return true;
+        }
+
+        bool set_intelligent_switch_on(int src_value, bool open) {
+            auto it  = GetItemInfo(INTELLIGENT_CASTING_KEY, src_value);
+            if (it == m_items.end()) return false;
+
+            it->nItemRightMoveStop = (open ? 0 : 1);
+            return true;
+        }
+
+        virtual std::vector<ItemInfo> GetKeyItemGather(const ItemType& type) override {
             std::vector<ItemInfo> items;
 
             auto it = m_items.begin();
@@ -120,6 +164,10 @@ namespace emulator {
             return items;
         }
 
+        virtual const std::vector<ItemInfo>& GetKeyItems() override {
+            return m_items;
+        }
+
         bool DeleteKey(const ItemType& type, int key_value) {
             auto it = m_items.begin();
             for (; it != m_items.end(); it++) {
@@ -130,6 +178,21 @@ namespace emulator {
                             m_items.erase(it);
                             return true;
                         }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        bool DeleteKey(int key_value) {
+            auto it = m_items.begin();
+            for (; it != m_items.end(); it++) {
+                auto itr = it->keys.begin();
+                for (; itr != it->keys.end(); itr++) {
+                    if (itr->nValue == key_value) {
+                        m_items.erase(it);
+                        return true;
                     }
                 }
             }
@@ -151,6 +214,21 @@ namespace emulator {
                 }
             }
             return LIST_KEY::iterator();
+        }
+
+        std::vector<ItemInfo>::iterator GetItemInfo(const ItemType& type, int key_value) {
+            auto it = m_items.begin();
+            for (; it != m_items.end(); it++) {
+                if (it->itemType == type) {
+                    auto itr = it->keys.begin();
+                    for (; itr != it->keys.end(); itr++) {
+                        if (itr->nValue == key_value) {
+                            return it;
+                        }
+                    }
+                }
+            }
+            return it;
         }
 
     private:

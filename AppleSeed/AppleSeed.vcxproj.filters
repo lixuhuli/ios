@@ -366,6 +366,9 @@
     <ClInclude Include="TaskCenter\TaskIosEngineUpdate.h">
       <Filter>源文件\TaskCenter</Filter>
     </ClInclude>
+    <ClInclude Include="UI\KeyMap\IntelligentUI.h">
+      <Filter>源文件\UI\KeyMap\Ctrl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -538,6 +541,9 @@
     </ClCompile>
     <ClCompile Include="TaskCenter\TaskIosEngineUpdate.cpp">
       <Filter>源文件\TaskCenter</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\KeyMap\IntelligentUI.cpp">
+      <Filter>源文件\UI\KeyMap\Ctrl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

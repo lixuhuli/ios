@@ -53,6 +53,9 @@ namespace emulator {
 
         virtual int screen_width() = 0;
         virtual int screen_height() = 0;
+
+        virtual std::vector<ItemInfo> GetKeyItemGather(const ItemType& type) = 0;
+        virtual const std::vector<ItemInfo>& GetKeyItems() = 0;
     };
 }
 

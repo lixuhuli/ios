@@ -53,11 +53,18 @@ protected:
     bool OnBtnToolHandle(void* param);
     bool OnBtnToolNormal(void* param);
     bool OnBtnToolRightRun(void* param);
+    bool OnBtnToolIntelligent(void* param);
     bool OnBtnSave(void* param);
     bool OnBtnDelete(void* param);
     
     bool OnEditKeyChanged(void* param);
+    bool OnEditRightMouseChanged(void* param);
+    bool OnEditIntelligentChanged(void* param);
 
+    bool OnSliderRightMouseValueChanged(void* param);
+    bool OnSliderIntelligentChanged(void* param);
+
+    bool OnOptIntelligentSwitch(void* param);
 
     BEGIN_INIT_CTRL()
         DECLARE_CTRL_TYPE(btn_tool_handle_, CButtonUI, L"btn_tool_handle")
@@ -72,6 +79,7 @@ protected:
         BIND_CTRL_CLICK(L"btn_tool_handle", &CKeyWnd::OnBtnToolHandle)
         BIND_CTRL_CLICK(L"btn_tool_normal", &CKeyWnd::OnBtnToolNormal)
         BIND_CTRL_CLICK(L"opt_right_run", &CKeyWnd::OnBtnToolRightRun)
+        BIND_CTRL_CLICK(L"btn_tool_intelligent", &CKeyWnd::OnBtnToolIntelligent)
         BIND_CTRL_CLICK(L"btn_save", &CKeyWnd::OnBtnSave)
     END_BIND_CTRL()
 
@@ -81,9 +89,11 @@ protected:
 private:
     void OnDragDrop();
 
-    void LoadNormalKey();
+    void LoadKeyItems();
 
     CControlUI* CreateNormalKey();
+    CControlUI* CreateRightMouse();
+    CControlUI* CreateIntelligent();
 
 private:
     CButtonUI* btn_tool_handle_;

@@ -50,6 +50,8 @@ public:
 
     int UpdatePackage(const std::wstring& file_path);
 
+    int UpdateKeyMap(const std::wstring& file_path);
+
     int EngineCallback(int status, uintptr_t param1, uintptr_t param2);
 
 protected:

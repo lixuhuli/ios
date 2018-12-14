@@ -533,3 +533,7 @@ void CIosMgr::OnEngineOff(int state) {
         StartInstallApp();
     }
 }
+
+int CIosMgr::UpdateKeyMap(const std::wstring& file_path) {
+    return LoadKeyMap(PublicLib::UToUtf8(file_path).c_str());
+}
