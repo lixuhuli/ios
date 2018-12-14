@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window >
+	<Intelligent width="124" height="73" float="true" >
+	  <Slider name="slider_mouse" min="100" max="350" value="250" width="17" height="73" isstretchfore="true" hor="false" thumbsize="17,11" 
+		  bkimage="file='KeyMap/body/Intelligent/slider_bk.png' corner='1,1,1,1' dest='7,0,10,73'" 
+		  foreimage="file='KeyMap/body/Intelligent/fore.png' corner='8,1,8,1'" 
+			thumbimage="file='KeyMap/body/Intelligent/thumb.png'" 
+			thumbhotimage="file='KeyMap/body/Intelligent/thumb.png'" 
+			thumbpushedimage="file='KeyMap/body/Intelligent/thumb.png'" /> 
+			
+	  <Control width="12" />
+	  
+	  <KeyEdit name="edit_key" width="73" height="73" font="2" maxchar="1" align="center" textpadding="4,0,4,0" bkimage="file='KeyMap/body/Intelligent/circle.png'" nativebkcolor="0xFF555555" textcolor="0xFFFFFFFF"/>
+	  
+	  <Control width="3" />
+	  
+	  <VerticalLayout height="73" width="19">
+	    <Button name="btn_hand_close" width="19" height="19" normalimage="KeyMap/body/btn_close_nor.png" showcursor="false" />
+	    
+	    <Control />
+	    
+	    <Option name="opt_switch" width="19" height="34" normalimage="KeyMap/body/Intelligent/close.png" selectedimage="KeyMap/body/Intelligent/open.png" showcursor="false"/>
+	  </VerticalLayout>
+	</Intelligent>
+</Window>

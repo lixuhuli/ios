@@ -13,7 +13,7 @@
 	  <Control width="62" height="93" padding="0,8,0,0" bkimage="file='KeyMap/body/RightMove/mouse_copy.png'" />
 	  
 	  <Control width="36" />
-				  
+	  
 	  <KeyEdit name="edit_key" width="73" height="73" font="2" padding="0,18,0,0" maxchar="1" align="center" textpadding="4,0,4,0" bkimage="file='KeyMap/body/RightMove/circle.png'" nativebkcolor="0xFF555555" textcolor="0xFFFFFFFF"/>
 	</RightMouseMove>
 </Window>
