@@ -52,16 +52,16 @@
 			
 			<Control width="18"/>
 			
-			<HorizontalLayout height="15" width="55" padding="0,10,0,0" >
+			<HorizontalLayout height="15" width="84" padding="0,10,0,0" >
 			  <Button name="btn_sys_min" tooltip="最小化" width="19" height="15" showcursor="true" normalimage="file='top\btn_min_nor.png' dest='0,7,19,9'" hotimage="file='top\btn_min_hot.png' dest='0,7,19,9'" pushedimage="file='top\btn_min_nor.png' dest='0,7,19,9'" animation="true"/>	
 			  
 			  <Control width="10"/>
 			  
-			  <Button name="btn_sys_max" tooltip="最大化" width="19" height="15" showcursor="true" normalimage="file='top\btn_max_nor.png'" hotimage="file='top\btn_max_hot.png'" pushedimage="file='top\btn_max_nor.png'" visible="false" animation="true"/>
+			  <Button name="btn_sys_max" tooltip="最大化" width="19" height="15" showcursor="true" normalimage="file='top\btn_max_nor.png'" hotimage="file='top\btn_max_hot.png'" pushedimage="file='top\btn_max_nor.png'" animation="true"/>
 			  
 			  <Button name="btn_sys_restore" tooltip="还原" width="19" height="15" showcursor="true" normalimage="file='top\btn_restore_nor.png'" hotimage="file='top\btn_restore_hot.png'" pushedimage="file='top\btn_restore_nor.png'" visible="false" animation="true"/>
 			  
-			  <Control width="10" visible="false" />
+			  <Control width="10" />
 			  
 			  <Button name="btn_sys_close" tooltip="关闭" width="16" height="15" showcursor="true" normalimage="file='top\btn_close_nor.png'" hotimage="file='top\btn_close_hot.png'" pushedimage="file='top\btn_close_nor.png'" animation="false" />
 			  
