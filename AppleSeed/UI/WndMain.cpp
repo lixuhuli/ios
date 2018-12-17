@@ -59,7 +59,7 @@ CWndMain::CWndMain()
  , layout_update_(nullptr)
  , progress_update_(nullptr)
  , lbl_update_status_(nullptr) {
-    m_dwStyle = UI_WNDSTYLE_DIALOG | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_MINIMIZEBOX;
+    m_dwStyle = UI_WNDSTYLE_FRAME | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
     m_bShowShadow = true;
 }
 

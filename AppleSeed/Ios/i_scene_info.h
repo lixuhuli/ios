@@ -11,6 +11,7 @@
 
 namespace emulator {
     enum ItemType {
+        UNKNOWN_KEY = -1,
         HANDLE_KEY = 0,
         NORMAL_KEY = 1,
         INTELLIGENT_CASTING_KEY = 8,
@@ -26,6 +27,8 @@ namespace emulator {
         int nValue;
         int nPointX;
         int nPointY;
+
+        tagKeyInfo() : nValue(0), nPointX(0), nPointY(0) {}
     }KeyInfo;
 #endif // !_KEY_INFO_
 
@@ -42,6 +45,8 @@ namespace emulator {
         int nItemRightMoveStop;
         std::string strMacro;
         std::vector<KeyInfo> keys;
+
+        tagItemInfo() : itemType(UNKNOWN_KEY), nItemPosX(0), nItemPosY(0), nItemHeight(0), nItemWidth(0), nItemSlider(0), nItemFingerCount(0), nItemRightMoveStop(0) {}
     }ItemInfo;
 #endif // !_ITEM_INFO_
 

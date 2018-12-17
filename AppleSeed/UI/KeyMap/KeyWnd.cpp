@@ -183,23 +183,57 @@ DuiLib::CControlUI* CKeyWnd::CreateRightMouse() {
 }
 
 bool CKeyWnd::OnBtnToolRightRun(void* param) {
-    if (!key_body_) return true;
+    if (!key_body_ || !opt_right_run_) return true;
 
-    auto right_ctrl = CreateRightMouse();
-    if (!right_ctrl) return true;
+    if (!opt_right_run_->IsSelected()) {
+        auto right_ctrl = CreateRightMouse();
+        if (!right_ctrl) return true;
 
-    auto rc_body = key_body_->GetPos();
+        auto rc_body = key_body_->GetPos();
 
-    auto width = right_ctrl->GetFixedWidth();
-    auto height = right_ctrl->GetFixedHeight();
+        auto width = right_ctrl->GetFixedWidth();
+        auto height = right_ctrl->GetFixedHeight();
 
-    QRect rc;
-    rc.left = (rc_body.left + rc_body.right - width) / 2;
-    rc.right = rc.left + width;
-    rc.top = (rc_body.top + rc_body.bottom - height) / 2;
-    rc.bottom = rc.top + height;
+        QRect rc;
+        rc.left = (rc_body.left + rc_body.right - width) / 2;
+        rc.right = rc.left + width;
+        rc.top = (rc_body.top + rc_body.bottom - height) / 2;
+        rc.bottom = rc.top + height;
 
-    right_ctrl->SetPos(rc);
+        right_ctrl->SetPos(rc);
+
+        //emulator::ItemInfo item;
+        //item.itemType = emulator::RIGHT_MOUSE_MOVE;
+        //item.nItemPosX = 159;
+        //item.nItemPosY = 539;
+        //item.nItemWidth = rc.GetWidth();
+        //item.nItemHeight = rc.GetHeight();
+
+        //emulator::KeyInfo info; 
+        //info.nValue = -9;
+        //info.strDescription = "右键行走";
+        //info.strKeyString = "鼠标右键";
+        //item.keys.push_back(info);
+
+        //info.nValue = 88;
+        //info.strDescription = "中断行走";
+        //info.strKeyString = "X";
+        //info.nPointX = 209;
+        //info.
+        //item.keys.push_back(info);
+
+        //scene_bak_info_->AddItem(item);
+
+        //edit_key->SetTag(edit_key->GetKeyValue());
+        //normal_ctrl->SetName(keyboard.c_str());
+    }
+    else {
+        std::string key_string;
+        if (scene_bak_info_->DeleteRightMouse(key_string) && !key_string.empty()) {
+            auto normal_ctrl = key_body_->FindSubControl(PublicLib::Utf8ToU(key_string).c_str());
+            if (normal_ctrl) key_body_->Remove(normal_ctrl);
+        }
+    }
 
     return true;
 }
@@ -573,6 +607,8 @@ void CKeyWnd::LoadKeyItems() {
 
             auto slider_mouse = right_ctrl->slider_mouse();
             if (slider_mouse) slider_mouse->SetValue(it->nItemSlider);
+
+            if (opt_right_run_) opt_right_run_->Selected(true);
         }
         else if (it->itemType == emulator::INTELLIGENT_CASTING_KEY) {
             if (it->keys.size() < 1) continue;
