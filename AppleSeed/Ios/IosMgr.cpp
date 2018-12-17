@@ -23,8 +23,9 @@ static int engine_callbacks(int status, uintptr_t param1, uintptr_t param2) {
 CIosMgr::CIosMgr()
  : ios_wnd_(nullptr)
  , key_wnd_(nullptr)
- , wnd_in_mainwnd_(true)
- , wnd_size_(CSize(0, 0)) {
+ , hor_screen_mode_(false)
+ , wnd_size_(CSize(0, 0))
+ , ios_scale_(750.0 / 1334.0) {
 }
 
 
@@ -61,11 +62,6 @@ void CIosMgr::Exit() {
     if (key_wnd_){
         key_wnd_->Close(IDCLOSE);
         key_wnd_ = nullptr;
-    }
-
-    if (ios_wnd_ && !wnd_in_mainwnd_) {
-        ios_wnd_->Close();
-        ios_wnd_= nullptr;
     }
 }
 
@@ -230,26 +226,22 @@ void CIosMgr::OnEngineOn() {
 }
 
 void CIosMgr::OnScreenSizeChanged(uintptr_t param1, uintptr_t param2) {
+    if (param2 <= 0 || param2 <= 0) return;
+
     wnd_size_.cx = param1;
     wnd_size_.cy = param2;
 
-    RECT rcCaption = {0, 0, 0, 0}; 
     if (wnd_size_.cx >= wnd_size_.cy) {
-        if (wnd_in_mainwnd_) {
-            rcCaption.bottom = 28;
-            wnd_in_mainwnd_ = false;
-            TransferIosWndStatus(false);
-            QRect rc(0, 0, wnd_size_.cx, wnd_size_.cy);
-            UpdateIosWnd(&rc);
-            ios_wnd_->SetCaptionRect(rcCaption);
+        if (!hor_screen_mode_) {
+            hor_screen_mode_ = true;
+            ios_scale_ = (double)param2 / (double)param1; 
+            UpdateIosWnd(nullptr);
         }
     }
     else {
-        if (!wnd_in_mainwnd_) {
-            wnd_in_mainwnd_ = true;
-            TransferIosWndStatus(true);
-            UpdateIosWnd();
-            ios_wnd_->SetCaptionRect(rcCaption);
+        if (hor_screen_mode_) {
+            hor_screen_mode_ = false;
+            ::PostMessage(CGlobalData::Instance()->GetMainWnd(), WM_MAINWND_MSG_UPDATE_IOSWND_POS, 0, 0);
         }
 
         if (key_wnd_) {
@@ -264,14 +256,8 @@ void CIosMgr::OnForegroundAppChanged(uintptr_t param1, uintptr_t param2) {
     if (!context || !ios_wnd_) return;
 
     if (strcmp(context, "com.tencent.smoba") == 0) {
-        if (!wnd_in_mainwnd_) {
-            CreateKeyWnd(*ios_wnd_);
-        }
-
         //if (!wnd_in_mainwnd_) {
-        //    wnd_in_mainwnd_ = true;
-        //    TransferIosWndStatus(true);
-        //    UpdateIosWnd();
+        //    CreateKeyWnd(*ios_wnd_);
         //}
     }
     else {
@@ -371,58 +357,36 @@ int CIosMgr::EngineCallback(int status, uintptr_t param1, uintptr_t param2) {
 void CIosMgr::CreateWndIos(HWND hParentWnd) {
     ios_wnd_ = new CWndIos();
     if (!ios_wnd_) return;
-    ios_wnd_->Create(hParentWnd, true, 80 + 22, 90 + 75);
-    ios_wnd_->ShowWindow(false);
+
+    ios_wnd_->Create(hParentWnd, true/*, 80 + 22, 90 + 75*/);
+    ::SetWindowPos(*ios_wnd_, HWND_TOP, 0, 0, 0, 0, SWP_HIDEWINDOW | SWP_NOSIZE | SWP_NOMOVE);
 }
 
 void CIosMgr::UpdateIosWnd(const QRect* lprc /*= nullptr*/) {
     if (!ios_wnd_) return;
 
-    if (wnd_in_mainwnd_) {
+    if (!hor_screen_mode_) {
+        if (!lprc) return;
+
         QRect rc;
-        rc.left = 80 + 22;
-        rc.top = 90 + 75;
+        rc = *lprc;
+        rc.left = rc.left + 22;
+        rc.top = rc.top + 75;
         rc.right = rc.left + 282;
         rc.bottom = rc.top + 497;
 
-        ::SetWindowPos(*ios_wnd_, nullptr, rc.left, rc.top, rc.GetWidth(), rc.GetHeight(), SWP_NOZORDER | SWP_SHOWWINDOW);
+        ::SetWindowPos(*ios_wnd_, nullptr, rc.left, rc.top, rc.GetWidth(), rc.GetHeight(), SWP_NOZORDER);
     }
     else {
         QRect rc;
-        if (!lprc) return;
+        if (!lprc) GetClientRect(CGlobalData::Instance()->GetMainWnd(), &rc);
+        else rc = *lprc;
 
-        RECT rcArea = { 0 };
-        RECT rcCenter = { 0 };
-        MONITORINFO oMonitor = {};
-        oMonitor.cbSize = sizeof(oMonitor);
-        ::GetMonitorInfo(::MonitorFromWindow(*ios_wnd_, MONITOR_DEFAULTTONEAREST), &oMonitor);
-        rcArea = oMonitor.rcWork;
-        rcCenter = rcArea;
+        rc.top += 60;
+        rc.bottom -= 60;
 
-        rc.left = (rcCenter.left + rcCenter.right - lprc->GetWidth()) / 2;
-        rc.right = rc.left + lprc->GetWidth();
-        rc.top = (rcCenter.top + rcCenter.bottom - lprc->GetHeight()) / 2;
-        rc.bottom = rc.top + lprc->GetHeight();
-
-        ::SetWindowPos(*ios_wnd_, nullptr, rc.left, rc.top, rc.GetWidth(), rc.GetHeight(), SWP_NOZORDER | SWP_SHOWWINDOW);
+        ::SetWindowPos(*ios_wnd_, nullptr, rc.left, rc.top, rc.GetWidth(), rc.GetHeight(), SWP_NOZORDER);
     }
-}
-
-void CIosMgr::TransferIosWndStatus(bool to_child) {
-    HWND parent = (to_child ? CGlobalData::Instance()->GetMainWnd() : nullptr);
-    LONG styleValue = ::GetWindowLong(*ios_wnd_, GWL_STYLE);
-
-    if (!to_child) {
-        styleValue &= ~WS_CHILD;
-        styleValue |= WS_OVERLAPPED;
-    }
-    else {
-        styleValue &= ~WS_OVERLAPPED;
-        styleValue |= WS_CHILD;
-    }
-
-    SetWindowLong(*ios_wnd_, GWL_STYLE, styleValue);
-    SetParent(*ios_wnd_, parent);
 }
 
 bool CIosMgr::IosSnap(const std::string& save_path) {

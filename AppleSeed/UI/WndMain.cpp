@@ -58,7 +58,8 @@ CWndMain::CWndMain()
  , need_hide_left_layout_(false)
  , layout_update_(nullptr)
  , progress_update_(nullptr)
- , lbl_update_status_(nullptr) {
+ , lbl_update_status_(nullptr)
+ , client_iphone_emulator_(nullptr) {
     m_dwStyle = UI_WNDSTYLE_FRAME | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
     m_bShowShadow = true;
 }
@@ -110,6 +111,8 @@ void CWndMain::InitWindow() {
             if (layout_install_) layout_install_->SelectItem(3);
         }
     }
+
+    if (client_iphone_emulator_) client_iphone_emulator_->OnSize += MakeDelegate(this, &CWndMain::OnIphoneEmulatorSize);
 }
 
 void CWndMain::InitTasks() {
@@ -128,7 +131,8 @@ LRESULT CWndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
     BOOL bHandled = TRUE;
 
     switch (uMsg) {
-    case WM_SIZING: lRes = OnSize(wParam, lParam, bHandled); break;
+    case WM_SIZE: lRes = OnSize(wParam, lParam, bHandled); break;
+    case WM_SIZING: lRes = OnSizing(wParam, lParam, bHandled); break;
     case WM_MOVE: lRes = OnMoving(wParam, lParam, bHandled); break;
     case WM_MAINWND_MSG_DOWNLOAD_MIRRORSYSTEM: lRes = OnDownloadMirrorSystem(wParam, lParam, bHandled); break;
     case WM_MAINWND_MSG_FILE_UNZIPING: OnMsgFileUnziping(wParam, lParam, bHandled); break;
@@ -143,6 +147,7 @@ LRESULT CWndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
     case WM_MAINWND_MSG_USER_ICO: OnMsgUserIco(wParam, lParam, bHandled); break;
     case WM_MAINWND_MSG_IOSENGINE_UPDATING: OnMsgIosEngineUpdating(wParam, lParam, bHandled); break;
     case WM_MAINWND_MSG_IOSENGINE_UPDATE: OnMsgIosEngineUpdate(wParam, lParam, bHandled); break;
+    case WM_MAINWND_MSG_UPDATE_IOSWND_POS: OnMsgUpdateIosWndPos(wParam, lParam, bHandled); break;
     case WM_KEYDOWN: {
         bHandled = FALSE;
         break;
@@ -191,13 +196,57 @@ base::WeakPtr<download::iDownloadInfo> CWndMain::download_info() {
 }
 
 LRESULT CWndMain::OnSize(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    QRect rc;
+    GetClientRect(m_hWnd, &rc);
+
+    if (client_layout_left_) client_layout_left_->SetFixedWidth((int)((float)rc.GetWidth() * 506.0 / 1334.0));
+
+    if (CIosMgr::Instance()->HorScreenMode()) CIosMgr::Instance()->UpdateIosWnd(&rc);
+
+    bHandled = FALSE;
+
+    return 0;
+}
+
+LRESULT CWndMain::OnSizing(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     QRect *lprc = (QRect*)lParam;
-    //if (lprc) CIosMgr::Instance()->UpdateIosWnd(lprc);
+    if (!lprc) return 0;
+
+    auto scale = CIosMgr::Instance()->IosWndScale();
+
+    if (wParam == 2 || wParam == 1) {
+        auto height = (int)(scale * (double)lprc->GetWidth()) + 120;
+        lprc->bottom = lprc->top + height;
+    }
+    else if (wParam == 3 || wParam == 6) {
+        auto width = (int)((double)(lprc->GetHeight() - 120) / scale);
+        lprc->right = lprc->left + width;
+    }
+    else {
+        auto height = (int)(scale * (double)lprc->GetWidth()) + 120;
+        lprc->bottom = lprc->top + height;
+    }
+
     return 0;
 }
 
 LRESULT CWndMain::OnMoving(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     //CIosMgr::Instance()->UpdateIosWnd();
+    return 0;
+}
+
+bool CWndMain::OnIphoneEmulatorSize(void* param) {
+    if (!client_iphone_emulator_) return true;
+    if (CIosMgr::Instance()->HorScreenMode()) return true;
+    auto rc = client_iphone_emulator_->GetPos();
+    CIosMgr::Instance()->UpdateIosWnd(&rc);
+    return true;
+}
+
+LRESULT CWndMain::OnMsgUpdateIosWndPos(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    if (!client_iphone_emulator_) return 0;
+    auto rc = client_iphone_emulator_->GetPos();
+    CIosMgr::Instance()->UpdateIosWnd(&rc);
     return 0;
 }
 
@@ -257,6 +306,12 @@ bool CWndMain::OnBtnClickVolume(void* param) {
 
 void CWndMain::ShowClientLayoutLeft(bool show) {
     if (client_layout_left_) client_layout_left_->SetVisible(show);
+
+    if (!web_home_page_ || !web_home_page_->GetCefWebkit()) return;
+
+    HWND web_wnd = web_home_page_->GetCefWebkit()->GetHostWnd();
+
+    ::SetWindowPos(web_wnd, show ? HWND_BOTTOM : HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 }
 
 void CWndMain::ShowUserCenter() {

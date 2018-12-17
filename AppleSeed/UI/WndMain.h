@@ -40,6 +40,7 @@ protected:
     virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
 
     virtual LRESULT OnSize(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    virtual LRESULT OnSizing(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnMoving(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnDownloadMirrorSystem(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
@@ -52,6 +53,7 @@ protected:
     virtual LRESULT OnMsgUserInfo(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnMsgCommon(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnMsgUserIco(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    virtual LRESULT OnMsgUpdateIosWndPos(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
     virtual LRESULT OnMsgIosEngineUpdating(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnMsgIosEngineUpdate(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -87,6 +89,7 @@ protected:
         DECLARE_CTRL_TYPE(user_mask_ico_, CControlUI, L"user_mask_ico")
         DECLARE_CTRL_TYPE(client_layout_left_, CHorizontalLayoutUI, L"client_layout_left")
         DECLARE_CTRL_TYPE(client_layout_right_, CHorizontalLayoutUI, L"client_layout_right")
+        DECLARE_CTRL_TYPE(client_iphone_emulator_, CVerticalLayoutUI, L"client_iphone_emulator")
         DECLARE_CTRL_TYPE(layout_update_, CVerticalLayoutUI, L"layout_update")
         DECLARE_CTRL_TYPE(progress_update_, CProgressUI, L"progress_update")
         DECLARE_CTRL_TYPE(lbl_update_status_, CLabelUI, L"lbl_update_status")
@@ -146,6 +149,8 @@ protected:
     bool OnBtnClickSnap(void* param);
     bool OnBtnClickRecord(void* param);
     bool OnBtnClickKey(void* param);
+
+    bool OnIphoneEmulatorSize(void* param);
 
 protected:
     void InitTasks();
@@ -233,6 +238,7 @@ private:
 
     CHorizontalLayoutUI* client_layout_left_;
     CHorizontalLayoutUI* client_layout_right_;
+    CVerticalLayoutUI* client_iphone_emulator_;
     bool need_hide_left_layout_;
 
     scoped_refptr<download::DownloadInfo> download_info_;

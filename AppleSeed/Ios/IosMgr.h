@@ -35,6 +35,9 @@ public:
     void OnPackUpdating(int percent);
     void OnPackUpdate(int status);
 
+    const bool& HorScreenMode() { return hor_screen_mode_; }
+    const double& IosWndScale() { return ios_scale_; }
+
     // 模拟器状态信息 给外部调用
     base::WeakPtr<emulator::iEmulatorStateInfo> emulator_state_info();
 
@@ -71,7 +74,6 @@ protected:
     void OnInstallFile(const UINT_PTR& task_ptr, int state);
 
 private:
-    void TransferIosWndStatus(bool to_child);
     void CreateInstallAppTask(const UINT_PTR& task_ptr);
     void CreateInstallFileTask(const UINT_PTR& task_ptr);
     void CreateEngineOffTask();
@@ -83,7 +85,9 @@ private:
 private:
     CWndIos* ios_wnd_;
     CKeyWnd* key_wnd_;
-    bool wnd_in_mainwnd_;
+
+    bool hor_screen_mode_;
+    double ios_scale_;
 
     CSize wnd_size_;
 

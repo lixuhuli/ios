@@ -91,9 +91,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     pWnd->CenterWindow();
     ::ShowWindow(pWnd->GetHWND(), SW_SHOWNORMAL);
 
-    //CIosMgr::Instance()->CreateWndIos(*pWnd);
-    //CIosMgr::Instance()->IosEngineOn();
-
     bool bShow = wcscmp(lpCmdLine, L"/bootrun") != 0;
     PostStartPC(!bShow);
 

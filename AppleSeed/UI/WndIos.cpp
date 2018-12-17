@@ -71,9 +71,8 @@ LRESULT CWndIos::OnMoving(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 LRESULT CWndIos::OnMouseMove(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     QPoint pt(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
 
-    if (wParam == MK_LBUTTON) {
+    if (wParam == MK_LBUTTON || wParam == MK_RBUTTON) {
         MouseOpSync(EVENT_OP_MOUSE_MOVE, pt.x, pt.y);
-
     }
 
     bHandled = FALSE;
