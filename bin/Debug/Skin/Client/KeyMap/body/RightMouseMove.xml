@@ -10,7 +10,7 @@
 			
 	  <Control width="36" />
 	  
-	  <Control width="62" height="93" padding="0,8,0,0" bkimage="file='KeyMap/body/RightMove/mouse_copy.png'" />
+	  <Control name="mouse_copy" width="62" height="93" padding="0,8,0,0" bkimage="file='KeyMap/body/RightMove/mouse_copy.png'" />
 	  
 	  <Control width="36" />
 	  
