@@ -72,6 +72,8 @@ void CKeyWnd::InitWindow() {
     lbl_trans_percent_->SetText(str.GetData());
 
     LoadKeyItems();
+
+    if (key_body_) key_body_->OnSize += MakeDelegate(this, &CKeyWnd::OnKeyBodySize);
 }
 
 void CKeyWnd::SetBrowserMode(bool browser_mode) {
@@ -143,32 +145,31 @@ bool CKeyWnd::OnBtnToolHandle(void* param) {
         key_body_->Add(handle_ctrl);
     }
 
-    auto rc_body = key_body_->GetPos();
-
-    auto width = handle_ctrl->GetTag();
-    auto height = handle_ctrl->GetTag();
-
-    QRect rc;
-    rc.left = (rc_body.left + rc_body.right - width) / 2;
-    rc.right = rc.left + width;
-    rc.top = (rc_body.top + rc_body.bottom - height) / 2;
-    rc.bottom = rc.top + height;
-
-    handle_ctrl->SetPos(rc);
+    CenterKey(handle_ctrl);
+    KeyToScreen(handle_ctrl);
 
     return true;
 }
 
 bool CKeyWnd::OnBtnToolNormal(void* param) {
-    if (!key_body_) return true;
+    if (!key_body_ || !scene_info_) return true;
 
     auto normal_ctrl = (CNormalUI*)CreateNormalKey();
     if (!normal_ctrl) return true;
 
+    CenterKey(normal_ctrl);
+    KeyToScreen(normal_ctrl);
+
+    return true;
+}
+
+void CKeyWnd::CenterKey(CControlUI* control) {
+    if (!key_body_ || !control) return;
+
     auto rc_body = key_body_->GetPos();
 
-    auto width = normal_ctrl->GetFixedWidth();
-    auto height = normal_ctrl->GetFixedHeight();
+    auto width = control->GetFixedWidth();
+    auto height = control->GetFixedHeight();
 
     QRect rc;
     rc.left = (rc_body.left + rc_body.right - width) / 2;
@@ -176,9 +177,43 @@ bool CKeyWnd::OnBtnToolNormal(void* param) {
     rc.top = (rc_body.top + rc_body.bottom - height) / 2;
     rc.bottom = rc.top + height;
 
-    normal_ctrl->SetPos(rc);
+    control->SetPos(rc);
+}
 
-    return true;
+void CKeyWnd::KeyToScreen(CControlUI* control) {
+    if (!key_body_ || !control) return;
+
+    auto screen_width = scene_info_->screen_width();
+    auto screen_height = scene_info_->screen_height();
+
+    if (screen_width <= 0 || screen_height <= 0) return;
+
+    if (CIosMgr::Instance()->IosWndScale() <= 0.000001) return;
+
+    auto rc_body = key_body_->GetPos();
+    auto rc = control->GetPos();
+
+    auto game_height = rc_body.GetHeight();
+    auto game_width  = int((double)game_height / CIosMgr::Instance()->IosWndScale());
+
+    int offset_x = 0;
+    int offset_y = 0;
+    if (game_width < rc_body.GetWidth()) {
+        offset_x = (rc_body.GetWidth() - game_width) / 2;
+    }
+    else if (game_width > rc_body.GetWidth()) {
+        game_width = rc_body.GetWidth();
+        game_height = int((double)game_width * CIosMgr::Instance()->IosWndScale());
+        offset_y = (rc_body.GetHeight() - game_height) / 2;
+    }
+
+    auto screen_pos_x = (int)((double)(rc.left - rc_body.left - offset_x) *  (double)screen_width / (double)game_width);
+    auto screen_pos_y = (int)((double)(rc.top - rc_body.top - offset_y) *  (double)screen_height / (double)game_height);
+
+    auto it = dynamic_cast<Ikey*>(control);
+
+    if (it) it->SetScreenPosX(screen_pos_x);
+    if (it) it->SetScreenPosY(screen_pos_y);
 }
 
 DuiLib::CControlUI* CKeyWnd::CreateRightMouse() {
@@ -282,18 +317,8 @@ bool CKeyWnd::OnBtnToolIntelligent(void* param) {
     auto intelligent_ctrl = (CIntelligentUI*)CreateIntelligent();
     if (!intelligent_ctrl) return true;
 
-    auto rc_body = key_body_->GetPos();
-
-    auto width = intelligent_ctrl->GetFixedWidth();
-    auto height = intelligent_ctrl->GetFixedHeight();
-
-    QRect rc;
-    rc.left = (rc_body.left + rc_body.right - width) / 2;
-    rc.right = rc.left + width;
-    rc.top = (rc_body.top + rc_body.bottom - height) / 2;
-    rc.bottom = rc.top + height;
-
-    intelligent_ctrl->SetPos(rc);
+    CenterKey(intelligent_ctrl);
+    KeyToScreen(intelligent_ctrl);
 
     return true;
 }
@@ -511,7 +536,7 @@ bool CKeyWnd::OnEditIntelligentChanged(void* param) {
 
 bool CKeyWnd::OnSliderRightMouseValueChanged(void* param) {
     TNotifyUI* pNotify = (TNotifyUI*)param;
-    if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_) return true;
+    if (!pNotify || !pNotify->pSender || !scene_bak_info_) return true;
 
     CSliderUI* slider_mouse = dynamic_cast<CSliderUI*>(pNotify->pSender);
     if (!slider_mouse) return true;
@@ -523,7 +548,7 @@ bool CKeyWnd::OnSliderRightMouseValueChanged(void* param) {
 
 bool CKeyWnd::OnSliderIntelligentChanged(void* param) {
     TNotifyUI* pNotify = (TNotifyUI*)param;
-    if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_) return true;
+    if (!pNotify || !pNotify->pSender || !scene_bak_info_) return true;
 
     CSliderUI* slider_mouse = dynamic_cast<CSliderUI*>(pNotify->pSender);
     if (!slider_mouse) return true;
@@ -541,7 +566,7 @@ bool CKeyWnd::OnSliderIntelligentChanged(void* param) {
 
 bool CKeyWnd::OnOptIntelligentSwitch(void* param) {
     TNotifyUI* pNotify = (TNotifyUI*)param;
-    if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_) return true;
+    if (!pNotify || !pNotify->pSender || !scene_bak_info_) return true;
 
     COptionUI* opt_switch = dynamic_cast<COptionUI*>(pNotify->pSender);
     if (!opt_switch) return true;
@@ -569,16 +594,9 @@ bool CKeyWnd::OnSliderKeyTransChanged(void* param) {
 }
 
 void CKeyWnd::LoadKeyItems() {
-    if (!scene_info_ || !key_body_) return;
+    if (!scene_info_) return;
 
-    auto screen_width = scene_info_->screen_width();
-    auto screen_height = scene_info_->screen_height();
     auto opacity = scene_info_->opacity();
-
-    if (screen_width <= 0 || screen_height <= 0) return;
-
-    QRect rc_body;
-    GetWindowRect(m_hWnd, &rc_body);
 
     auto items = scene_info_->GetKeyItems();
     auto it = items.begin();
@@ -589,18 +607,10 @@ void CKeyWnd::LoadKeyItems() {
             auto normal_ctrl = (CNormalUI*)CreateNormalKey();
             if (!normal_ctrl) continue;
 
-            auto width = normal_ctrl->GetFixedWidth();
-            auto height = normal_ctrl->GetFixedHeight();
-
-            QRect rc;
-            rc.left = it->nItemPosX * rc_body.GetWidth() / screen_width;
-            rc.top = it->nItemPosY * rc_body.GetHeight() /  screen_height;
-            rc.right = rc.left + width;
-            rc.bottom = rc.top + height;
-
-            normal_ctrl->SetPos(rc);
             normal_ctrl->SetName(PublicLib::Utf8ToU(it->keys[0].strKeyString).c_str());
             normal_ctrl->UpdateBrowserMode(true, opacity);
+            normal_ctrl->SetScreenPosX(it->nItemPosX);
+            normal_ctrl->SetScreenPosY(it->nItemPosY);
 
             auto edit_key = normal_ctrl->edit_key();
 
@@ -616,18 +626,10 @@ void CKeyWnd::LoadKeyItems() {
             auto right_ctrl = (CRightMouseMoveUI*)CreateRightMouse();
             if (!right_ctrl) continue;
 
-            auto width = right_ctrl->GetFixedWidth();
-            auto height = right_ctrl->GetFixedHeight();
-
-            QRect rc;
-            rc.left = it->nItemPosX * rc_body.GetWidth() / screen_width;
-            rc.top = it->nItemPosY * rc_body.GetHeight() /  screen_height;
-            rc.right = rc.left + width;
-            rc.bottom = rc.top + height;
-
-            right_ctrl->SetPos(rc);
             right_ctrl->SetName(PublicLib::Utf8ToU(it->keys[1].strKeyString).c_str());
             right_ctrl->UpdateBrowserMode(true, opacity);
+            right_ctrl->SetScreenPosX(it->nItemPosX);
+            right_ctrl->SetScreenPosY(it->nItemPosY);
 
             auto edit_key = right_ctrl->edit_key();
             if (edit_key) {
@@ -647,18 +649,10 @@ void CKeyWnd::LoadKeyItems() {
             auto intelligent_ctrl = (CIntelligentUI*)CreateIntelligent();
             if (!intelligent_ctrl) continue;
 
-            auto width = intelligent_ctrl->GetFixedWidth();
-            auto height = intelligent_ctrl->GetFixedHeight();
-
-            QRect rc;
-            rc.left = it->nItemPosX * rc_body.GetWidth() / screen_width;
-            rc.top = it->nItemPosY * rc_body.GetHeight() /  screen_height;
-            rc.right = rc.left + width;
-            rc.bottom = rc.top + height;
-
-            intelligent_ctrl->SetPos(rc);
             intelligent_ctrl->SetName(PublicLib::Utf8ToU(it->keys[0].strKeyString).c_str());
             intelligent_ctrl->UpdateBrowserMode(true, opacity);
+            intelligent_ctrl->SetScreenPosX(it->nItemPosX);
+            intelligent_ctrl->SetScreenPosY(it->nItemPosY);
 
             auto edit_key = intelligent_ctrl->edit_key();
             if (edit_key) {
@@ -677,6 +671,52 @@ void CKeyWnd::LoadKeyItems() {
     }
 }
 
-void CKeyWnd::UpdateItemsPos() {
+bool CKeyWnd::OnKeyBodySize(void* param) {
+    UpdateItemsPos();
+    return true;
+}
 
+void CKeyWnd::UpdateItemsPos() {
+    if (!key_body_ || !scene_info_) return;
+
+    auto screen_width = scene_info_->screen_width();
+    auto screen_height = scene_info_->screen_height();
+
+    if (screen_width <= 0 || screen_height <= 0) return;
+    if (CIosMgr::Instance()->IosWndScale() <= 0.000001) return;
+
+    QRect rc_body = key_body_->GetPos();
+
+    auto game_height = rc_body.GetHeight();
+    auto game_width  = int((double)game_height / CIosMgr::Instance()->IosWndScale());
+
+    int offset_x = 0;
+    int offset_y = 0;
+    if (game_width < rc_body.GetWidth()) {
+        offset_x = (rc_body.GetWidth() - game_width) / 2;
+    }
+    else if (game_width > rc_body.GetWidth()) {
+        game_width = rc_body.GetWidth();
+        game_height = int((double)game_width * CIosMgr::Instance()->IosWndScale());
+        offset_y = (rc_body.GetHeight() - game_height) / 2;
+    }
+
+    for (int i = 0; i < key_body_->GetCount(); i++) {
+        auto it = key_body_->GetItemAt(i);
+        if (!it) continue;
+
+        auto key = dynamic_cast<Ikey*>(it);
+        if (!key) continue;
+
+        auto width = it->GetFixedWidth();
+        auto height = it->GetFixedHeight();
+
+        QRect rc;
+        rc.left = rc_body.left + key->ScreenPosX() * game_width / screen_width + offset_x;
+        rc.top = rc_body.top + key->ScreenPosY() * game_height / screen_height + offset_y;
+        rc.right = rc.left + width;
+        rc.bottom = rc.top + height;
+
+        it->SetPos(rc);
+    }
 }

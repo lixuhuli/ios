@@ -89,6 +89,7 @@ protected:
 
 protected:
     bool OnToolEvent(void* param);
+    bool OnKeyBodySize(void* param);
 
 private:
     void OnDragDrop();
@@ -99,6 +100,9 @@ private:
     CControlUI* CreateNormalKey();
     CControlUI* CreateRightMouse();
     CControlUI* CreateIntelligent();
+
+    void CenterKey(CControlUI* control);
+    void KeyToScreen(CControlUI* control);
 
 private:
     CButtonUI* btn_tool_handle_;
