@@ -12,7 +12,7 @@
 #define EVENT_OP_KEY_UP			11
 
 CWndIos::CWndIos() {
-    m_dwStyle = WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
+    m_dwStyle = WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
     m_dwExStyle = WS_EX_ACCEPTFILES;
     m_bShowShadow = false;
 }
@@ -59,22 +59,16 @@ LRESULT CWndIos::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 LRESULT CWndIos::OnSize(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     QRect *lprc = (QRect*)lParam;
-    if (lprc) CIosMgr::Instance()->UpdateKeyWnd(lprc);
     return 0;
 }
 
 LRESULT CWndIos::OnMoving(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    CIosMgr::Instance()->UpdateKeyWnd();
     return 0;
 }
 
 LRESULT CWndIos::OnMouseMove(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     QPoint pt(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-
-    if (wParam == MK_LBUTTON || wParam == MK_RBUTTON) {
-        MouseOpSync(EVENT_OP_MOUSE_MOVE, pt.x, pt.y);
-    }
-
+    MouseOpSync(EVENT_OP_MOUSE_MOVE, pt.x, pt.y);
     bHandled = FALSE;
     return 0;
 }

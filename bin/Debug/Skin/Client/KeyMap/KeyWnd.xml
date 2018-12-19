@@ -110,7 +110,7 @@
 	    <HorizontalLayout height="21">
 	      <Control width="40" />
 	      
-	      <Slider name="key_trans" max="100" value="0" width="153" height="21" isstretchfore="false" thumbsize="16,21" 
+	      <Slider name="key_slider_trans" max="100" value="50" width="153" height="21" isstretchfore="false" thumbsize="16,21" 
 				  bkimage="file='KeyMap/tools/slider_bk.png' dest='0,8,153,13' corner='2,2,2,2'" 
 				  foreimage="file='KeyMap/tools/fore.png' corner='2,10,2,10'" 
 				  thumbimage="file='KeyMap/tools/thumb.png'" 
@@ -119,7 +119,7 @@
 				  
 				<Control width="16" />
 				
-				<Label name="trans_percent" width="31" height="20" text="45%" padding="0,1,0,0" textcolor="#FF262626" font="1" />
+				<Label name="lbl_trans_percent" width="35" height="20" text="45%" padding="0,1,0,0" textcolor="#FF262626" font="1" />
 			</HorizontalLayout>
 			
 			<Control />

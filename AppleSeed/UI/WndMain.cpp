@@ -201,7 +201,10 @@ LRESULT CWndMain::OnSize(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 
     if (client_layout_left_) client_layout_left_->SetFixedWidth((int)((float)rc.GetWidth() * 506.0 / 1334.0));
 
-    if (CIosMgr::Instance()->HorScreenMode()) CIosMgr::Instance()->UpdateIosWnd(&rc);
+    if (CIosMgr::Instance()->HorScreenMode()) {
+        CIosMgr::Instance()->UpdateIosWnd(&rc);
+        CIosMgr::Instance()->UpdateKeyWnd(nullptr);
+    }
 
     bHandled = FALSE;
 
@@ -231,7 +234,7 @@ LRESULT CWndMain::OnSizing(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 }
 
 LRESULT CWndMain::OnMoving(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    //CIosMgr::Instance()->UpdateIosWnd();
+    CIosMgr::Instance()->UpdateKeyWnd();
     return 0;
 }
 

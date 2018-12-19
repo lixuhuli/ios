@@ -314,3 +314,20 @@ bool CRemoteHandleUI::OnClickBtnClose(void* param) {
     parent->Remove(this);
     return true;
 }
+
+void CRemoteHandleUI::UpdateBrowserMode(bool browser_mode, int opacity/* = 100*/) {
+    if (btn_hand_close_) btn_hand_close_->SetVisible(!browser_mode);
+    auto transparent = Ikey::GetTransparent(opacity);
+    if (btn_hand_circle_) btn_hand_circle_->SetTransparent(transparent);
+    if (edit_key_1_) edit_key_1_->SetTransparent(transparent);
+    if (edit_key_2_) edit_key_2_->SetTransparent(transparent);
+    if (edit_key_3_) edit_key_3_->SetTransparent(transparent);
+    if (edit_key_4_) edit_key_4_->SetTransparent(transparent);
+
+    SetEnabled(!browser_mode);
+    if (btn_hand_circle_) btn_hand_circle_->SetEnabled(!browser_mode);
+    if (edit_key_1_) edit_key_1_->SetEnabled(!browser_mode);
+    if (edit_key_2_) edit_key_2_->SetEnabled(!browser_mode);
+    if (edit_key_3_) edit_key_3_->SetEnabled(!browser_mode);
+    if (edit_key_4_) edit_key_4_->SetEnabled(!browser_mode);
+}

@@ -71,6 +71,9 @@ namespace emulator {
         virtual int screen_width() override { return m_nSceneWidth; }
         virtual int screen_height() override { return m_nSceneHeight; }
 
+        virtual void set_opacity(int nOpacity) { m_nOpacity = nOpacity; }
+        virtual int opacity() override { return m_nOpacity; }
+
         void loadScene(const char* keyXmlFile);
         void saveScene(const char* keyXmlFile);
 

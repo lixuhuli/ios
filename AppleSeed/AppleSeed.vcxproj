@@ -226,6 +226,7 @@
     <ClInclude Include="UI\DownloadItem.h" />
     <ClInclude Include="UI\KeyMap\dragdrophandle.h" />
     <ClInclude Include="UI\KeyMap\ENUMFETC.H" />
+    <ClInclude Include="UI\KeyMap\IKey.h" />
     <ClInclude Include="UI\KeyMap\IntelligentUI.h" />
     <ClInclude Include="UI\KeyMap\KeyEditUI.h" />
     <ClInclude Include="UI\KeyMap\KeyWnd.h" />

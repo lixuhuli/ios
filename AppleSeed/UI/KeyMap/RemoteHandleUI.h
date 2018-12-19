@@ -1,9 +1,11 @@
 #pragma once
+#include "IKey.h"
 
 #define  UI_REMOTE_HANDLE   L"RemoteHandle"
 
-class CRemoteHandleUI :
-    public CVerticalLayoutUI {
+class CRemoteHandleUI 
+    : public Ikey
+    , public CVerticalLayoutUI {
 public:
     CRemoteHandleUI();
     virtual ~CRemoteHandleUI();
@@ -19,6 +21,8 @@ public:
     UINT GetControlFlags() const;
     void SetSepWidth(int iWidth);
     int GetSepWidth() const;
+
+    void UpdateBrowserMode(bool browser_mode, int opacity = 100) override;
 
 public:
     virtual void PaintStatusImage(HDC hDC) override;

@@ -72,24 +72,12 @@ void CNormalUI::SetPos(RECT rc) {
 }
 
 void CNormalUI::OnLButtonDown(UINT nFlags, QPoint point) {
-    OnLButtonDown_Edit(nFlags, point);
-}
-
-void CNormalUI::OnLButtonDown_Edit(UINT nFlags, QPoint point) {
     m_uButtonState |= UISTATE_CAPTURED;
     ptLastMouse = point;
     m_rcNewPos = m_rcItem;
 }
 
-void CNormalUI::OnLButtonDown_Browse(UINT nFlags, QPoint point) {
-
-}
-
 void CNormalUI::OnMouseMove(UINT nFlags, QPoint point) {
-    OnMouseMove_Edit(nFlags, point);
-}
-
-void CNormalUI::OnMouseMove_Edit(UINT nFlags, QPoint point) {
     if ((m_uButtonState & UISTATE_CAPTURED) != 0) {
         LONG cx = point.x - ptLastMouse.x;
         LONG cy = point.y - ptLastMouse.y;
@@ -111,4 +99,13 @@ bool CNormalUI::OnClickBtnClose(void* param) {
     if (!parent) return true;
     parent->Remove(this);
     return true;
+}
+
+void CNormalUI::UpdateBrowserMode(bool browser_mode, int opacity/* = 100*/){
+    if (btn_hand_close_) btn_hand_close_->SetVisible(!browser_mode);
+    auto transparent = Ikey::GetTransparent(opacity);
+    if (edit_key_) edit_key_->SetTransparent(transparent);
+
+    SetEnabled(!browser_mode);
+    if (edit_key_) edit_key_->SetEnabled(!browser_mode);
 }

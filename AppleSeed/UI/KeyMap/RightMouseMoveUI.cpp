@@ -4,7 +4,8 @@
 CRightMouseMoveUI::CRightMouseMoveUI()
  : m_uButtonState(0)
  , edit_key_(nullptr)
- , slider_mouse_(nullptr) {
+ , slider_mouse_(nullptr) 
+ , mouse_copy_(nullptr) {
     ptLastMouse.x = ptLastMouse.y = 0;
     ::ZeroMemory(&m_rcNewPos, sizeof(m_rcNewPos));
 }
@@ -105,4 +106,16 @@ void CRightMouseMoveUI::OnMouseMove_Edit(UINT nFlags, QPoint point) {
         ::SetCursor(::LoadCursor(NULL, IDC_HAND));
         return;
     }
+}
+
+void CRightMouseMoveUI::UpdateBrowserMode(bool browser_mode, int opacity/* = 100*/) {
+    auto transparent = Ikey::GetTransparent(opacity);
+    if (edit_key_) edit_key_->SetTransparent(transparent);
+    if (slider_mouse_) slider_mouse_->SetTransparent(transparent);
+    if (mouse_copy_) mouse_copy_->SetTransparent(transparent);
+
+    SetEnabled(!browser_mode);
+    if (edit_key_) edit_key_->SetEnabled(!browser_mode);
+    if (slider_mouse_) slider_mouse_->SetEnabled(!browser_mode);
+    if (mouse_copy_) mouse_copy_->SetEnabled(!browser_mode);
 }

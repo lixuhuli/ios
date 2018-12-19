@@ -75,24 +75,12 @@ void CIntelligentUI::SetPos(RECT rc) {
 }
 
 void CIntelligentUI::OnLButtonDown(UINT nFlags, QPoint point) {
-    OnLButtonDown_Edit(nFlags, point);
-}
-
-void CIntelligentUI::OnLButtonDown_Edit(UINT nFlags, QPoint point) {
     m_uButtonState |= UISTATE_CAPTURED;
     ptLastMouse = point;
     m_rcNewPos = m_rcItem;
 }
 
-void CIntelligentUI::OnLButtonDown_Browse(UINT nFlags, QPoint point) {
-
-}
-
 void CIntelligentUI::OnMouseMove(UINT nFlags, QPoint point) {
-    OnMouseMove_Edit(nFlags, point);
-}
-
-void CIntelligentUI::OnMouseMove_Edit(UINT nFlags, QPoint point) {
     if ((m_uButtonState & UISTATE_CAPTURED) != 0) {
         LONG cx = point.x - ptLastMouse.x;
         LONG cy = point.y - ptLastMouse.y;
@@ -114,4 +102,17 @@ bool CIntelligentUI::OnClickBtnClose(void* param) {
     if (!parent) return true;
     parent->Remove(this);
     return true;
+}
+
+void CIntelligentUI::UpdateBrowserMode(bool browser_mode, int opacity/* = 100*/) {
+    if (btn_hand_close_) btn_hand_close_->SetVisible(!browser_mode);
+    auto transparent = Ikey::GetTransparent(opacity);
+    if (edit_key_) edit_key_->SetTransparent(transparent);
+    if (slider_mouse_) slider_mouse_->SetTransparent(transparent);
+    if (opt_switch_) opt_switch_->SetTransparent(transparent);
+
+    SetEnabled(!browser_mode);
+    if (edit_key_) edit_key_->SetEnabled(!browser_mode);
+    if (slider_mouse_) slider_mouse_->SetEnabled(!browser_mode);
+    if (opt_switch_) opt_switch_->SetEnabled(!browser_mode);
 }

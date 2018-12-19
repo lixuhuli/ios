@@ -1,13 +1,15 @@
 #pragma once
 #include "KeyEditUI.h"
+#include "IKey.h"
 
 #define  UI_INTELLIGENT   L"Intelligent"
 
 namespace DuiLib {
     class CKeyEditUI;
 }
-class CIntelligentUI :
-    public CHorizontalLayoutUI {
+class CIntelligentUI 
+    : public Ikey
+    , public CHorizontalLayoutUI {
 public:
     CIntelligentUI();
     virtual ~CIntelligentUI();
@@ -22,6 +24,8 @@ public:
 
     UINT GetControlFlags() const;
 
+    void UpdateBrowserMode(bool browser_mode, int opacity = 100) override;
+
 public:
     virtual CKeyEditUI* edit_key() { return edit_key_; };
     virtual CSliderUI* slider_mouse() { return slider_mouse_; };
@@ -29,12 +33,7 @@ public:
 
 protected:
     void    OnLButtonDown(UINT nFlags, QPoint point);
-    void	OnLButtonDown_Edit(UINT nFlags, QPoint point);
-    void	OnLButtonDown_Browse(UINT nFlags, QPoint point);
-
     void    OnMouseMove(UINT nFlags, QPoint point);
-    void	OnMouseMove_Browse(UINT nFlags, QPoint point);
-    void	OnMouseMove_Edit(UINT nFlags, QPoint point);
 
     bool    OnClickBtnClose(void* param);
 

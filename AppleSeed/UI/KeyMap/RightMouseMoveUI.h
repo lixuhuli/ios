@@ -1,10 +1,12 @@
 #pragma once
 #include "KeyEditUI.h"
+#include "IKey.h"
 
 #define  UI_RIGHT_MOUSEMOVE   L"RightMouseMove"
 
-class CRightMouseMoveUI :
-    public CHorizontalLayoutUI {
+class CRightMouseMoveUI 
+    : public Ikey
+    , public CHorizontalLayoutUI {
 public:
     CRightMouseMoveUI();
     virtual ~CRightMouseMoveUI();
@@ -18,6 +20,8 @@ public:
     virtual void SetPos(RECT rc) override;
 
     UINT GetControlFlags() const;
+
+    void UpdateBrowserMode(bool browser_mode, int opacity = 100) override;
 
 public:
     virtual CKeyEditUI* edit_key() { return edit_key_; };
@@ -38,6 +42,7 @@ protected:
     BEGIN_INIT_CTRL()
         DECLARE_CTRL_TYPE_PAGE(edit_key_, CKeyEditUI, this, L"edit_key")
         DECLARE_CTRL_TYPE_PAGE(slider_mouse_, CSliderUI, this, L"slider_mouse")
+        DECLARE_CTRL_TYPE_PAGE(mouse_copy_, CControlUI, this, L"mouse_copy")
     END_INIT_CTRL()
 
 private:
@@ -48,6 +53,7 @@ private:
     RECT m_rcNewPos;
     CSliderUI* slider_mouse_;
     CKeyEditUI* edit_key_;
+    CControlUI* mouse_copy_;
 
 };
 

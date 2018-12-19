@@ -1,13 +1,15 @@
 #pragma once
 #include "KeyEditUI.h"
+#include "IKey.h"
 
 #define  UI_NORMAL   L"Normal"
 
 namespace DuiLib {
     class CKeyEditUI;
 }
-class CNormalUI :
-    public CHorizontalLayoutUI {
+class CNormalUI 
+    : public Ikey
+    , public CHorizontalLayoutUI {
 public:
     CNormalUI();
     virtual ~CNormalUI();
@@ -22,17 +24,14 @@ public:
 
     UINT GetControlFlags() const;
 
+    void UpdateBrowserMode(bool browser_mode, int opacity = 100) override;
+
 public:
     virtual CKeyEditUI* edit_key() { return edit_key_; };
 
 protected:
     void    OnLButtonDown(UINT nFlags, QPoint point);
-    void	OnLButtonDown_Edit(UINT nFlags, QPoint point);
-    void	OnLButtonDown_Browse(UINT nFlags, QPoint point);
-
     void    OnMouseMove(UINT nFlags, QPoint point);
-    void	OnMouseMove_Browse(UINT nFlags, QPoint point);
-    void	OnMouseMove_Edit(UINT nFlags, QPoint point);
 
     bool    OnClickBtnClose(void* param);
 
@@ -42,6 +41,7 @@ protected:
 
     BEGIN_INIT_CTRL()
         DECLARE_CTRL_TYPE_PAGE(edit_key_, CKeyEditUI, this, L"edit_key")
+        DECLARE_CTRL_TYPE_PAGE(btn_hand_close_, CButtonUI, this, L"btn_hand_close")
     END_INIT_CTRL()
 
 private:

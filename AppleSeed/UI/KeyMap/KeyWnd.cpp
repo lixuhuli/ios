@@ -18,7 +18,9 @@ CKeyWnd::CKeyWnd()
  , opt_right_run_(nullptr)
  , browser_mode_(true)
  , m_pMDLDropTarget(nullptr)
- , m_pMDLDragDataSrc(nullptr) {
+ , m_pMDLDragDataSrc(nullptr)
+ , key_slider_trans_(nullptr)
+ , lbl_trans_percent_(nullptr) {
     m_dwStyle = UI_WNDSTYLE_DIALOG | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
     m_pMDLDragDataSrc = new CMDLDropSource();
@@ -63,6 +65,12 @@ void CKeyWnd::InitWindow() {
 
     if (btn_tool_handle_) btn_tool_handle_->OnEvent += MakeDelegate(this, &CKeyWnd::OnToolEvent);
 
+    if (key_slider_trans_) key_slider_trans_->SetValue(scene_info_->opacity());
+
+    CStdString str;
+    str.Format(L"%d%s", scene_info_->opacity(), L"%");
+    lbl_trans_percent_->SetText(str.GetData());
+
     LoadKeyItems();
 }
 
@@ -77,6 +85,15 @@ void CKeyWnd::SetBrowserMode(bool browser_mode) {
     else {
         if (panel_tools_) panel_tools_->SetVisible(true);
         if (key_body_) key_body_->SetBkColor(0x80000000);
+    }
+
+    if (!key_body_) return;
+
+    auto opacity = ((browser_mode_ && scene_info_) ? scene_info_->opacity() : 100);
+
+    for (int i = 0; i < key_body_->GetCount(); i++) {
+        auto it = dynamic_cast<Ikey*>(key_body_->GetItemAt(i));
+        if (it) it->UpdateBrowserMode(browser_mode, opacity);
     }
 }
 
@@ -540,11 +557,23 @@ bool CKeyWnd::OnOptIntelligentSwitch(void* param) {
     return true;
 }
 
+bool CKeyWnd::OnSliderKeyTransChanged(void* param) {
+    if (!key_slider_trans_ || !scene_bak_info_) return true;
+    if (scene_bak_info_) scene_bak_info_->set_opacity(key_slider_trans_->GetValue());
+
+    CStdString str;
+    str.Format(L"%d%s", scene_bak_info_->opacity(), L"%");
+    lbl_trans_percent_->SetText(str.GetData());
+
+    return true;
+}
+
 void CKeyWnd::LoadKeyItems() {
     if (!scene_info_ || !key_body_) return;
 
     auto screen_width = scene_info_->screen_width();
     auto screen_height = scene_info_->screen_height();
+    auto opacity = scene_info_->opacity();
 
     if (screen_width <= 0 || screen_height <= 0) return;
 
@@ -571,6 +600,7 @@ void CKeyWnd::LoadKeyItems() {
 
             normal_ctrl->SetPos(rc);
             normal_ctrl->SetName(PublicLib::Utf8ToU(it->keys[0].strKeyString).c_str());
+            normal_ctrl->UpdateBrowserMode(true, opacity);
 
             auto edit_key = normal_ctrl->edit_key();
 
@@ -597,6 +627,7 @@ void CKeyWnd::LoadKeyItems() {
 
             right_ctrl->SetPos(rc);
             right_ctrl->SetName(PublicLib::Utf8ToU(it->keys[1].strKeyString).c_str());
+            right_ctrl->UpdateBrowserMode(true, opacity);
 
             auto edit_key = right_ctrl->edit_key();
             if (edit_key) {
@@ -627,6 +658,7 @@ void CKeyWnd::LoadKeyItems() {
 
             intelligent_ctrl->SetPos(rc);
             intelligent_ctrl->SetName(PublicLib::Utf8ToU(it->keys[0].strKeyString).c_str());
+            intelligent_ctrl->UpdateBrowserMode(true, opacity);
 
             auto edit_key = intelligent_ctrl->edit_key();
             if (edit_key) {
@@ -643,5 +675,8 @@ void CKeyWnd::LoadKeyItems() {
         }
         
     }
+}
+
+void CKeyWnd::UpdateItemsPos() {
 
 }

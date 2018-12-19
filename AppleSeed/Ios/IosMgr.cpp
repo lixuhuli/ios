@@ -256,9 +256,9 @@ void CIosMgr::OnForegroundAppChanged(uintptr_t param1, uintptr_t param2) {
     if (!context || !ios_wnd_) return;
 
     if (strcmp(context, "com.tencent.smoba") == 0) {
-        //if (!wnd_in_mainwnd_) {
-        //    CreateKeyWnd(*ios_wnd_);
-        //}
+        if (hor_screen_mode_) {
+            CreateKeyWnd(CGlobalData::Instance()->GetMainWnd());
+        }
     }
     else {
         if (key_wnd_) {

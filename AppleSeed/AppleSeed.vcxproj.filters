@@ -369,6 +369,9 @@
     <ClInclude Include="UI\KeyMap\IntelligentUI.h">
       <Filter>源文件\UI\KeyMap\Ctrl</Filter>
     </ClInclude>
+    <ClInclude Include="UI\KeyMap\IKey.h">
+      <Filter>源文件\UI\KeyMap\Ctrl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

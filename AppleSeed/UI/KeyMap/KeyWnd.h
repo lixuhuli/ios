@@ -65,6 +65,7 @@ protected:
     bool OnSliderIntelligentChanged(void* param);
 
     bool OnOptIntelligentSwitch(void* param);
+    bool OnSliderKeyTransChanged(void* param);
 
     BEGIN_INIT_CTRL()
         DECLARE_CTRL_TYPE(btn_tool_handle_, CButtonUI, L"btn_tool_handle")
@@ -72,6 +73,8 @@ protected:
         DECLARE_CTRL_TYPE(key_body_, CVerticalLayoutUI, L"key_body")
         DECLARE_CTRL_TYPE(opt_right_run_, COptionUI, L"opt_right_run")
         DECLARE_CTRL_TYPE(panel_tools_, CVerticalLayoutUI, L"panel_tools")
+        DECLARE_CTRL_TYPE(key_slider_trans_, CSliderUI, L"key_slider_trans")
+        DECLARE_CTRL_TYPE(lbl_trans_percent_, CLabelUI, L"lbl_trans_percent")
     END_INIT_CTRL()
 
     BEGIN_BIND_CTRL()
@@ -81,6 +84,7 @@ protected:
         BIND_CTRL_CLICK(L"opt_right_run", &CKeyWnd::OnBtnToolRightRun)
         BIND_CTRL_CLICK(L"btn_tool_intelligent", &CKeyWnd::OnBtnToolIntelligent)
         BIND_CTRL_CLICK(L"btn_save", &CKeyWnd::OnBtnSave)
+        BIND_CTRL_EVENT(L"key_slider_trans", DUI_MSGTYPE_VALUECHANGED, &CKeyWnd::OnSliderKeyTransChanged)
     END_BIND_CTRL()
 
 protected:
@@ -90,6 +94,7 @@ private:
     void OnDragDrop();
 
     void LoadKeyItems();
+    void UpdateItemsPos();
 
     CControlUI* CreateNormalKey();
     CControlUI* CreateRightMouse();
@@ -101,6 +106,8 @@ private:
     COptionUI* opt_right_run_;
     CVerticalLayoutUI* key_body_;
     CVerticalLayoutUI* panel_tools_;
+    CSliderUI* key_slider_trans_;
+    CLabelUI* lbl_trans_percent_;
 
     CMDLDropSource  *m_pMDLDragDataSrc;
     CMDLDropTarget  *m_pMDLDropTarget;
