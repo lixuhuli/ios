@@ -342,7 +342,7 @@ bool CKeyWnd::OnBtnToolIntelligent(void* param) {
 bool CKeyWnd::OnBtnSave(void* param) {
     if (!scene_info_ || !scene_bak_info_) return true;
 
-    scene_info_ = scene_bak_info_;
+    scene_info_ = scene_bak_info_->cloner();
 
     wstring file_path = CGlobalData::Instance()->GetRunPath() + L"ioskeymap";
 
@@ -353,6 +353,9 @@ bool CKeyWnd::OnBtnSave(void* param) {
     scene_info_->saveScene(PublicLib::UToUtf8(file_path).c_str());
 
     CIosMgr::Instance()->UpdateKeyMap(file_path);
+
+    SetBrowserMode(true);
+    CIosMgr::Instance()->UpdateKeyWnd();
 
     return true;
 }
@@ -818,8 +821,6 @@ bool CKeyWnd::OnKeyPosChanged(void* param) {
     default:
         break;
     }
-
-    //scene_bak_info_->set_key_pos(control->GetTag(), it->ScreenPosX(), it->ScreenPosY());
 
     return true;
 }
