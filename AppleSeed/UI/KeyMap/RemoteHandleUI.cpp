@@ -187,10 +187,6 @@ void CRemoteHandleUI::DrawBorderRect(HDC hDC) {
 }
 
 void CRemoteHandleUI::OnLButtonDown(UINT nFlags, QPoint point) {
-    OnLButtonDown_Edit(nFlags, point);
-}
-
-void CRemoteHandleUI::OnLButtonDown_Edit(UINT nFlags, QPoint point) {
     auto direct = GetRegionStatus(point);
     m_uButtonState |= UISTATE_CAPTURED;
     ptLastMouse = point;
@@ -198,15 +194,7 @@ void CRemoteHandleUI::OnLButtonDown_Edit(UINT nFlags, QPoint point) {
     direct_ = direct;
 }
 
-void CRemoteHandleUI::OnLButtonDown_Browse(UINT nFlags, QPoint point) {
-
-}
-
 void CRemoteHandleUI::OnMouseMove(UINT nFlags, QPoint point) {
-    OnMouseMove_Edit(nFlags, point);
-}
-
-void CRemoteHandleUI::OnMouseMove_Edit(UINT nFlags, QPoint point) {
     if ((m_uButtonState & UISTATE_CAPTURED) != 0) {
         LONG cx = point.x - ptLastMouse.x;
         LONG cy = point.y - ptLastMouse.y;

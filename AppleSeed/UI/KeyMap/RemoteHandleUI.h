@@ -32,12 +32,7 @@ protected:
 
 protected:
     void    OnLButtonDown(UINT nFlags, QPoint point);
-    void	OnLButtonDown_Edit(UINT nFlags, QPoint point);
-    void	OnLButtonDown_Browse(UINT nFlags, QPoint point);
-
     void    OnMouseMove(UINT nFlags, QPoint point);
-    void	OnMouseMove_Browse(UINT nFlags, QPoint point);
-    void	OnMouseMove_Edit(UINT nFlags, QPoint point);
 
     bool    OnClickBtnClose(void* param);
 

@@ -9,6 +9,7 @@
 #include "Ios/scene_info.h"
 #include "GlobalData.h"
 #include "IntelligentUI.h"
+#include "MsgDefine.h"
 
 CKeyWnd::CKeyWnd()
  : btn_tool_handle_(nullptr)
@@ -102,7 +103,8 @@ LRESULT CKeyWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
     LRESULT lRes = 0;
     BOOL bHandled = TRUE;
     switch (uMsg) {
-    case WM_SETCURSOR: lRes = OnSetCursor(wParam, lParam, bHandled);
+    case WM_SETCURSOR: lRes = OnSetCursor(wParam, lParam, bHandled); break;
+    case WM_KEYWND_MSG_REMOVE_KEY: lRes = OnRemoveKey(wParam, lParam, bHandled); break;
     default: bHandled = FALSE;
     }
 
@@ -113,6 +115,7 @@ LRESULT CKeyWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 }
 
 bool CKeyWnd::OnClickBtnClose(void* lpParam) {
+    scene_bak_info_ = scene_info_->cloner();
     SetBrowserMode(true);
     CIosMgr::Instance()->UpdateKeyWnd();
     return true;
@@ -129,7 +132,7 @@ CControlUI* CKeyWnd::CreateNormalKey() {
 
     auto edit_key = normal_ctrl->edit_key();
     if (edit_key) edit_key->Subscribe(DUI_MSGTYPE_CHARCHANGED, MakeDelegate(this, &CKeyWnd::OnEditKeyChanged));
-    
+
     normal_ctrl->Subscribe(DUI_MSGTYPE_POS_CHANGED, MakeDelegate(this, &CKeyWnd::OnKeyPosChanged));
 
     return normal_ctrl;
@@ -161,6 +164,8 @@ bool CKeyWnd::OnBtnToolNormal(void* param) {
     CenterKey(normal_ctrl);
     KeyToScreen(normal_ctrl);
 
+    normal_ctrl->SetKeyType(emulator::NORMAL_KEY);
+
     return true;
 }
 
@@ -181,19 +186,21 @@ void CKeyWnd::CenterKey(CControlUI* control) {
     control->SetPos(rc);
 }
 
-void CKeyWnd::KeyToScreen(CControlUI* control) {
-    if (!control) return;
+bool CKeyWnd::KeyToScreen(CControlUI* control) {
+    if (!control) return false;
 
     auto rc = control->GetPos();
 
     QPoint point(rc.left, rc.top);
 
-    KeyToScreen(&point);
+    if (!KeyToScreen(&point)) return false;
 
     auto it = dynamic_cast<Ikey*>(control);
 
     if (it) it->SetScreenPosX(point.x);
     if (it) it->SetScreenPosY(point.y);
+
+    return true;
 }
 
 bool CKeyWnd::KeyToScreen(LPPOINT point) {
@@ -360,7 +367,25 @@ bool CKeyWnd::OnBtnSave(void* param) {
     return true;
 }
 
+bool CKeyWnd::OnBtnDelete(void* param) {
+    scene_bak_info_ = scene_info_->cloner();
+    LoadKeyItems();
+    return true;
+}
+
 LRESULT CKeyWnd::OnSetCursor(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    bHandled = FALSE;
+    return 0;
+}
+
+LRESULT CKeyWnd::OnRemoveKey(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    CControlUI* control = (CControlUI*)(wParam);
+    if (!control || !scene_bak_info_ || !key_body_) return 0;
+
+    scene_bak_info_->DeleteKey(control->GetTag());
+
+    key_body_->Remove(control);
+
     return 0;
 }
 
@@ -447,29 +472,39 @@ bool CKeyWnd::OnEditKeyChanged(void* param) {
         if (normal_ctrl) key_body_->Remove(normal_ctrl);
     }
 
-    auto normal_ctrl = edit_key->GetParent();
+    auto normal_ctrl = (CNormalUI*)edit_key->GetParent();
     if (!normal_ctrl) return true;
 
     if (!scene_bak_info_->set_key(emulator::NORMAL_KEY, edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard))) {
         QRect rc = normal_ctrl->GetPos();
+        QPoint point(rc.left, rc.top);
+        if (!KeyToScreen(&point)) return true;
+
+        normal_ctrl->SetScreenPosX(point.x);
+        normal_ctrl->SetScreenPosY(point.y);
 
         emulator::ItemInfo item;
         item.itemType = emulator::NORMAL_KEY;
-        item.nItemPosX = rc.left * screen_width / rc_body.GetWidth();
-        item.nItemPosY = rc.top * screen_height / rc_body.GetHeight();
+        item.nItemPosX = normal_ctrl->ScreenPosX();
+        item.nItemPosY = normal_ctrl->ScreenPosY();
         item.nItemFingerCount = 1;
         item.nItemWidth = rc.GetWidth();
         item.nItemHeight = rc.GetHeight();
 
         emulator::KeyInfo info; 
         info.nValue = edit_key->GetKeyValue();
-        info.strDescription = "自定义技能";
+        info.strDescription = PublicLib::AToUtf("自定义技能");
         info.strKeyString = PublicLib::UToUtf8(keyboard);
+
+        auto rc_edit = edit_key->GetPos();
+
+        info.nPointX = point.x + int(double(rc_edit.GetWidth()) / 2.0 + 0.5);
+        info.nPointY = point.y + int(double(rc_edit.GetHeight()) / 2.0 + 0.5);
 
         item.keys.push_back(info);
         scene_bak_info_->AddItem(item);
 
-        edit_key->SetTag(edit_key->GetKeyValue());
+        normal_ctrl->SetHasMapMemory(true);
     }
 
     edit_key->SetTag(edit_key->GetKeyValue());
@@ -636,6 +671,7 @@ void CKeyWnd::LoadKeyItems() {
             normal_ctrl->SetScreenPosX(it->nItemPosX);
             normal_ctrl->SetScreenPosY(it->nItemPosY);
             normal_ctrl->SetKeyType(it->itemType);
+            normal_ctrl->SetHasMapMemory(true);
 
             auto edit_key = normal_ctrl->edit_key();
 
@@ -657,6 +693,7 @@ void CKeyWnd::LoadKeyItems() {
             right_ctrl->SetScreenPosX(it->nItemPosX);
             right_ctrl->SetScreenPosY(it->nItemPosY);
             right_ctrl->SetKeyType(it->itemType);
+            right_ctrl->SetHasMapMemory(true);
 
             auto edit_key = right_ctrl->edit_key();
             if (edit_key) {
@@ -682,6 +719,7 @@ void CKeyWnd::LoadKeyItems() {
             intelligent_ctrl->SetScreenPosX(it->nItemPosX);
             intelligent_ctrl->SetScreenPosY(it->nItemPosY);
             intelligent_ctrl->SetKeyType(it->itemType);
+            intelligent_ctrl->SetHasMapMemory(true);
 
             auto edit_key = intelligent_ctrl->edit_key();
             if (edit_key) {
@@ -761,6 +799,8 @@ bool CKeyWnd::OnKeyPosChanged(void* param) {
     if (!control) return true;
 
     KeyToScreen(control);
+
+    if (!it->HasMapMemory()) return true;
 
     switch (it->KeyType()) {
     case emulator::NORMAL_KEY: {

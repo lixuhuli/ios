@@ -46,6 +46,7 @@ protected:
     virtual LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) override;
 
     virtual LRESULT OnSetCursor(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    virtual LRESULT OnRemoveKey(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
     virtual void OnFinalMessage(HWND hWnd);
 
@@ -86,6 +87,7 @@ protected:
         BIND_CTRL_CLICK(L"opt_right_run", &CKeyWnd::OnBtnToolRightRun)
         BIND_CTRL_CLICK(L"btn_tool_intelligent", &CKeyWnd::OnBtnToolIntelligent)
         BIND_CTRL_CLICK(L"btn_save", &CKeyWnd::OnBtnSave)
+        BIND_CTRL_CLICK(L"btn_delete", &CKeyWnd::OnBtnDelete)
         BIND_CTRL_EVENT(L"key_slider_trans", DUI_MSGTYPE_VALUECHANGED, &CKeyWnd::OnSliderKeyTransChanged)
     END_BIND_CTRL()
 
@@ -104,7 +106,7 @@ private:
     CControlUI* CreateIntelligent();
 
     void CenterKey(CControlUI* control);
-    void KeyToScreen(CControlUI* control);
+    bool KeyToScreen(CControlUI* control);
     bool KeyToScreen(LPPOINT point);
 
 private:

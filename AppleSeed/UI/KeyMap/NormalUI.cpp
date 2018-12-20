@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "NormalUI.h"
+#include "..\..\MsgDefine.h"
 
 CNormalUI::CNormalUI()
  : m_uButtonState(0)
@@ -96,9 +97,8 @@ void CNormalUI::OnMouseMove(UINT nFlags, QPoint point) {
 }
 
 bool CNormalUI::OnClickBtnClose(void* param) {
-    auto parent = (CContainerUI*)GetParent();
-    if (!parent) return true;
-    parent->Remove(this);
+    if (!m_pManager) return true;
+    ::PostMessage(m_pManager->GetPaintWindow(), WM_KEYWND_MSG_REMOVE_KEY, (LPARAM)((CControlUI*)this), (LPARAM)KeyType());
     return true;
 }
 

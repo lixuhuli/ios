@@ -85,6 +85,14 @@ enum{
     WM_USERWND_MSG_END,
 };
 
+// º¸≈Ã”≥…‰œ˚œ¢
+enum{
+    WM_KEYWND_MSG_BEGIN = WM_USER + 1000,
+    WM_KEYWND_MSG_REMOVE_KEY,
+
+    WM_KEYWND_MSG_END,
+};
+
 // WpGameRoomIM
 enum
 {

@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "IntelligentUI.h"
+#include "MsgDefine.h"
 
 CIntelligentUI::CIntelligentUI()
  : m_uButtonState(0)
@@ -99,9 +100,8 @@ void CIntelligentUI::OnMouseMove(UINT nFlags, QPoint point) {
 }
 
 bool CIntelligentUI::OnClickBtnClose(void* param) {
-    auto parent = (CContainerUI*)GetParent();
-    if (!parent) return true;
-    parent->Remove(this);
+    if (!m_pManager) return true;
+    ::PostMessage(m_pManager->GetPaintWindow(), WM_KEYWND_MSG_REMOVE_KEY, (LPARAM)((CControlUI*)this), (LPARAM)KeyType());
     return true;
 }
 
