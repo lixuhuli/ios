@@ -455,13 +455,6 @@ bool CKeyWnd::OnEditKeyChanged(void* param) {
 
     if (edit_key->GetTag() == edit_key->GetKeyValue()) return true;
 
-    auto screen_width = scene_info_->screen_width();
-    auto screen_height = scene_info_->screen_height();
-    if (screen_width <= 0 || screen_height <= 0) return true;
-
-    QRect rc_body = key_body_->GetPos();
-    if (rc_body.GetWidth() == 0 || rc_body.GetHeight() == 0) return true;
-
     wstring keyboard = edit_key->GetText().GetData();
 
     if (keyboard.empty()) return true;
@@ -492,12 +485,10 @@ bool CKeyWnd::OnEditKeyChanged(void* param) {
         item.nItemHeight = rc.GetHeight();
 
         emulator::KeyInfo info; 
+        auto rc_edit = edit_key->GetPos();
         info.nValue = edit_key->GetKeyValue();
         info.strDescription = PublicLib::AToUtf("自定义技能");
         info.strKeyString = PublicLib::UToUtf8(keyboard);
-
-        auto rc_edit = edit_key->GetPos();
-
         info.nPointX = point.x + int(double(rc_edit.GetWidth()) / 2.0 + 0.5);
         info.nPointY = point.y + int(double(rc_edit.GetHeight()) / 2.0 + 0.5);
 
@@ -510,6 +501,66 @@ bool CKeyWnd::OnEditKeyChanged(void* param) {
     edit_key->SetTag(edit_key->GetKeyValue());
     normal_ctrl->SetName(keyboard.c_str());
     normal_ctrl->SetTag(edit_key->GetKeyValue());
+
+    return true;
+}
+
+bool CKeyWnd::OnEditIntelligentChanged(void* param) {
+    TNotifyUI* pNotify = (TNotifyUI*)param;
+    if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_) return true;
+
+    CKeyEditUI* edit_key = dynamic_cast<CKeyEditUI*>(pNotify->pSender);
+    if (!edit_key) return true;
+
+    if (edit_key->GetTag() == edit_key->GetKeyValue()) return true;
+
+    wstring keyboard = edit_key->GetText().GetData();
+
+    if (keyboard.empty()) return true;
+
+    if (scene_bak_info_->DeleteKey(edit_key->GetKeyValue())) {
+        auto key_string = CGlobalData::Instance()->GetKeyboardStr(edit_key->GetKeyValue());
+        auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
+        if (normal_ctrl) key_body_->Remove(normal_ctrl);
+    }
+
+    auto intelligent = (CIntelligentUI*)edit_key->GetParent();
+    if (!intelligent) return true;
+
+    if (!scene_bak_info_->set_key(emulator::INTELLIGENT_CASTING_KEY, edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard))) {
+        QRect rc = intelligent->GetPos();
+        QPoint point(rc.left, rc.top);
+        if (!KeyToScreen(&point)) return true;
+
+        intelligent->SetScreenPosX(point.x);
+        intelligent->SetScreenPosY(point.y);
+
+        emulator::ItemInfo item;
+        item.itemType = emulator::INTELLIGENT_CASTING_KEY;
+        item.nItemPosX = intelligent->ScreenPosX();
+        item.nItemPosY = intelligent->ScreenPosY();
+        item.nItemWidth = rc.GetWidth();
+        item.nItemHeight = rc.GetHeight();
+        item.nItemRightMoveStop = 0;
+        item.nItemSlider = 250;
+
+        emulator::KeyInfo info; 
+        auto rc_edit = edit_key->GetPos();
+        info.nValue = edit_key->GetKeyValue();
+        info.strDescription = PublicLib::AToUtf("技能智能施法");
+        info.strKeyString = PublicLib::UToUtf8(keyboard);
+        info.nPointX = point.x + int(double(rc_edit.GetWidth()) / 2.0 + 0.5) + rc_edit.left - rc.left;
+        info.nPointY = point.y + int(double(rc_edit.GetHeight()) / 2.0 + 0.5) + rc_edit.top - rc.top;
+
+        item.keys.push_back(info);
+        scene_bak_info_->AddItem(item);
+
+        intelligent->SetHasMapMemory(true);
+    }
+
+    edit_key->SetTag(edit_key->GetKeyValue());
+    intelligent->SetName(keyboard.c_str());
+    intelligent->SetTag(edit_key->GetKeyValue());
 
     return true;
 }
@@ -543,49 +594,13 @@ bool CKeyWnd::OnEditRightMouseChanged(void* param) {
     auto right_mouse = edit_key->GetParent();
     if (!right_mouse) return true;
 
-    if (scene_bak_info_->set_key(emulator::RIGHT_MOUSE_MOVE, edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard))) {
-        edit_key->SetTag(edit_key->GetKeyValue());
-        right_mouse->SetName(keyboard.c_str());
-        right_mouse->SetTag(edit_key->GetKeyValue());
+    if (!scene_bak_info_->set_key(emulator::RIGHT_MOUSE_MOVE, edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard))) {
+        
     }
 
-    return true;
-}
-
-bool CKeyWnd::OnEditIntelligentChanged(void* param) {
-    TNotifyUI* pNotify = (TNotifyUI*)param;
-    if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_) return true;
-
-    CKeyEditUI* edit_key = dynamic_cast<CKeyEditUI*>(pNotify->pSender);
-    if (!edit_key) return true;
-
-    if (edit_key->GetTag() == edit_key->GetKeyValue()) return true;
-
-    auto screen_width = scene_info_->screen_width();
-    auto screen_height = scene_info_->screen_height();
-    if (screen_width <= 0 || screen_height <= 0) return true;
-
-    QRect rc_body = key_body_->GetPos();
-    if (rc_body.GetWidth() == 0 || rc_body.GetHeight() == 0) return true;
-
-    wstring keyboard = edit_key->GetText().GetData();
-
-    if (keyboard.empty()) return true;
-
-    if (scene_bak_info_->DeleteKey(edit_key->GetKeyValue())) {
-        auto key_string = CGlobalData::Instance()->GetKeyboardStr(edit_key->GetKeyValue());
-        auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
-        if (normal_ctrl) key_body_->Remove(normal_ctrl);
-    }
-
-    auto intelligent = edit_key->GetParent();
-    if (!intelligent) return true;
-
-    if (scene_bak_info_->set_key(emulator::INTELLIGENT_CASTING_KEY, edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard))) {
-        edit_key->SetTag(edit_key->GetKeyValue());
-        intelligent->SetName(keyboard.c_str());
-        intelligent->SetTag(edit_key->GetKeyValue());
-    }
+    edit_key->SetTag(edit_key->GetKeyValue());
+    right_mouse->SetName(keyboard.c_str());
+    right_mouse->SetTag(edit_key->GetKeyValue());
 
     return true;
 }
@@ -654,7 +669,7 @@ void CKeyWnd::LoadKeyItems() {
 
     key_body_->RemoveAll();
 
-    auto opacity = scene_info_->opacity();
+    auto opacity = (browser_mode_ ? scene_info_->opacity() : 100);
 
     auto items = scene_info_->GetKeyItems();
     auto it = items.begin();
@@ -667,7 +682,7 @@ void CKeyWnd::LoadKeyItems() {
 
             normal_ctrl->SetName(PublicLib::Utf8ToU(it->keys[0].strKeyString).c_str());
             normal_ctrl->SetTag(it->keys[0].nValue);
-            normal_ctrl->UpdateBrowserMode(true, opacity);
+            normal_ctrl->UpdateBrowserMode(browser_mode_, opacity);
             normal_ctrl->SetScreenPosX(it->nItemPosX);
             normal_ctrl->SetScreenPosY(it->nItemPosY);
             normal_ctrl->SetKeyType(it->itemType);
@@ -689,7 +704,7 @@ void CKeyWnd::LoadKeyItems() {
 
             right_ctrl->SetName(PublicLib::Utf8ToU(it->keys[1].strKeyString).c_str());
             right_ctrl->SetTag(it->keys[1].nValue);
-            right_ctrl->UpdateBrowserMode(true, opacity);
+            right_ctrl->UpdateBrowserMode(browser_mode_, opacity);
             right_ctrl->SetScreenPosX(it->nItemPosX);
             right_ctrl->SetScreenPosY(it->nItemPosY);
             right_ctrl->SetKeyType(it->itemType);
@@ -715,7 +730,7 @@ void CKeyWnd::LoadKeyItems() {
 
             intelligent_ctrl->SetName(PublicLib::Utf8ToU(it->keys[0].strKeyString).c_str());
             intelligent_ctrl->SetTag(it->keys[0].nValue);
-            intelligent_ctrl->UpdateBrowserMode(true, opacity);
+            intelligent_ctrl->UpdateBrowserMode(browser_mode_, opacity);
             intelligent_ctrl->SetScreenPosX(it->nItemPosX);
             intelligent_ctrl->SetScreenPosY(it->nItemPosY);
             intelligent_ctrl->SetKeyType(it->itemType);
