@@ -93,6 +93,7 @@ void CIntelligentUI::OnMouseMove(UINT nFlags, QPoint point) {
         m_rcNewPos.bottom += cy;
         SetPos(m_rcNewPos);
         ::SetCursor(::LoadCursor(NULL, IDC_HAND));
+        m_pManager->SendNotify(this, DUI_MSGTYPE_POS_CHANGED);
         return;
     }
 }

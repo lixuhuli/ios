@@ -59,9 +59,7 @@ void CKeyWnd::InitWindow() {
     scene_info_ = new emulator::SceneInfo();
     scene_info_->loadScene("D:\\IOS\\ios\\bin\\Debug\\ioskeymap\\com.tencent.smoba");
 
-    scene_bak_info_ = scene_info_;
-
-    scene_info_->right_mouse_off();
+    scene_bak_info_ = scene_info_->cloner();
 
     if (btn_tool_handle_) btn_tool_handle_->OnEvent += MakeDelegate(this, &CKeyWnd::OnToolEvent);
 
@@ -83,6 +81,7 @@ void CKeyWnd::SetBrowserMode(bool browser_mode) {
     if (browser_mode_) {
         if (panel_tools_) panel_tools_->SetVisible(false);
         if (key_body_) key_body_->SetBkColor(0);
+        LoadKeyItems();
     }
     else {
         if (panel_tools_) panel_tools_->SetVisible(true);
@@ -130,6 +129,8 @@ CControlUI* CKeyWnd::CreateNormalKey() {
 
     auto edit_key = normal_ctrl->edit_key();
     if (edit_key) edit_key->Subscribe(DUI_MSGTYPE_CHARCHANGED, MakeDelegate(this, &CKeyWnd::OnEditKeyChanged));
+    
+    normal_ctrl->Subscribe(DUI_MSGTYPE_POS_CHANGED, MakeDelegate(this, &CKeyWnd::OnKeyPosChanged));
 
     return normal_ctrl;
 }
@@ -181,20 +182,34 @@ void CKeyWnd::CenterKey(CControlUI* control) {
 }
 
 void CKeyWnd::KeyToScreen(CControlUI* control) {
-    if (!key_body_ || !control) return;
+    if (!control) return;
+
+    auto rc = control->GetPos();
+
+    QPoint point(rc.left, rc.top);
+
+    KeyToScreen(&point);
+
+    auto it = dynamic_cast<Ikey*>(control);
+
+    if (it) it->SetScreenPosX(point.x);
+    if (it) it->SetScreenPosY(point.y);
+}
+
+bool CKeyWnd::KeyToScreen(LPPOINT point) {
+    if (!point || !key_body_) return false;
 
     auto screen_width = scene_info_->screen_width();
     auto screen_height = scene_info_->screen_height();
 
-    if (screen_width <= 0 || screen_height <= 0) return;
+    if (screen_width <= 0 || screen_height <= 0) return false;
 
-    if (CIosMgr::Instance()->IosWndScale() <= 0.000001) return;
+    if (CIosMgr::Instance()->IosWndScale() <= 0.000001) return false;
 
     auto rc_body = key_body_->GetPos();
-    auto rc = control->GetPos();
 
     auto game_height = rc_body.GetHeight();
-    auto game_width  = int((double)game_height / CIosMgr::Instance()->IosWndScale());
+    auto game_width  = int((double)game_height / CIosMgr::Instance()->IosWndScale() + 0.5);
 
     int offset_x = 0;
     int offset_y = 0;
@@ -203,17 +218,14 @@ void CKeyWnd::KeyToScreen(CControlUI* control) {
     }
     else if (game_width > rc_body.GetWidth()) {
         game_width = rc_body.GetWidth();
-        game_height = int((double)game_width * CIosMgr::Instance()->IosWndScale());
+        game_height = int((double)game_width * CIosMgr::Instance()->IosWndScale() + 0.5);
         offset_y = (rc_body.GetHeight() - game_height) / 2;
     }
 
-    auto screen_pos_x = (int)((double)(rc.left - rc_body.left - offset_x) *  (double)screen_width / (double)game_width);
-    auto screen_pos_y = (int)((double)(rc.top - rc_body.top - offset_y) *  (double)screen_height / (double)game_height);
+    point->x = (int)((double)(point->x - rc_body.left - offset_x) *  (double)screen_width / (double)game_width + 0.5);
+    point->y = (int)((double)(point->y - rc_body.top - offset_y) *  (double)screen_height / (double)game_height + 0.5);
 
-    auto it = dynamic_cast<Ikey*>(control);
-
-    if (it) it->SetScreenPosX(screen_pos_x);
-    if (it) it->SetScreenPosY(screen_pos_y);
+    return true;
 }
 
 DuiLib::CControlUI* CKeyWnd::CreateRightMouse() {
@@ -230,6 +242,8 @@ DuiLib::CControlUI* CKeyWnd::CreateRightMouse() {
 
     auto slider_mouse = right_ctrl->slider_mouse();
     if (slider_mouse) slider_mouse->Subscribe(DUI_MSGTYPE_VALUECHANGED, MakeDelegate(this, &CKeyWnd::OnSliderRightMouseValueChanged));
+
+    right_ctrl->Subscribe(DUI_MSGTYPE_POS_CHANGED, MakeDelegate(this, &CKeyWnd::OnKeyPosChanged));
 
     return right_ctrl;
 }
@@ -307,6 +321,8 @@ DuiLib::CControlUI* CKeyWnd::CreateIntelligent() {
 
     auto opt_switch = intelligent_ctrl->opt_switch();
     if (opt_switch) opt_switch->Subscribe(DUI_MSGTYPE_CLICK, MakeDelegate(this, &CKeyWnd::OnOptIntelligentSwitch));
+
+    intelligent_ctrl->Subscribe(DUI_MSGTYPE_POS_CHANGED, MakeDelegate(this, &CKeyWnd::OnKeyPosChanged));
 
     return intelligent_ctrl;
 }
@@ -431,7 +447,7 @@ bool CKeyWnd::OnEditKeyChanged(void* param) {
     auto normal_ctrl = edit_key->GetParent();
     if (!normal_ctrl) return true;
 
-    if (!scene_bak_info_->set_normal_key(edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard))) {
+    if (!scene_bak_info_->set_key(emulator::NORMAL_KEY, edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard))) {
         QRect rc = normal_ctrl->GetPos();
 
         emulator::ItemInfo item;
@@ -451,11 +467,11 @@ bool CKeyWnd::OnEditKeyChanged(void* param) {
         scene_bak_info_->AddItem(item);
 
         edit_key->SetTag(edit_key->GetKeyValue());
-        normal_ctrl->SetName(keyboard.c_str());
     }
 
     edit_key->SetTag(edit_key->GetKeyValue());
     normal_ctrl->SetName(keyboard.c_str());
+    normal_ctrl->SetTag(edit_key->GetKeyValue());
 
     return true;
 }
@@ -489,9 +505,10 @@ bool CKeyWnd::OnEditRightMouseChanged(void* param) {
     auto right_mouse = edit_key->GetParent();
     if (!right_mouse) return true;
 
-    if (scene_bak_info_->set_right_mouse_key(edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard))) {
+    if (scene_bak_info_->set_key(emulator::RIGHT_MOUSE_MOVE, edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard))) {
         edit_key->SetTag(edit_key->GetKeyValue());
         right_mouse->SetName(keyboard.c_str());
+        right_mouse->SetTag(edit_key->GetKeyValue());
     }
 
     return true;
@@ -526,9 +543,10 @@ bool CKeyWnd::OnEditIntelligentChanged(void* param) {
     auto intelligent = edit_key->GetParent();
     if (!intelligent) return true;
 
-    if (scene_bak_info_->set_intelligent_key(edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard))) {
+    if (scene_bak_info_->set_key(emulator::INTELLIGENT_CASTING_KEY, edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard))) {
         edit_key->SetTag(edit_key->GetKeyValue());
         intelligent->SetName(keyboard.c_str());
+        intelligent->SetTag(edit_key->GetKeyValue());
     }
 
     return true;
@@ -594,7 +612,9 @@ bool CKeyWnd::OnSliderKeyTransChanged(void* param) {
 }
 
 void CKeyWnd::LoadKeyItems() {
-    if (!scene_info_) return;
+    if (!scene_info_ || !key_body_) return;
+
+    key_body_->RemoveAll();
 
     auto opacity = scene_info_->opacity();
 
@@ -608,9 +628,11 @@ void CKeyWnd::LoadKeyItems() {
             if (!normal_ctrl) continue;
 
             normal_ctrl->SetName(PublicLib::Utf8ToU(it->keys[0].strKeyString).c_str());
+            normal_ctrl->SetTag(it->keys[0].nValue);
             normal_ctrl->UpdateBrowserMode(true, opacity);
             normal_ctrl->SetScreenPosX(it->nItemPosX);
             normal_ctrl->SetScreenPosY(it->nItemPosY);
+            normal_ctrl->SetKeyType(it->itemType);
 
             auto edit_key = normal_ctrl->edit_key();
 
@@ -627,9 +649,11 @@ void CKeyWnd::LoadKeyItems() {
             if (!right_ctrl) continue;
 
             right_ctrl->SetName(PublicLib::Utf8ToU(it->keys[1].strKeyString).c_str());
+            right_ctrl->SetTag(it->keys[1].nValue);
             right_ctrl->UpdateBrowserMode(true, opacity);
             right_ctrl->SetScreenPosX(it->nItemPosX);
             right_ctrl->SetScreenPosY(it->nItemPosY);
+            right_ctrl->SetKeyType(it->itemType);
 
             auto edit_key = right_ctrl->edit_key();
             if (edit_key) {
@@ -650,9 +674,11 @@ void CKeyWnd::LoadKeyItems() {
             if (!intelligent_ctrl) continue;
 
             intelligent_ctrl->SetName(PublicLib::Utf8ToU(it->keys[0].strKeyString).c_str());
+            intelligent_ctrl->SetTag(it->keys[0].nValue);
             intelligent_ctrl->UpdateBrowserMode(true, opacity);
             intelligent_ctrl->SetScreenPosX(it->nItemPosX);
             intelligent_ctrl->SetScreenPosY(it->nItemPosY);
+            intelligent_ctrl->SetKeyType(it->itemType);
 
             auto edit_key = intelligent_ctrl->edit_key();
             if (edit_key) {
@@ -688,7 +714,7 @@ void CKeyWnd::UpdateItemsPos() {
     QRect rc_body = key_body_->GetPos();
 
     auto game_height = rc_body.GetHeight();
-    auto game_width  = int((double)game_height / CIosMgr::Instance()->IosWndScale());
+    auto game_width  = int((double)game_height / CIosMgr::Instance()->IosWndScale() + 0.5);
 
     int offset_x = 0;
     int offset_y = 0;
@@ -697,7 +723,7 @@ void CKeyWnd::UpdateItemsPos() {
     }
     else if (game_width > rc_body.GetWidth()) {
         game_width = rc_body.GetWidth();
-        game_height = int((double)game_width * CIosMgr::Instance()->IosWndScale());
+        game_height = int((double)game_width * CIosMgr::Instance()->IosWndScale() + 0.5);
         offset_y = (rc_body.GetHeight() - game_height) / 2;
     }
 
@@ -712,11 +738,88 @@ void CKeyWnd::UpdateItemsPos() {
         auto height = it->GetFixedHeight();
 
         QRect rc;
-        rc.left = rc_body.left + key->ScreenPosX() * game_width / screen_width + offset_x;
-        rc.top = rc_body.top + key->ScreenPosY() * game_height / screen_height + offset_y;
+        rc.left = rc_body.left + (LONG)((double)key->ScreenPosX() * (double)game_width / (double)screen_width + 0.5) + offset_x;
+        rc.top = rc_body.top + (LONG)((double)key->ScreenPosY() * (double)game_height / (double)screen_height + 0.5) + offset_y;
         rc.right = rc.left + width;
         rc.bottom = rc.top + height;
 
         it->SetPos(rc);
     }
+}
+
+bool CKeyWnd::OnKeyPosChanged(void* param) {
+    TNotifyUI* pNotify = (TNotifyUI*)param;
+    if (!pNotify || !pNotify->pSender || !scene_bak_info_) return true;
+
+    auto it = dynamic_cast<Ikey*>(pNotify->pSender);
+    if (!it) return true;
+
+    auto control = pNotify->pSender;
+    if (!control) return true;
+
+    KeyToScreen(control);
+
+    switch (it->KeyType()) {
+    case emulator::NORMAL_KEY: {
+        auto normal_ctrl = (CNormalUI*)control;
+        if (!normal_ctrl) break;
+        auto edit_key = normal_ctrl->edit_key();
+        if (!edit_key) break;
+
+        auto rc = normal_ctrl->GetPos();
+        QPoint point(rc.left, rc.top);
+        if (!KeyToScreen(&point)) break;
+
+        auto rc_edit = edit_key->GetPos();
+
+        point.x = point.x + int(double(rc_edit.GetWidth()) / 2.0 + 0.5);
+        point.y = point.y + int(double(rc_edit.GetHeight()) / 2.0 + 0.5);
+
+        scene_bak_info_->set_key_pos(normal_ctrl->GetTag(), it->ScreenPosX(), it->ScreenPosY(), point);
+    }
+    break;
+    case emulator::INTELLIGENT_CASTING_KEY: {
+        auto intelligent_ctrl = (CIntelligentUI*)control;
+        if (!intelligent_ctrl) break;
+        auto edit_key = intelligent_ctrl->edit_key();
+        if (!edit_key) break;
+
+        auto rc = intelligent_ctrl->GetPos();
+        QPoint point(rc.left, rc.top);
+        if (!KeyToScreen(&point)) break;
+
+        auto rc_edit = edit_key->GetPos();
+
+        point.x = point.x + int(double(rc_edit.GetWidth()) / 2.0 + 0.5) + rc_edit.left - rc.left;
+        point.y = point.y + int(double(rc_edit.GetHeight()) / 2.0 + 0.5) + rc_edit.top - rc.top;
+
+        scene_bak_info_->set_key_pos(edit_key->GetKeyValue(), it->ScreenPosX(), it->ScreenPosY(), point);
+    }
+    break;
+    case emulator::RIGHT_MOUSE_MOVE: {
+        auto right_ctrl = (CRightMouseMoveUI*)control;
+        if (!right_ctrl) break;
+        auto edit_key = right_ctrl->edit_key();
+        if (!edit_key) break;
+
+        auto rc = right_ctrl->GetPos();
+        QPoint point(rc.left, rc.top);
+        if (!KeyToScreen(&point)) break;
+
+        auto rc_edit = edit_key->GetPos();
+
+        point.x = point.x + int(double(rc_edit.GetWidth()) / 2.0 + 0.5) + rc_edit.left - rc.left;
+        point.y = point.y + int(double(rc_edit.GetHeight()) / 2.0 + 0.5) + rc_edit.top - rc.top;
+
+        scene_bak_info_->set_key_pos(edit_key->GetKeyValue(), it->ScreenPosX(), it->ScreenPosY(), point);
+        scene_bak_info_->set_key_pos(-9, point);
+    }
+    break;
+    default:
+        break;
+    }
+
+    //scene_bak_info_->set_key_pos(control->GetTag(), it->ScreenPosX(), it->ScreenPosY());
+
+    return true;
 }

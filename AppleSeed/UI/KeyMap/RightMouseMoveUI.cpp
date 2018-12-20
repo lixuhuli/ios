@@ -74,24 +74,12 @@ void CRightMouseMoveUI::SetPos(RECT rc) {
 }
 
 void CRightMouseMoveUI::OnLButtonDown(UINT nFlags, QPoint point) {
-    OnLButtonDown_Edit(nFlags, point);
-}
-
-void CRightMouseMoveUI::OnLButtonDown_Edit(UINT nFlags, QPoint point) {
     m_uButtonState |= UISTATE_CAPTURED;
     ptLastMouse = point;
     m_rcNewPos = m_rcItem;
 }
 
-void CRightMouseMoveUI::OnLButtonDown_Browse(UINT nFlags, QPoint point) {
-
-}
-
 void CRightMouseMoveUI::OnMouseMove(UINT nFlags, QPoint point) {
-    OnMouseMove_Edit(nFlags, point);
-}
-
-void CRightMouseMoveUI::OnMouseMove_Edit(UINT nFlags, QPoint point) {
     if ((m_uButtonState & UISTATE_CAPTURED) != 0) {
         LONG cx = point.x - ptLastMouse.x;
         LONG cy = point.y - ptLastMouse.y;
@@ -104,6 +92,7 @@ void CRightMouseMoveUI::OnMouseMove_Edit(UINT nFlags, QPoint point) {
         m_rcNewPos.bottom += cy;
         SetPos(m_rcNewPos);
         ::SetCursor(::LoadCursor(NULL, IDC_HAND));
+        m_pManager->SendNotify(this, DUI_MSGTYPE_POS_CHANGED);
         return;
     }
 }

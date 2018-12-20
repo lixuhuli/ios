@@ -67,6 +67,8 @@ protected:
     bool OnOptIntelligentSwitch(void* param);
     bool OnSliderKeyTransChanged(void* param);
 
+    bool OnKeyPosChanged(void* param);
+
     BEGIN_INIT_CTRL()
         DECLARE_CTRL_TYPE(btn_tool_handle_, CButtonUI, L"btn_tool_handle")
         DECLARE_CTRL_TYPE(btn_tool_normal_, CButtonUI, L"btn_tool_normal")
@@ -103,6 +105,7 @@ private:
 
     void CenterKey(CControlUI* control);
     void KeyToScreen(CControlUI* control);
+    bool KeyToScreen(LPPOINT point);
 
 private:
     CButtonUI* btn_tool_handle_;

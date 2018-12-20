@@ -258,6 +258,7 @@ void CIosMgr::OnForegroundAppChanged(uintptr_t param1, uintptr_t param2) {
     if (strcmp(context, "com.tencent.smoba") == 0) {
         if (hor_screen_mode_) {
             CreateKeyWnd(CGlobalData::Instance()->GetMainWnd());
+            UpdateKeyMap(L"D:\\IOS\\ios\\bin\\Debug\\ioskeymap\\com.tencent.smoba");
         }
     }
     else {
