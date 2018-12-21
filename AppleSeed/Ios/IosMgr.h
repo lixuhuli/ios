@@ -41,6 +41,8 @@ public:
     // 模拟器状态信息 给外部调用
     base::WeakPtr<emulator::iEmulatorStateInfo> emulator_state_info();
 
+    void CloseKeyWnd();
+
 public:
     bool IosEngineOn(const string& iso_file);
     bool IosCheckLicense(const char *serial);

@@ -368,7 +368,9 @@ bool CWndMain::OnBtnClickUser(void* param) {
 }
 
 void CWndMain::Exit() {
-    RELEASE_SUB_PAGE(page_download_)
+    RELEASE_SUB_PAGE(page_download_);
+
+    CIosMgr::Instance()->CloseKeyWnd();
 
     Close();
 }

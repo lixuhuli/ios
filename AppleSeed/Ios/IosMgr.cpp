@@ -58,11 +58,6 @@ void CIosMgr::Exit() {
     //if (emulator_state_info_ && !emulator_state_info_->engine_off()) EngineOff();
 
     emulator_state_info_ = nullptr;
-
-    if (key_wnd_){
-        key_wnd_->Close(IDCLOSE);
-        key_wnd_ = nullptr;
-    }
 }
 
 base::WeakPtr<emulator::iEmulatorStateInfo> CIosMgr::emulator_state_info() {
@@ -244,10 +239,7 @@ void CIosMgr::OnScreenSizeChanged(uintptr_t param1, uintptr_t param2) {
             ::PostMessage(CGlobalData::Instance()->GetMainWnd(), WM_MAINWND_MSG_UPDATE_IOSWND_POS, 0, 0);
         }
 
-        if (key_wnd_) {
-            key_wnd_->Close(IDCLOSE);
-            key_wnd_ = nullptr;
-        }
+        CloseKeyWnd();
     }
 }
 
@@ -261,12 +253,7 @@ void CIosMgr::OnForegroundAppChanged(uintptr_t param1, uintptr_t param2) {
             UpdateKeyMap(L"D:\\IOS\\ios\\bin\\Debug\\ioskeymap\\com.tencent.smoba");
         }
     }
-    else {
-        if (key_wnd_) {
-            key_wnd_->Close(IDCLOSE);
-            key_wnd_ = nullptr;
-        }
-    }
+    else CloseKeyWnd();
 
     return;
 }
@@ -399,10 +386,7 @@ bool CIosMgr::IosSnap(const std::string& save_path) {
 }
 
 void CIosMgr::CreateKeyWnd(HWND hParentWnd) {
-    if (key_wnd_){
-        key_wnd_->Close(IDCLOSE);
-        key_wnd_ = nullptr;
-    }
+    CloseKeyWnd();
 
     key_wnd_ = new CKeyWnd;
     if (!key_wnd_ || !ios_wnd_) return;
@@ -501,4 +485,11 @@ void CIosMgr::OnEngineOff(int state) {
 
 int CIosMgr::UpdateKeyMap(const std::wstring& file_path) {
     return LoadKeyMap(PublicLib::UToUtf8(file_path).c_str());
+}
+
+void CIosMgr::CloseKeyWnd() {
+    if (key_wnd_){
+        key_wnd_->Close(IDCLOSE);
+        key_wnd_ = nullptr;
+    }
 }

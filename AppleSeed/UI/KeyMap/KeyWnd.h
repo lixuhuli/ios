@@ -8,6 +8,7 @@
 namespace emulator{
     class SceneInfo;
     class iSceneInfo;
+    struct tagItemInfo;
 }
 
 class CMDLDropSource : public CDropSource {
@@ -104,6 +105,10 @@ private:
     CControlUI* CreateNormalKey();
     CControlUI* CreateRightMouse();
     CControlUI* CreateIntelligent();
+
+    void InitIntelligent(CControlUI* control, const emulator::tagItemInfo& item);
+    void InitNormalKey(CControlUI* control, const emulator::tagItemInfo& item);
+    void InitRightMouse(CControlUI* control, const emulator::tagItemInfo& item);
 
     void CenterKey(CControlUI* control);
     bool KeyToScreen(CControlUI* control);
