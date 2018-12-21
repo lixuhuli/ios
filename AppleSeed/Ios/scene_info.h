@@ -165,19 +165,6 @@ namespace emulator {
             return m_items;
         }
 
-        bool DeleteRightMouse(std::string& strKeyString) {
-            auto it = m_items.begin();
-            for (; it != m_items.end(); it++) {
-                if (it->itemType == RIGHT_MOUSE_MOVE) {
-                    if (it->keys.size() >= 2) strKeyString = it->keys[1].strKeyString;
-                    m_items.erase(it);
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         bool DeleteKey(const ItemType& type, int key_value) {
             auto it = m_items.begin();
             for (; it != m_items.end(); it++) {

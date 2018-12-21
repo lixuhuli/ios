@@ -292,10 +292,17 @@ bool CKeyWnd::OnBtnToolRightRun(void* param) {
         InitRightMouse(right_ctrl, item);
     }
     else {
-        std::string key_string;
-        if (scene_bak_info_->DeleteRightMouse(key_string) && !key_string.empty()) {
-            auto normal_ctrl = key_body_->FindSubControl(PublicLib::Utf8ToU(key_string).c_str());
-            if (normal_ctrl) key_body_->Remove(normal_ctrl);
+        for (int i = 0; i < key_body_->GetCount(); i++) {
+            auto it = key_body_->GetItemAt(i);
+            if (!it) continue;
+            auto key = dynamic_cast<Ikey*>(it);
+            if (!key) continue;
+
+            if (key->KeyType() == emulator::RIGHT_MOUSE_MOVE) {
+                scene_bak_info_->DeleteKey(emulator::RIGHT_MOUSE_MOVE, it->GetTag());
+                key_body_->Remove(it);
+                break;
+            }
         }
     }
 
