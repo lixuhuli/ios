@@ -21,7 +21,8 @@ CKeyWnd::CKeyWnd()
  , m_pMDLDropTarget(nullptr)
  , m_pMDLDragDataSrc(nullptr)
  , key_slider_trans_(nullptr)
- , lbl_trans_percent_(nullptr) {
+ , lbl_trans_percent_(nullptr)
+ , btn_tool_intelligent_(nullptr) {
     m_dwStyle = UI_WNDSTYLE_DIALOG | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
 
     m_pMDLDragDataSrc = new CMDLDropSource();
@@ -121,6 +122,32 @@ bool CKeyWnd::OnClickBtnClose(void* lpParam) {
     return true;
 }
 
+CControlUI* CKeyWnd::CreateHandleKey() {
+    if (!key_body_) return nullptr;
+
+    CDialogBuilder builder;
+    auto handle_ctrl = (CRemoteHandleUI*)builder.Create(L"KeyMap/body/HandleCtrl.xml", (UINT)0, this, &m_pm);
+    if (!handle_ctrl) return nullptr;
+    key_body_->Add(handle_ctrl);
+
+    handle_ctrl->SetKeyType(emulator::HANDLE_KEY);
+
+    return handle_ctrl;
+}
+
+bool CKeyWnd::OnBtnToolHandle(void* param) {
+    if (!key_body_ || !btn_tool_handle_) return true;
+    if (btn_tool_handle_->GetTag() == 1) return true;
+
+    auto handle_ctrl = (CRemoteHandleUI*)CreateHandleKey();
+
+    CenterKey(handle_ctrl);
+    KeyToScreen(handle_ctrl);
+    btn_tool_handle_->SetTag(1);
+
+    return true;
+}
+
 CControlUI* CKeyWnd::CreateNormalKey() {
     if (!key_body_) return nullptr;
 
@@ -135,36 +162,21 @@ CControlUI* CKeyWnd::CreateNormalKey() {
 
     normal_ctrl->Subscribe(DUI_MSGTYPE_POS_CHANGED, MakeDelegate(this, &CKeyWnd::OnKeyPosChanged));
 
+    normal_ctrl->SetKeyType(emulator::NORMAL_KEY);
+
     return normal_ctrl;
 }
 
-bool CKeyWnd::OnBtnToolHandle(void* param) {
-    if (!key_body_) return true;
-
-    auto handle_ctrl = m_pm.FindSubControlByClass(key_body_, L"RemoteHandleUI");
-    if (!handle_ctrl) {
-        CDialogBuilder builder;
-        handle_ctrl = (CRemoteHandleUI*)builder.Create(L"KeyMap/body/HandleCtrl.xml", (UINT)0, this, &m_pm);
-        if (!handle_ctrl) return true;
-        key_body_->Add(handle_ctrl);
-    }
-
-    CenterKey(handle_ctrl);
-    KeyToScreen(handle_ctrl);
-
-    return true;
-}
-
 bool CKeyWnd::OnBtnToolNormal(void* param) {
-    if (!key_body_ || !scene_info_) return true;
+    if (!key_body_ || !scene_info_ || !btn_tool_normal_) return true;
+    if (btn_tool_normal_->GetTag() == 1) return true;
 
     auto normal_ctrl = (CNormalUI*)CreateNormalKey();
     if (!normal_ctrl) return true;
 
     CenterKey(normal_ctrl);
     KeyToScreen(normal_ctrl);
-
-    normal_ctrl->SetKeyType(emulator::NORMAL_KEY);
+    btn_tool_normal_->SetTag(1);
 
     return true;
 }
@@ -252,6 +264,8 @@ DuiLib::CControlUI* CKeyWnd::CreateRightMouse() {
 
     right_ctrl->Subscribe(DUI_MSGTYPE_POS_CHANGED, MakeDelegate(this, &CKeyWnd::OnKeyPosChanged));
 
+    right_ctrl->SetKeyType(emulator::RIGHT_MOUSE_MOVE);
+
     return right_ctrl;
 }
 
@@ -287,15 +301,18 @@ bool CKeyWnd::OnBtnToolRightRun(void* param) {
         info.nPointY = 594;
         item.keys.push_back(info);
 
-        scene_bak_info_->AddItem(item);
-
-        InitRightMouse(right_ctrl, item);
-
+        // 首先要删除对应的key值
         if (scene_bak_info_->DeleteKey(info.nValue)) {
             auto key_string = CGlobalData::Instance()->GetKeyboardStr(info.nValue);
             auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
             if (normal_ctrl) key_body_->Remove(normal_ctrl);
         }
+
+        scene_bak_info_->AddItem(item);
+
+        InitRightMouse(right_ctrl, item);
+
+        
     }
     else {
         for (int i = 0; i < key_body_->GetCount(); i++) {
@@ -335,17 +352,21 @@ DuiLib::CControlUI* CKeyWnd::CreateIntelligent() {
 
     intelligent_ctrl->Subscribe(DUI_MSGTYPE_POS_CHANGED, MakeDelegate(this, &CKeyWnd::OnKeyPosChanged));
 
+    intelligent_ctrl->SetKeyType(emulator::INTELLIGENT_CASTING_KEY);
+
     return intelligent_ctrl;
 }
 
 bool CKeyWnd::OnBtnToolIntelligent(void* param) {
-    if (!key_body_) return true;
+    if (!key_body_ || !btn_tool_intelligent_) return true;
+    if (btn_tool_intelligent_->GetTag() == 1) return true;
 
     auto intelligent_ctrl = (CIntelligentUI*)CreateIntelligent();
     if (!intelligent_ctrl) return true;
 
     CenterKey(intelligent_ctrl);
     KeyToScreen(intelligent_ctrl);
+    btn_tool_intelligent_->SetTag(1);
 
     return true;
 }
@@ -384,9 +405,28 @@ LRESULT CKeyWnd::OnSetCursor(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 
 LRESULT CKeyWnd::OnRemoveKey(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     CControlUI* control = (CControlUI*)(wParam);
-    if (!control || !scene_bak_info_ || !key_body_) return 0;
+    if (!control) return 0;
 
-    scene_bak_info_->DeleteKey(control->GetTag());
+    auto key = dynamic_cast<Ikey*>(control);
+    if (!key || !scene_bak_info_ || !key_body_) return 0;
+
+    if (!key->HasMapMemory()) {
+        auto key_type = key->KeyType();
+        switch (key_type) {
+        case emulator::NORMAL_KEY:
+            if (btn_tool_normal_) btn_tool_normal_->SetTag(0);
+            break;
+        case emulator::INTELLIGENT_CASTING_KEY:
+            if (btn_tool_intelligent_) btn_tool_intelligent_->SetTag(0);
+            break;
+        case emulator::HANDLE_KEY:
+            if (btn_tool_handle_) btn_tool_handle_->SetTag(0);
+            break;
+        default:
+            break;
+        }
+    }
+    else scene_bak_info_->DeleteKey(control->GetTag());
 
     key_body_->Remove(control);
 
@@ -452,7 +492,7 @@ STDMETHODIMP CMDLDropTarget::Drop(LPDATAOBJECT pDataObj, DWORD grfKeyState,
 
 bool CKeyWnd::OnEditKeyChanged(void* param) {
     TNotifyUI* pNotify = (TNotifyUI*)param;
-    if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_) return true;
+    if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_ || !btn_tool_normal_) return true;
 
     CKeyEditUI* edit_key = dynamic_cast<CKeyEditUI*>(pNotify->pSender);
     if (!edit_key) return true;
@@ -501,6 +541,7 @@ bool CKeyWnd::OnEditKeyChanged(void* param) {
         scene_bak_info_->AddItem(item);
 
         InitNormalKey(normal_ctrl, item);
+        btn_tool_normal_->SetTag(0);
 
         return true;
     }
@@ -514,7 +555,7 @@ bool CKeyWnd::OnEditKeyChanged(void* param) {
 
 bool CKeyWnd::OnEditIntelligentChanged(void* param) {
     TNotifyUI* pNotify = (TNotifyUI*)param;
-    if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_) return true;
+    if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_ || !btn_tool_intelligent_) return true;
 
     CKeyEditUI* edit_key = dynamic_cast<CKeyEditUI*>(pNotify->pSender);
     if (!edit_key) return true;
@@ -564,6 +605,7 @@ bool CKeyWnd::OnEditIntelligentChanged(void* param) {
         scene_bak_info_->AddItem(item);
 
         InitIntelligent(intelligent, item);
+        btn_tool_intelligent_->SetTag(0);
 
         return true;
     }

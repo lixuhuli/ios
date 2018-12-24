@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "RemoteHandleUI.h"
+#include "MsgDefine.h"
 
 CRemoteHandleUI::CRemoteHandleUI()
  : m_uButtonState(0)
@@ -297,9 +298,8 @@ void CRemoteHandleUI::OnMouseMove(UINT nFlags, QPoint point) {
 }
 
 bool CRemoteHandleUI::OnClickBtnClose(void* param) {
-    auto parent = (CContainerUI*)GetParent();
-    if (!parent) return true;
-    parent->Remove(this);
+    if (!m_pManager) return true;
+    ::PostMessage(m_pManager->GetPaintWindow(), WM_KEYWND_MSG_REMOVE_KEY, (LPARAM)((CControlUI*)this), (LPARAM)KeyType());
     return true;
 }
 

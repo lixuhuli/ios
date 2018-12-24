@@ -74,6 +74,7 @@ protected:
     BEGIN_INIT_CTRL()
         DECLARE_CTRL_TYPE(btn_tool_handle_, CButtonUI, L"btn_tool_handle")
         DECLARE_CTRL_TYPE(btn_tool_normal_, CButtonUI, L"btn_tool_normal")
+        DECLARE_CTRL_TYPE(btn_tool_intelligent_, CButtonUI, L"btn_tool_intelligent")
         DECLARE_CTRL_TYPE(key_body_, CVerticalLayoutUI, L"key_body")
         DECLARE_CTRL_TYPE(opt_right_run_, COptionUI, L"opt_right_run")
         DECLARE_CTRL_TYPE(panel_tools_, CVerticalLayoutUI, L"panel_tools")
@@ -102,6 +103,7 @@ private:
     void LoadKeyItems();
     void UpdateItemsPos();
 
+    CControlUI* CreateHandleKey();
     CControlUI* CreateNormalKey();
     CControlUI* CreateRightMouse();
     CControlUI* CreateIntelligent();
@@ -117,6 +119,7 @@ private:
 private:
     CButtonUI* btn_tool_handle_;
     CButtonUI* btn_tool_normal_;
+    CButtonUI* btn_tool_intelligent_;
     COptionUI* opt_right_run_;
     CVerticalLayoutUI* key_body_;
     CVerticalLayoutUI* panel_tools_;
