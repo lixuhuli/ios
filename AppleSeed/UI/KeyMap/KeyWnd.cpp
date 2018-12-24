@@ -290,6 +290,12 @@ bool CKeyWnd::OnBtnToolRightRun(void* param) {
         scene_bak_info_->AddItem(item);
 
         InitRightMouse(right_ctrl, item);
+
+        if (scene_bak_info_->DeleteKey(info.nValue)) {
+            auto key_string = CGlobalData::Instance()->GetKeyboardStr(info.nValue);
+            auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
+            if (normal_ctrl) key_body_->Remove(normal_ctrl);
+        }
     }
     else {
         for (int i = 0; i < key_body_->GetCount(); i++) {
@@ -460,7 +466,11 @@ bool CKeyWnd::OnEditKeyChanged(void* param) {
     if (scene_bak_info_->DeleteKey(edit_key->GetKeyValue())) {
         auto key_string = CGlobalData::Instance()->GetKeyboardStr(edit_key->GetKeyValue());
         auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
-        if (normal_ctrl) key_body_->Remove(normal_ctrl);
+        if (normal_ctrl) {
+            auto key = dynamic_cast<Ikey*>(normal_ctrl);
+            if (key && key->KeyType() == emulator::RIGHT_MOUSE_MOVE && opt_right_run_) opt_right_run_->Selected(false);
+            key_body_->Remove(normal_ctrl);
+        }
     }
 
     auto normal_ctrl = (CNormalUI*)edit_key->GetParent();
@@ -518,7 +528,11 @@ bool CKeyWnd::OnEditIntelligentChanged(void* param) {
     if (scene_bak_info_->DeleteKey(edit_key->GetKeyValue())) {
         auto key_string = CGlobalData::Instance()->GetKeyboardStr(edit_key->GetKeyValue());
         auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
-        if (normal_ctrl) key_body_->Remove(normal_ctrl);
+        if (normal_ctrl) {
+            auto key = dynamic_cast<Ikey*>(normal_ctrl);
+            if (key && key->KeyType() == emulator::RIGHT_MOUSE_MOVE && opt_right_run_) opt_right_run_->Selected(false);
+            key_body_->Remove(normal_ctrl);
+        }
     }
 
     auto intelligent = (CIntelligentUI*)edit_key->GetParent();
