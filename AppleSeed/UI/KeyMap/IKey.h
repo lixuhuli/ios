@@ -26,7 +26,7 @@ public:
     virtual void SetHasMapMemory(const bool& value) { has_map_memory_ = value; }
     virtual const bool& HasMapMemory() { return has_map_memory_; }
 
-    virtual int GetTransparent(int opacity) { return int(((double)opacity) * 255.0 / 100.0); }
+    virtual int GetTransparent(int opacity) { auto transparent = int(((double)opacity) * 255.0 / 100.0); return (transparent > 0 ? transparent : 1); }
 
 private:
     int screen_pos_x_;

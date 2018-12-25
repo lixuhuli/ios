@@ -91,6 +91,7 @@ protected:
         BIND_CTRL_CLICK(L"btn_save", &CKeyWnd::OnBtnSave)
         BIND_CTRL_CLICK(L"btn_delete", &CKeyWnd::OnBtnDelete)
         BIND_CTRL_EVENT(L"key_slider_trans", DUI_MSGTYPE_VALUECHANGED, &CKeyWnd::OnSliderKeyTransChanged)
+        BIND_CTRL_EVENT(L"key_slider_trans", DUI_MSGTYPE_VALUECHANGING, &CKeyWnd::OnSliderKeyTransChanged)
     END_BIND_CTRL()
 
 protected:

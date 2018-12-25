@@ -76,6 +76,7 @@ union DuiMessageMapFunctions
 #define DUI_MSGTYPE_ITEMCOLLAPSE           (_T("itemcollapse"))
 #define DUI_MSGTYPE_ITEMACTIVATE           (_T("itemactivate"))
 #define DUI_MSGTYPE_VALUECHANGED           (_T("valuechanged"))
+#define DUI_MSGTYPE_VALUECHANGING          (_T("valuechanging"))
 
 #define DUI_MSGTYPE_SELECTCHANGED 			(_T("selectchanged"))
 #define DUI_MSGTYPE_WND_KILLFOCUS			(_T("wndkillfocus"))
