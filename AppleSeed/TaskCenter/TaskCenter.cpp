@@ -12,6 +12,7 @@
 #include "TaskGetUpdateLog.h"
 #include "TaskUnzipFile.h"
 #include "TaskIosEngineUpdate.h"
+#include "TaskGetKeyboardConfig.h"
 
 namespace TaskCenter{
 
@@ -435,6 +436,23 @@ namespace TaskCenter{
         else {
             pTask->Clear();
             ((CTaskIosEngineUpdate*)pTask)->Init(msg, uMsg, strVersion);
+        }
+
+        HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, Thread, pTask, 0, nullptr);
+        pTask->SetThread(hThread);
+        return (UINT_PTR)pTask;
+    }
+
+    UINT_PTR CTaskCenter::CreateGetKeyBoardConfigTask(const MSG& msg, const wstring& strUrl, const wstring& strDownloadPath, const wstring& strFileDir) {
+        ITask* pTask = GetFreeTaskByType(m_taskList, TaskGetKeyboardConfig);
+        if (nullptr == pTask) {
+            CTaskGetKeyBoardConfig *pGetKeyBoardConfigTask = new CTaskGetKeyBoardConfig(msg, strUrl, strDownloadPath, strFileDir);
+            pTask = pGetKeyBoardConfigTask;
+            m_taskList.push_back((UINT_PTR)pTask);
+        }
+        else {
+            pTask->Clear();
+            ((CTaskGetKeyBoardConfig*)pTask)->Init(msg, strUrl, strDownloadPath, strFileDir);
         }
 
         HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, Thread, pTask, 0, nullptr);

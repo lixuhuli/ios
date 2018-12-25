@@ -41,6 +41,7 @@ namespace TaskCenter{
         TaskGetUpdateLog,
         TaskUnzipFile,
         TaskIosEngineUpdate,
+        TaskGetKeyboardConfig,
 	};
 
 

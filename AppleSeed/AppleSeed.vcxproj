@@ -213,6 +213,7 @@
     <ClInclude Include="TaskCenter\TaskCenter.h" />
     <ClInclude Include="TaskCenter\TaskEnum.h" />
     <ClInclude Include="TaskCenter\TaskGameHall.h" />
+    <ClInclude Include="TaskCenter\TaskGetKeyboardConfig.h" />
     <ClInclude Include="TaskCenter\TaskGetUpdateLog.h" />
     <ClInclude Include="TaskCenter\TaskIM.h" />
     <ClInclude Include="TaskCenter\TaskIosEngineUpdate.h" />
@@ -283,6 +284,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TaskCenter\TaskCenter.cpp" />
+    <ClCompile Include="TaskCenter\TaskGetKeyboardConfig.cpp" />
     <ClCompile Include="TaskCenter\TaskGetUpdateLog.cpp" />
     <ClCompile Include="TaskCenter\TaskIM.cpp" />
     <ClCompile Include="TaskCenter\TaskIosEngineUpdate.cpp" />

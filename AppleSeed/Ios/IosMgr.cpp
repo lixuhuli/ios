@@ -15,6 +15,7 @@
 #include "CommonWnd.h"
 #include "CallBack/callback_mgr.h"
 #include "TaskCenter/TaskCenter.h"
+#include "HttpInterface.h"
 
 static int engine_callbacks(int status, uintptr_t param1, uintptr_t param2) {
     return CIosMgr::Instance()->EngineCallback(status, param1, param2);
@@ -244,13 +245,31 @@ void CIosMgr::OnScreenSizeChanged(uintptr_t param1, uintptr_t param2) {
 }
 
 void CIosMgr::OnForegroundAppChanged(uintptr_t param1, uintptr_t param2) {
+    if (!emulator_state_info_) return;
+
     const char *context = (char *)param1;
+    emulator_state_info_->set_running_app_id(context ? context : "");
+
     if (!context || !ios_wnd_) return;
 
     if (strcmp(context, "com.tencent.smoba") == 0) {
         if (hor_screen_mode_) {
+            if (HasKeyMapFile()) CreateKeyWnd(CGlobalData::Instance()->GetMainWnd());
+            else {
+                MSG msg = { 0 };
+                msg.hwnd = CGlobalData::Instance()->GetMainWnd();
+                msg.message = WM_MAINWND_MSG_GET_KEYBOARD;
+
+                auto keymap_dir = GetKeyMapDir();
+                auto download_path = GetDocumentPath() + L"\\keymap\\"+ PublicLib::AToU(emulator_state_info_->running_app_id()) + L".zip";
+                if (!::PathFileExists(keymap_dir.c_str())) SHCreateDirectory(nullptr, keymap_dir.c_str());
+
+                auto strUrl = URL_GET_KEYBOARD + PublicLib::AToU(emulator_state_info_->running_app_id()) + L".zip";
+                TaskCenter::CTaskCenter::Instance()->CreateGetKeyBoardConfigTask(msg, strUrl, download_path, keymap_dir);
+            }
+
             CreateKeyWnd(CGlobalData::Instance()->GetMainWnd());
-            UpdateKeyMap(L"D:\\IOS\\ios\\bin\\Debug\\ioskeymap\\com.tencent.smoba");
+            //UpdateKeyMap(L"D:\\IOS\\ios\\bin\\Debug\\ioskeymap\\com.tencent.smoba");
         }
     }
     else CloseKeyWnd();
@@ -492,4 +511,28 @@ void CIosMgr::CloseKeyWnd() {
         key_wnd_->Close(IDCLOSE);
         key_wnd_ = nullptr;
     }
+}
+
+bool CIosMgr::HasKeyMapFile() {
+    auto key_dir = GetDocumentPath() + L"\\keymap";
+    if (!::PathFileExists(key_dir.c_str())) return false;
+
+    auto config_name = key_dir + L"\\conf.ini";
+    if (!::PathFileExists(config_name.c_str())) return false;
+
+    wchar_t szValue[128] = { 0 };
+    DWORD dwLen = GetPrivateProfileString(L"setting", L"record", L"", szValue, 128, config_name.c_str());
+    if (dwLen <= 0) return false;
+
+    return false;
+
+    //PublicLib::SplitStringW()
+
+    //GetPrivateProfileInt
+}
+
+wstring CIosMgr::GetKeyMapDir() {
+    if (!emulator_state_info_) return L"";
+    wstring keymap_dir = GetDocumentPath() + L"\\keymap\\" + PublicLib::AToU(emulator_state_info_->running_app_id());
+    return keymap_dir;
 }

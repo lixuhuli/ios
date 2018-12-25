@@ -49,9 +49,13 @@ namespace emulator {
         virtual const UINT_PTR& app_of_installing() override { return app_of_installing_; };
         void set_app_of_installing(const UINT_PTR& app_of_installing) { app_of_installing_ = app_of_installing; }
 
+        virtual const std::string& running_app_id() override { return running_app_id_; };
+        void set_running_app_id(const std::string& id) { running_app_id_ = id; }
+
     private:
         EMULATOR_STATE state_;
         UINT_PTR app_of_installing_;
+        std::string running_app_id_;
     };
 }
 

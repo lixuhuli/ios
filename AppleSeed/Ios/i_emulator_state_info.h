@@ -30,6 +30,7 @@ namespace emulator {
         virtual bool updating() = 0;
         virtual bool installing() = 0;
         virtual const UINT_PTR& app_of_installing() = 0;
+        virtual const std::string& running_app_id() = 0;
     };
 }
 

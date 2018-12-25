@@ -84,6 +84,10 @@ private:
 
     void CheckEngineUpdate();
 
+    bool HasKeyMapFile();
+
+    wstring GetKeyMapDir();
+
 private:
     CWndIos* ios_wnd_;
     CKeyWnd* key_wnd_;
