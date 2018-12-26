@@ -35,6 +35,8 @@ public:
     void OnPackUpdating(int percent);
     void OnPackUpdate(int status);
 
+    void OnGetKeyboard(WPARAM wParam, LPARAM lParam);
+
     const bool& HorScreenMode() { return hor_screen_mode_; }
     const double& IosWndScale() { return ios_scale_; }
 
@@ -59,6 +61,8 @@ public:
 
     int EngineCallback(int status, uintptr_t param1, uintptr_t param2);
 
+    wstring GetKeyMapDir();
+
 protected:
     int InstallAppThread(void * argument);
     int InstallFileThread(void * argument);
@@ -71,6 +75,8 @@ protected:
     void OnApplicationAdded(uintptr_t param1, uintptr_t param2);
     void OnApplicationModified(uintptr_t param1, uintptr_t param2);
     void OnApplicationRemoved(uintptr_t param1, uintptr_t param2);
+    void OnGetUidAndToken(uintptr_t param1, uintptr_t param2);
+    void OnEmulationQuit(uintptr_t param1, uintptr_t param2);
 
     void OnInstallApp(const UINT_PTR& task_ptr, int state);
     void OnInstallFile(const UINT_PTR& task_ptr, int state);
@@ -85,8 +91,6 @@ private:
     void CheckEngineUpdate();
 
     bool HasKeyMapFile();
-
-    wstring GetKeyMapDir();
 
 private:
     CWndIos* ios_wnd_;

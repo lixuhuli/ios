@@ -15,7 +15,7 @@
 #include "CommonWnd.h"
 #include "CallBack/callback_mgr.h"
 #include "TaskCenter/TaskCenter.h"
-#include "HttpInterface.h"
+#include "UserData.h"
 
 static int engine_callbacks(int status, uintptr_t param1, uintptr_t param2) {
     return CIosMgr::Instance()->EngineCallback(status, param1, param2);
@@ -264,12 +264,9 @@ void CIosMgr::OnForegroundAppChanged(uintptr_t param1, uintptr_t param2) {
                 auto download_path = GetDocumentPath() + L"\\keymap\\"+ PublicLib::AToU(emulator_state_info_->running_app_id()) + L".zip";
                 if (!::PathFileExists(keymap_dir.c_str())) SHCreateDirectory(nullptr, keymap_dir.c_str());
 
-                auto strUrl = URL_GET_KEYBOARD + PublicLib::AToU(emulator_state_info_->running_app_id()) + L".zip";
-                TaskCenter::CTaskCenter::Instance()->CreateGetKeyBoardConfigTask(msg, strUrl, download_path, keymap_dir);
+                auto strAppId = emulator_state_info_->running_app_id();
+                TaskCenter::CTaskCenter::Instance()->CreateGetKeyBoardConfigTask(msg, strAppId, download_path, keymap_dir);
             }
-
-            CreateKeyWnd(CGlobalData::Instance()->GetMainWnd());
-            //UpdateKeyMap(L"D:\\IOS\\ios\\bin\\Debug\\ioskeymap\\com.tencent.smoba");
         }
     }
     else CloseKeyWnd();
@@ -353,6 +350,12 @@ int CIosMgr::EngineCallback(int status, uintptr_t param1, uintptr_t param2) {
         break;
     case ENGINE_STATUS_APPLICATION_REMOVED:
         CefPostTask(TID_UI, base::Bind(&CIosMgr::OnApplicationRemoved, AsWeakPtr(), param1, param2));
+        break;
+    case ENGINE_STATUS_GET_UID_AND_TOKEN:
+        CefPostTask(TID_UI, base::Bind(&CIosMgr::OnGetUidAndToken, AsWeakPtr(), param1, param2));
+        break;
+    case ENGINE_STATUS_EMULATION_QUIT:
+        CefPostTask(TID_UI, base::Bind(&CIosMgr::OnEmulationQuit, AsWeakPtr(), param1, param2));
         break;
     default:
         break;
@@ -517,22 +520,62 @@ bool CIosMgr::HasKeyMapFile() {
     auto key_dir = GetDocumentPath() + L"\\keymap";
     if (!::PathFileExists(key_dir.c_str())) return false;
 
-    auto config_name = key_dir + L"\\conf.ini";
+    auto keymap_dir = key_dir + L"\\" + PublicLib::AToU(emulator_state_info_->running_app_id());
+    if (!::PathFileExists(keymap_dir.c_str())) return false;
+
+    auto config_name = keymap_dir + L"\\conf.ini";
     if (!::PathFileExists(config_name.c_str())) return false;
 
     wchar_t szValue[128] = { 0 };
     DWORD dwLen = GetPrivateProfileString(L"setting", L"record", L"", szValue, 128, config_name.c_str());
     if (dwLen <= 0) return false;
 
-    return false;
-
-    //PublicLib::SplitStringW()
-
-    //GetPrivateProfileInt
+    return true;
 }
 
 wstring CIosMgr::GetKeyMapDir() {
     if (!emulator_state_info_) return L"";
     wstring keymap_dir = GetDocumentPath() + L"\\keymap\\" + PublicLib::AToU(emulator_state_info_->running_app_id());
     return keymap_dir;
+}
+
+void CIosMgr::OnGetUidAndToken(uintptr_t param1, uintptr_t param2) {
+    if (CUserData::Instance()->GetUserState() == UsNone)  SetUidAndToken(nullptr, nullptr);
+    else if (CUserData::Instance()->GetUserState() == UsLogin) {
+        char szUid[MAX_PATH] = { 0 };
+        sprintf(szUid, "%d", CUserData::Instance()->GetFileUserID());
+        SetUidAndToken(szUid, PublicLib::AToUtf(CUserData::Instance()->GetFileUserToken()).c_str());
+    }
+}
+
+void CIosMgr::OnEmulationQuit(uintptr_t param1, uintptr_t param2) {
+    ShowMsg(CGlobalData::Instance()->GetMainWnd(), L"提示", L"没有权限打开该游戏", MB_OK);
+}
+
+void CIosMgr::OnGetKeyboard(WPARAM wParam, LPARAM lParam) {
+    if (!emulator_state_info_) return;
+
+    UINT_PTR nTask = (UINT_PTR)lParam;
+    string strJson;
+    if (!TaskCenter::CTaskCenter::Instance()->GetTaskResult(nTask, strJson)) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"错误的任务ID");
+        return;
+    }
+
+    bool bSuccess = strJson == "1";
+
+    if (!bSuccess) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"键盘映射文件下载失败");
+        return;
+    }
+
+    string strAppId;
+    TaskCenter::CTaskCenter::Instance()->GetKeyBoardConfigAppId(nTask, strAppId);
+
+    if (strAppId != emulator_state_info_->running_app_id()) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"该游戏已经不再运行");
+        return;
+    }
+
+    CIosMgr::Instance()->CreateKeyWnd(CGlobalData::Instance()->GetMainWnd());
 }

@@ -33,6 +33,8 @@
 #define GetInputPosition				Export0013
 #define InputString						Export0014
 #define LoadKeyMap						Export0015
+#define SetUidAndToken					Export0016
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -59,6 +61,9 @@ typedef int(*FNENGINESTATUSCALLBACK)(/*void *ctx,*/ int status, uintptr_t param1
 #define ENGINE_STATUS_APPLICATION_ADDED		5	// Cast param1 to (const char *) to receive the installation complete notification after it has been installed.
 #define ENGINE_STATUS_APPLICATION_MODIFIED	6	// Cast param1 to (const char *) to receive the re-installation complete notification after it has been re-installed.
 #define ENGINE_STATUS_APPLICATION_REMOVED	7	// Cast param1 to (const char *) to receive the removal complete notification after it has been removed.
+
+#define ENGINE_STATUS_EMULATION_QUIT		8	// Cast param1 to uint32_t to receive the quit code of the current ios app emulation.
+#define ENGINE_STATUS_GET_UID_AND_TOKEN		9	// param1 not used. param2 not used. return 0. If you receive this message, please fire a SetUidAndToken immediately.
 
 // WARNING:
 // None of the callbacks are guaranteed to be called non-concurrently nor be on the same thread.
@@ -110,6 +115,8 @@ OGLAPI int GetInputPosition(uint32_t *x, uint32_t *y);				// Get the input posit
 
 OGLAPI int InputString(const char *string);							// Input the string. The string MUST be UTF-8 encoded. Returning 0 means OK.
 OGLAPI int LoadKeyMap(const char *string);                          // Load key map file. The string MUST be UTF-8 encoded. Returning 0 means OK.
+OGLAPI void SetUidAndToken(const char *user, const char *token);	// Set uid & its token.
+
 #ifdef __cplusplus
 }
 #endif

@@ -17,14 +17,14 @@
 #include "DataPost.h"
 #include "WndUserCenter.h"
 
-#define URL_PACKAGE_NAME_INTEL   "MotherDisc_Intel_1128.7z"
-#define URL_PACKAGE_NAME_AMD     "MotherDisc_AMD_1128.7z"
+#define URL_PACKAGE_NAME_INTEL   "MotherDisc_Intel_1225.7z"
+#define URL_PACKAGE_NAME_AMD     "MotherDisc_AMD_1225.7z"
 
-#define URL_ISO_NAME_INIT_INTEL  "MotherDisc_Intel_1117.vmdk"
-#define URL_ISO_NAME_INIT_AMD    "MotherDisc_AMD_1117.vmdk"
+#define URL_ISO_NAME_INIT_INTEL  "MotherDisc_Intel_1225.vmdk"
+#define URL_ISO_NAME_INIT_AMD    "MotherDisc_AMD_1225.vmdk"
 
-#define URL_ISO_NAME_INTEL       "MotherDisc_Intel_1117_Using.vmdk"
-#define URL_ISO_NAME_AMD         "MotherDisc_AMD_1117_Using.vmdk"
+#define URL_ISO_NAME_INTEL       "MotherDisc_Intel_1225_Using.vmdk"
+#define URL_ISO_NAME_AMD         "MotherDisc_AMD_1225_Using.vmdk"
 
 #define DOWNLOAD_PROGRESS_TIME   (int)150
 
@@ -98,18 +98,11 @@ void CWndMain::InitWindow() {
     
     string iso_file = GetRunPathA() + "ios\\"+ GetUrlIsoName();
     if (PathFileExistsA(iso_file.c_str())) {
-        wstring key_file_name = GetDocumentPath() + L"\\serial";
-        if (PathFileExists(key_file_name.c_str()) && CheckEngineKey(key_file_name)) {
-            LoadIosEngine();
-            if (layout_install_) layout_install_->SelectItem(2);
-            loading_frame_ = 0;
-            UpdateLoadingIcon();
-            ::SetTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS, DOWNLOAD_PROGRESS_TIME, nullptr);
-        }
-        else {
-            PopupKeyWindow();
-            if (layout_install_) layout_install_->SelectItem(3);
-        }
+        LoadIosEngine();
+        if (layout_install_) layout_install_->SelectItem(2);
+        loading_frame_ = 0;
+        UpdateLoadingIcon();
+        ::SetTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS, DOWNLOAD_PROGRESS_TIME, nullptr);
     }
 
     if (client_iphone_emulator_) client_iphone_emulator_->OnSize += MakeDelegate(this, &CWndMain::OnIphoneEmulatorSize);
@@ -148,6 +141,7 @@ LRESULT CWndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
     case WM_MAINWND_MSG_IOSENGINE_UPDATING: OnMsgIosEngineUpdating(wParam, lParam, bHandled); break;
     case WM_MAINWND_MSG_IOSENGINE_UPDATE: OnMsgIosEngineUpdate(wParam, lParam, bHandled); break;
     case WM_MAINWND_MSG_UPDATE_IOSWND_POS: OnMsgUpdateIosWndPos(wParam, lParam, bHandled); break;
+    case WM_MAINWND_MSG_GET_KEYBOARD: OnMsgGetKeyboardConfig(wParam, lParam, bHandled); break;
     case WM_KEYDOWN: {
         bHandled = FALSE;
         break;
@@ -250,6 +244,11 @@ LRESULT CWndMain::OnMsgUpdateIosWndPos(WPARAM wParam, LPARAM lParam, BOOL& bHand
     if (!client_iphone_emulator_) return 0;
     auto rc = client_iphone_emulator_->GetPos();
     CIosMgr::Instance()->UpdateIosWnd(&rc);
+    return 0;
+}
+
+LRESULT CWndMain::OnMsgGetKeyboardConfig(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    CIosMgr::Instance()->OnGetKeyboard(wParam, lParam);
     return 0;
 }
 
@@ -550,26 +549,6 @@ bool CWndMain::OnClickInstallClose(void* param) {
     return true;
 }
 
-bool CWndMain::OnClickInstallSelectKey(void* param) {
-    wstring strPath;
-    ShowSelectFileDlg(m_hWnd, L"txt文件(*.txt)\0*.txt\0", strPath);
-    if (strPath.empty()) return true;
-
-    if (!CheckEngineKey(strPath)) {
-        ShowMsg(m_hWnd, L"提示", L"无效的激活码，请重新选择", MB_OK);
-        PopupKeyWindow();
-        return true;
-    }
-
-    LoadIosEngine();
-    if (layout_install_) layout_install_->SelectItem(2);
-    loading_frame_ = 0;
-    UpdateLoadingIcon();
-    ::SetTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS, DOWNLOAD_PROGRESS_TIME, nullptr);
-
-    return true;
-}
-
 bool CWndMain::OnClickInstallRestart(void* param) {
     if (btn_install_restart_) btn_install_restart_->SetVisible(false);
     if (btn_install_pause_) btn_install_pause_->SetVisible(true);
@@ -596,12 +575,6 @@ bool CWndMain::OnBtnClickKey(void* param) {
 bool CWndMain::LoadIosEngine() {
     string iso_file = GetRunPathA() + "ios\\"+ GetUrlIsoName();
     return CIosMgr::Instance()->IosEngineOn(iso_file);
-}
-
-void CWndMain::PopupKeyWindow() {
-    auto key_run_path = CGlobalData::Instance()->GetRunPath();
-    key_run_path += L"Z-HW-ID.exe";
-    ShellExecute(nullptr, _T("open"), key_run_path.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
 }
 
 void CWndMain::UpdateLoadingIcon() {
@@ -698,16 +671,7 @@ LRESULT CWndMain::OnMsgFileUnzip(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     std::wstring save_path = CGlobalData::Instance()->GetRunPath() + L"ios\\" + PublicLib::Utf8ToU(GetUrlPackageName());
     if (PathFileExists(save_path.c_str())) DeleteFile(save_path.c_str());
 
-    wstring key_file_name = GetDocumentPath() + L"\\serial";
-    if (PathFileExists(key_file_name.c_str()) && CheckEngineKey(key_file_name)) {
-        LoadIosEngine();
-        return 0;
-    }
-
-    PopupKeyWindow();
-
-    if (layout_install_) layout_install_->SelectItem(3);
-    KillTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS);
+    LoadIosEngine();
 
     return 0;
 }
@@ -865,41 +829,6 @@ void CWndMain::UpdateTopWebCtrls() {
     
     HWND hWnd = web_focus_->GetHostWnd();
     SetFocus(hWnd);
-}
-
-bool CWndMain::CheckEngineKey(const wstring& key_file) {
-    char* data = nullptr;
-    FILE *file = nullptr;
-    size_t size = 0;
-    do {
-        file = fopen(PublicLib::UToA(key_file).c_str(), "r");
-        if (file == nullptr) break;
-
-        fseek(file, 0, SEEK_END);  
-        size = ftell(file); 
-        if (size <= 0) break;
-
-        data = (char*)malloc(sizeof(char) * size); 
-
-        if (!data) break;
-
-        fseek(file, 0, SEEK_SET);
-        fread(data, 1, size, file);
-    } while(false);
-
-    bool success = false;
-    if (data) {
-        if (CIosMgr::Instance()->IosCheckLicense((char *)data)) {
-            auto file_name = GetDocumentPath() + L"\\serial";
-            CopyFile(key_file.c_str(), file_name.c_str(), FALSE);
-            success = true;
-        }
-    }
-
-    if (data) delete data;
-    if (file) fclose(file);
-
-    return success;
 }
 
 void CWndMain::ShowVolumeWnd() {

@@ -41,7 +41,8 @@ namespace TaskCenter{
 		UINT_PTR CreateUnzipGameTask(const MSG& msg, UINT uMsg, UINT_PTR nTaskID, const wstring& strZipFile, const wstring& strOutDir);
         UINT_PTR CreateUnzipFileTask(const MSG& msg, UINT uMsg, const wstring& strZipFile, const wstring& strOutDir);
         UINT_PTR CreateIosEngineUpdateTask(const MSG& msg, UINT uMsg, const wstring& strVersion);
-        UINT_PTR CreateGetKeyBoardConfigTask(const MSG& msg, const wstring& strUrl, const wstring& strDownloadPath, const wstring& strFileDir);
+        UINT_PTR CreateGetKeyBoardConfigTask(const MSG& msg, const string& strAppId, const wstring& strDownloadPath, const wstring& strFileDir);
+        bool GetKeyBoardConfigAppId(UINT_PTR nTaskID, OUT string& strAppId);
 		UINT_PTR CreateBootRunTask(bool bBootRun);
 		UINT_PTR CreateRoomTask(const MSG& msg, int nUid, const string& strToken, __int64 nGameID);
 		UINT_PTR CreateDelDirTask(const list<wstring>& listDirs, const list<wstring>& listFiles);

@@ -54,6 +54,7 @@ protected:
     virtual LRESULT OnMsgCommon(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnMsgUserIco(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnMsgUpdateIosWndPos(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    virtual LRESULT OnMsgGetKeyboardConfig(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
     virtual LRESULT OnMsgIosEngineUpdating(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnMsgIosEngineUpdate(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -114,7 +115,6 @@ protected:
         BIND_CTRL_CLICK(L"btn_get_iso_sys_3", &CWndMain::OnClickGetIsoSys)
         BIND_CTRL_CLICK(L"btn_install_pause", &CWndMain::OnClickInstallPause)
         BIND_CTRL_CLICK(L"btn_install_close", &CWndMain::OnClickInstallClose)
-        BIND_CTRL_CLICK(L"btn_install_select_key", &CWndMain::OnClickInstallSelectKey)
         BIND_CTRL_CLICK(L"btn_install_restart", &CWndMain::OnClickInstallRestart)
         BIND_CTRL_CLICK(L"btn_snap", &CWndMain::OnBtnClickSnap)
         BIND_CTRL_CLICK(L"btn_record", &CWndMain::OnBtnClickRecord)
@@ -143,7 +143,6 @@ protected:
     bool OnClickGetIsoSys(void* param);
     bool OnClickInstallPause(void* param);
     bool OnClickInstallClose(void* param);
-    bool OnClickInstallSelectKey(void* param);
     bool OnClickInstallRestart(void* param);
 
     bool OnBtnClickSnap(void* param);
@@ -187,11 +186,7 @@ private:
 
     bool LoadIosEngine();
 
-    void PopupKeyWindow();
-
     void UpdateLoadingIcon();
-
-    bool CheckEngineKey(const wstring& key_file);
 
     void ShowVolumeWnd();
     void ShowUserWnd();

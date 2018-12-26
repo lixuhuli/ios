@@ -443,21 +443,35 @@ namespace TaskCenter{
         return (UINT_PTR)pTask;
     }
 
-    UINT_PTR CTaskCenter::CreateGetKeyBoardConfigTask(const MSG& msg, const wstring& strUrl, const wstring& strDownloadPath, const wstring& strFileDir) {
+    UINT_PTR CTaskCenter::CreateGetKeyBoardConfigTask(const MSG& msg, const string& strAppId, const wstring& strDownloadPath, const wstring& strFileDir) {
         ITask* pTask = GetFreeTaskByType(m_taskList, TaskGetKeyboardConfig);
         if (nullptr == pTask) {
-            CTaskGetKeyBoardConfig *pGetKeyBoardConfigTask = new CTaskGetKeyBoardConfig(msg, strUrl, strDownloadPath, strFileDir);
+            CTaskGetKeyBoardConfig *pGetKeyBoardConfigTask = new CTaskGetKeyBoardConfig(msg, strAppId, strDownloadPath, strFileDir);
             pTask = pGetKeyBoardConfigTask;
             m_taskList.push_back((UINT_PTR)pTask);
         }
         else {
             pTask->Clear();
-            ((CTaskGetKeyBoardConfig*)pTask)->Init(msg, strUrl, strDownloadPath, strFileDir);
+            ((CTaskGetKeyBoardConfig*)pTask)->Init(msg, strAppId, strDownloadPath, strFileDir);
         }
 
         HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, Thread, pTask, 0, nullptr);
         pTask->SetThread(hThread);
         return (UINT_PTR)pTask;
+    }
+
+    bool CTaskCenter::GetKeyBoardConfigAppId(UINT_PTR nTaskID, OUT string& strAppId) {
+        TaskItor itor = std::find(m_taskList.begin(), m_taskList.end(), nTaskID);
+        if (itor == m_taskList.end())
+            return false;
+        ITask* pTask = (ITask*)nTaskID;
+        if (NULL == pTask || pTask->GetTaskType() != TaskGetKeyboardConfig)
+            return false;
+        CTaskGetKeyBoardConfig* pGetKeyBoardConfigTask = dynamic_cast<CTaskGetKeyBoardConfig*>(pTask);
+        if (NULL == pGetKeyBoardConfigTask)
+            return false;
+        strAppId = pGetKeyBoardConfigTask->GetAppId();
+        return true;
     }
 
     UINT_PTR CTaskCenter::CreateBootRunTask(bool bBootRun)

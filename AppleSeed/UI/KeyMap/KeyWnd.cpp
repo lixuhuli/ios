@@ -58,8 +58,12 @@ void CKeyWnd::InitWindow() {
     //    RegisterDragDrop(parent, m_pMDLDropTarget);
     //}
 
+    auto key_file = CIosMgr::Instance()->GetKeyMapDir() + L"\\com.tencent_three_kills.smoba";
+
+    CIosMgr::Instance()->UpdateKeyMap(key_file.c_str());
+
     scene_info_ = new emulator::SceneInfo();
-    scene_info_->loadScene("D:\\IOS\\ios\\bin\\Debug\\ioskeymap\\com.tencent.smoba");
+    scene_info_->loadScene(PublicLib::UToUtf8(key_file).c_str());
 
     scene_bak_info_ = scene_info_->cloner();
 
