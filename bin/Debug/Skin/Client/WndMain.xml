@@ -71,12 +71,10 @@
 		
 		<HorizontalLayout>
       <HorizontalLayout name="client_layout_left" width="506">
-		    <Control width="60" />
-		  
-		    <Control />
-		  
-		    <VerticalLayout	name="client_iphone_emulator" padding="0,30,0,0" width="321" height="646" bkimage="file='middle/bk.png'">
-          <VerticalLayout padding="22,75,17,74">
+        <Control />
+        
+		    <VerticalLayout name="client_iphone" padding="0,52,0,0" width="321" height="646" inset="22,75,17,74" bkimage="file='middle/bk.png'">
+          <VerticalLayout name="client_iphone_emulator">
             <Control />
 
             <HorizontalLayout height="497">
@@ -262,18 +260,12 @@
             
             <Control />
           </VerticalLayout>  
-		    
-		      <HorizontalLayout height="75" visible="false">
-		        <Control />
-		      
-		        <Button name="btn_install_home" width="45" height="45" padding="0,15,0,0" showcursor="true" />
-		      
-		        <Control />
-		      </HorizontalLayout>
+          
+          <Button name="btn_install_home" width="45" height="45" float="true" pos="138,587,183,632" showcursor="true" />
 
 			  </VerticalLayout>
-			
-			  <Control width="125" />
+			  
+			  <Control />
       </HorizontalLayout>
 		
 		  <HorizontalLayout name="client_layout_right">
