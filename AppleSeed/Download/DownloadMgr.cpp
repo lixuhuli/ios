@@ -251,12 +251,15 @@ bool CDownloadMgr::PauseWaitTask(UINT_PTR nTaskID)
 
 bool CDownloadMgr::TryStartTask(ITask* pTask)
 {
-	if (PathFileExists(pTask->strSavePath.c_str())) {
-        // 文件存在，直接安装
-		pTask->nTotalSize = PublicLib::GetFileSizeW(pTask->strSavePath);
-		::PostMessage(m_hMsgWnd, WM_DLWND_MSG_LOAD_FINISH, 0, (LPARAM)pTask);
-		return true;
-	}
+    // 文件存在，删除并重新下载
+    if (::PathFileExists(pTask->strSavePath.c_str())) ::DeleteFile(pTask->strSavePath.c_str());
+
+	//if (PathFileExists(pTask->strSavePath.c_str())) {
+ //       // 文件存在，直接安装
+	//	pTask->nTotalSize = PublicLib::GetFileSizeW(pTask->strSavePath);
+	//	::PostMessage(m_hMsgWnd, WM_DLWND_MSG_LOAD_FINISH, 0, (LPARAM)pTask);
+	//	return true;
+	//}
 
 	if (pTask->bShowOnLoadWnd) {
 		size_t nLoad = m_taskList.GetLoadCount();

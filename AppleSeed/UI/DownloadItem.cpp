@@ -98,6 +98,7 @@ void CDownloadItemUI::ChangeItemLoadState(UINT_PTR nTask, TaskState state, __int
     break;
     case Ts_Error: {
         strStateText = nData == 100 ? L"°²×°Ê§°Ü" : L"ÏÂÔØÊ§°Ü";
+        m_pManager->KillTimer(this, TIMER_ID_INSTALLING);
     }
     break;
     case Ts_Pause: {

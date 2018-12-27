@@ -71,6 +71,8 @@ protected:
 
     bool OnKeyPosChanged(void* param);
 
+    bool OnComboxKeyboard(void* param);
+
     BEGIN_INIT_CTRL()
         DECLARE_CTRL_TYPE(btn_tool_handle_, CButtonUI, L"btn_tool_handle")
         DECLARE_CTRL_TYPE(btn_tool_normal_, CButtonUI, L"btn_tool_normal")
@@ -80,6 +82,7 @@ protected:
         DECLARE_CTRL_TYPE(panel_tools_, CVerticalLayoutUI, L"panel_tools")
         DECLARE_CTRL_TYPE(key_slider_trans_, CSliderUI, L"key_slider_trans")
         DECLARE_CTRL_TYPE(lbl_trans_percent_, CLabelUI, L"lbl_trans_percent")
+        DECLARE_CTRL_TYPE(combox_keyboard_, CComboBoxUI, L"combox_keyboard")
     END_INIT_CTRL()
 
     BEGIN_BIND_CTRL()
@@ -92,6 +95,7 @@ protected:
         BIND_CTRL_CLICK(L"btn_delete", &CKeyWnd::OnBtnDelete)
         BIND_CTRL_EVENT(L"key_slider_trans", DUI_MSGTYPE_VALUECHANGED, &CKeyWnd::OnSliderKeyTransChanged)
         BIND_CTRL_EVENT(L"key_slider_trans", DUI_MSGTYPE_VALUECHANGING, &CKeyWnd::OnSliderKeyTransChanged)
+        BIND_CTRL_EVENT(L"combox_keyboard", DUI_MSGTYPE_ITEMSELECT, &CKeyWnd::OnComboxKeyboard)
     END_BIND_CTRL()
 
 protected:
@@ -117,6 +121,12 @@ private:
     bool KeyToScreen(CControlUI* control);
     bool KeyToScreen(LPPOINT point);
 
+    void ReadCloudKeyboardToCombox();
+
+    void UpdateSceneInfo();
+
+    void UpdateCtrls();
+
 private:
     CButtonUI* btn_tool_handle_;
     CButtonUI* btn_tool_normal_;
@@ -126,6 +136,8 @@ private:
     CVerticalLayoutUI* panel_tools_;
     CSliderUI* key_slider_trans_;
     CLabelUI* lbl_trans_percent_;
+
+    CComboBoxUI* combox_keyboard_;
 
     CMDLDropSource  *m_pMDLDragDataSrc;
     CMDLDropTarget  *m_pMDLDropTarget;

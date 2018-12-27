@@ -18,6 +18,7 @@ CKeyWnd::CKeyWnd()
  , panel_tools_(nullptr)
  , opt_right_run_(nullptr)
  , browser_mode_(true)
+ , combox_keyboard_(nullptr)
  , m_pMDLDropTarget(nullptr)
  , m_pMDLDragDataSrc(nullptr)
  , key_slider_trans_(nullptr)
@@ -58,26 +59,91 @@ void CKeyWnd::InitWindow() {
     //    RegisterDragDrop(parent, m_pMDLDropTarget);
     //}
 
-    auto key_file = CIosMgr::Instance()->GetKeyMapDir() + L"\\com.tencent_three_kills.smoba";
+    ReadCloudKeyboardToCombox();
 
-    CIosMgr::Instance()->UpdateKeyMap(key_file.c_str());
+    UpdateSceneInfo();
 
-    scene_info_ = new emulator::SceneInfo();
-    scene_info_->loadScene(PublicLib::UToUtf8(key_file).c_str());
+    LoadKeyItems();
 
-    scene_bak_info_ = scene_info_->cloner();
+    UpdateCtrls();
 
     if (btn_tool_handle_) btn_tool_handle_->OnEvent += MakeDelegate(this, &CKeyWnd::OnToolEvent);
 
-    if (key_slider_trans_) key_slider_trans_->SetValue(scene_info_->opacity());
+    if (key_body_) key_body_->OnSize += MakeDelegate(this, &CKeyWnd::OnKeyBodySize);
+}
+
+void CKeyWnd::UpdateCtrls() {
+    if (!lbl_trans_percent_ || !key_slider_trans_) return;
+
+    key_slider_trans_->SetValue(scene_info_->opacity());
 
     CStdString str;
     str.Format(L"%d%s", scene_info_->opacity(), L"%");
     lbl_trans_percent_->SetText(str.GetData());
+}
 
-    LoadKeyItems();
+void CKeyWnd::UpdateSceneInfo() {
+    if (!combox_keyboard_ || combox_keyboard_->GetCount() < 0) return;
 
-    if (key_body_) key_body_->OnSize += MakeDelegate(this, &CKeyWnd::OnKeyBodySize);
+    auto index = combox_keyboard_->GetCurSel();
+    if (index < 0) return;
+
+    CListLabelElementUI* key_elem = (CListLabelElementUI*)combox_keyboard_->GetItemAt(index);
+    if (!key_elem) return;
+
+    scene_info_ = new emulator::SceneInfo();
+    scene_info_->loadScene(PublicLib::UToUtf8(key_elem->GetUserData().GetData()).c_str());
+
+    scene_bak_info_ = scene_info_->cloner();
+
+    CIosMgr::Instance()->UpdateKeyMap(key_elem->GetUserData().GetData());
+}
+
+void CKeyWnd::ReadCloudKeyboardToCombox() {
+    if (!combox_keyboard_) return;
+
+    combox_keyboard_->RemoveAll();
+
+    auto config = CIosMgr::Instance()->GetKeyMapDir() + L"\\conf.ini";
+
+    wchar_t szValue[1024] = { 0 };
+    DWORD dwLen = GetPrivateProfileString(L"setting", L"record", L"", szValue, 1024, config.c_str());
+    if (dwLen <= 0) return;
+
+    wstring records = szValue;
+
+    std::vector<std::wstring> vec_records; 
+    PublicLib::SplitStringW(records, L",", vec_records);
+
+    auto it = vec_records.begin();
+    for (; it != vec_records.end(); it++) {
+        auto record = *it;
+
+        memset(szValue, 0, sizeof(szValue));
+        dwLen = GetPrivateProfileString(record.c_str(), L"name", L"", szValue, 1024, config.c_str());
+        if (dwLen <= 0) continue;
+
+        wstring key_name = szValue;
+
+        memset(szValue, 0, sizeof(szValue));
+        dwLen = GetPrivateProfileString(record.c_str(), L"file", L"", szValue, 1024, config.c_str());
+        if (dwLen <= 0) continue;
+
+        wstring key_file = szValue;
+        key_file =  CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_file;
+
+        CListLabelElementUI* key_elem = new CListLabelElementUI;
+        if (!key_elem) continue;
+
+        key_elem->SetFixedHeight(35);
+        key_elem->SetName(key_name.c_str());
+        key_elem->SetUserData(key_file.c_str());
+        key_elem->SetText(key_name.c_str());
+
+        combox_keyboard_->Add(key_elem);
+    }
+    
+    if (combox_keyboard_->GetCount() > 0) combox_keyboard_->SelectItemV2(0);
 }
 
 void CKeyWnd::SetBrowserMode(bool browser_mode) {
@@ -380,15 +446,15 @@ bool CKeyWnd::OnBtnSave(void* param) {
 
     scene_info_ = scene_bak_info_->cloner();
 
-    wstring file_path = CGlobalData::Instance()->GetRunPath() + L"ioskeymap";
+    auto index = combox_keyboard_->GetCurSel();
+    if (index < 0) return true;
 
-    if (!PathFileExists(file_path.c_str())) SHCreateDirectory(NULL, file_path.c_str());
+    CListLabelElementUI* key_elem = (CListLabelElementUI*)combox_keyboard_->GetItemAt(index);
+    if (!key_elem) return true;
 
-    file_path += L"\\com.tencent.smoba";
+    scene_info_->saveScene(PublicLib::UToUtf8(key_elem->GetUserData().GetData()).c_str());
 
-    scene_info_->saveScene(PublicLib::UToUtf8(file_path).c_str());
-
-    CIosMgr::Instance()->UpdateKeyMap(file_path);
+    CIosMgr::Instance()->UpdateKeyMap(key_elem->GetUserData().GetData());
 
     SetBrowserMode(true);
     CIosMgr::Instance()->UpdateKeyWnd();
@@ -963,6 +1029,16 @@ bool CKeyWnd::OnKeyPosChanged(void* param) {
     default:
         break;
     }
+
+    return true;
+}
+
+bool CKeyWnd::OnComboxKeyboard(void* param) {
+    UpdateSceneInfo();
+
+    LoadKeyItems();
+
+    UpdateCtrls();
 
     return true;
 }
