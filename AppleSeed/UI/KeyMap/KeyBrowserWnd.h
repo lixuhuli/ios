@@ -13,7 +13,7 @@ public:
     CControlUI* GetRoot();
 
 protected:
-    virtual LPCWSTR GetWndName() const override { return L"º¸≈Ã”≥…‰±‡º≠"; }
+    virtual LPCWSTR GetWndName() const override { return L""; }
     virtual LPCWSTR GetXmlPath() const override;
     virtual LPCTSTR GetWindowClassName() const override;
     virtual CControlUI* CreateControl(LPCTSTR pstrClass);

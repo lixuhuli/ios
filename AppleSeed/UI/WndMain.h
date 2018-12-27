@@ -39,6 +39,8 @@ protected:
     virtual void OnFinalMessage(HWND hWnd);
     virtual LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+    virtual LRESULT OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) override;
+
     virtual LRESULT OnSize(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnSizing(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnMoving(WPARAM wParam, LPARAM lParam, BOOL& bHandled);

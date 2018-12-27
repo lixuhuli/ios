@@ -56,7 +56,7 @@ void CKeyWnd::InitWindow() {
         return;
     }
 
-    browser_wnd_->Create(m_hWnd, false);
+    browser_wnd_->Create(CGlobalData::Instance()->GetMainWnd(), false);
     browser_wnd_->ShowWindow(false);
     UpdateBrowserWnd(nullptr);
 
@@ -914,9 +914,10 @@ void CKeyWnd::InitIntelligent(CControlUI* control, const emulator::tagItemInfo& 
 }
 
 void CKeyWnd::LoadKeyItems() {
-    if (!scene_info_ || !key_body_) return;
+    if (!scene_info_ || !key_body_ || !opt_right_run_) return;
 
     key_body_->RemoveAll();
+    opt_right_run_->Selected(false);
 
     auto items = scene_info_->GetKeyItems();
     auto it = items.begin();
@@ -937,7 +938,7 @@ void CKeyWnd::LoadKeyItems() {
 
             InitRightMouse(right_ctrl, *it);
 
-            if (opt_right_run_) opt_right_run_->Selected(true);
+            opt_right_run_->Selected(true);
         }
         else if (it->itemType == emulator::INTELLIGENT_CASTING_KEY) {
             if (it->keys.size() < 1) continue;

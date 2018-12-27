@@ -1170,3 +1170,26 @@ LRESULT CWndMain::OnMsgIosEngineUpdate(WPARAM wParam, LPARAM lParam, BOOL& bHand
     CIosMgr::Instance()->OnPackUpdate(wParam);
     return 0;
 }
+
+LRESULT CWndMain::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    if (wParam == SC_CLOSE && QuitOnSysClose())
+        return 0;
+
+    BOOL bZoomed = ::IsZoomed(m_hWnd);
+    LRESULT lRes = CWindowWnd::HandleMessage(uMsg, wParam, lParam);
+    if (wParam == SC_CLOSE)
+        return 0;
+
+    if (::IsZoomed(m_hWnd) != bZoomed)  {
+        CControlUI* pCtrl = m_pm.FindControl(L"btn_sys_max");
+        if (pCtrl)
+            pCtrl->SetVisible(TRUE == bZoomed);
+        pCtrl = m_pm.FindControl(L"btn_sys_restore");
+        if (pCtrl)
+            pCtrl->SetVisible(FALSE == bZoomed);
+
+        if (FALSE == bZoomed) CIosMgr::Instance()->UpdateBrowserMode(true);
+    }
+
+    return lRes;
+}
