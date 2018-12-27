@@ -24,6 +24,7 @@ public:
     STDMETHOD(Drop)(LPDATAOBJECT pDataObj, DWORD grfKeyState, POINTL pt, LPDWORD pdwEffect);
 };
 
+class CKeyBrowserWnd;
 class CKeyWnd :
     public CWndBase {
 public:
@@ -33,6 +34,8 @@ public:
 public:
     bool BrowserMode() { return browser_mode_; }
     void SetBrowserMode(bool browser_mode);
+    void UpdateBrowserWnd(const QRect* lprc = nullptr);
+    void CloseBrowserWnd();
 
     // 模拟器状态信息 给外部调用
     base::WeakPtr<emulator::iSceneInfo> scene_info();
@@ -74,28 +77,27 @@ protected:
     bool OnComboxKeyboard(void* param);
 
     BEGIN_INIT_CTRL()
-        DECLARE_CTRL_TYPE(btn_tool_handle_, CButtonUI, L"btn_tool_handle")
-        DECLARE_CTRL_TYPE(btn_tool_normal_, CButtonUI, L"btn_tool_normal")
-        DECLARE_CTRL_TYPE(btn_tool_intelligent_, CButtonUI, L"btn_tool_intelligent")
+        DECLARE_CTRL_TYPE_PAGE(btn_tool_handle_, CButtonUI, panel_tools_, L"btn_tool_handle")
+        DECLARE_CTRL_TYPE_PAGE(btn_tool_normal_, CButtonUI, panel_tools_, L"btn_tool_normal")
+        DECLARE_CTRL_TYPE_PAGE(btn_tool_intelligent_, CButtonUI, panel_tools_, L"btn_tool_intelligent")
         DECLARE_CTRL_TYPE(key_body_, CVerticalLayoutUI, L"key_body")
-        DECLARE_CTRL_TYPE(opt_right_run_, COptionUI, L"opt_right_run")
-        DECLARE_CTRL_TYPE(panel_tools_, CVerticalLayoutUI, L"panel_tools")
-        DECLARE_CTRL_TYPE(key_slider_trans_, CSliderUI, L"key_slider_trans")
-        DECLARE_CTRL_TYPE(lbl_trans_percent_, CLabelUI, L"lbl_trans_percent")
-        DECLARE_CTRL_TYPE(combox_keyboard_, CComboBoxUI, L"combox_keyboard")
+        DECLARE_CTRL_TYPE_PAGE(opt_right_run_, COptionUI, panel_tools_, L"opt_right_run")
+        DECLARE_CTRL_TYPE_PAGE(key_slider_trans_, CSliderUI, panel_tools_, L"key_slider_trans")
+        DECLARE_CTRL_TYPE_PAGE(lbl_trans_percent_, CLabelUI, panel_tools_, L"lbl_trans_percent")
+        DECLARE_CTRL_TYPE_PAGE(combox_keyboard_, CComboBoxUI, panel_tools_, L"combox_keyboard")
     END_INIT_CTRL()
 
     BEGIN_BIND_CTRL()
-        BIND_CTRL_CLICK(L"btn_close", &CKeyWnd::OnClickBtnClose)
-        BIND_CTRL_CLICK(L"btn_tool_handle", &CKeyWnd::OnBtnToolHandle)
-        BIND_CTRL_CLICK(L"btn_tool_normal", &CKeyWnd::OnBtnToolNormal)
-        BIND_CTRL_CLICK(L"opt_right_run", &CKeyWnd::OnBtnToolRightRun)
-        BIND_CTRL_CLICK(L"btn_tool_intelligent", &CKeyWnd::OnBtnToolIntelligent)
-        BIND_CTRL_CLICK(L"btn_save", &CKeyWnd::OnBtnSave)
-        BIND_CTRL_CLICK(L"btn_delete", &CKeyWnd::OnBtnDelete)
-        BIND_CTRL_EVENT(L"key_slider_trans", DUI_MSGTYPE_VALUECHANGED, &CKeyWnd::OnSliderKeyTransChanged)
-        BIND_CTRL_EVENT(L"key_slider_trans", DUI_MSGTYPE_VALUECHANGING, &CKeyWnd::OnSliderKeyTransChanged)
-        BIND_CTRL_EVENT(L"combox_keyboard", DUI_MSGTYPE_ITEMSELECT, &CKeyWnd::OnComboxKeyboard)
+        BIND_CTRL_CLICK_PAGE(L"btn_close", panel_tools_, &CKeyWnd::OnClickBtnClose)
+        BIND_CTRL_CLICK_PAGE(L"btn_tool_handle", panel_tools_, &CKeyWnd::OnBtnToolHandle)
+        BIND_CTRL_CLICK_PAGE(L"btn_tool_normal", panel_tools_, &CKeyWnd::OnBtnToolNormal)
+        BIND_CTRL_CLICK_PAGE(L"opt_right_run", panel_tools_, &CKeyWnd::OnBtnToolRightRun)
+        BIND_CTRL_CLICK_PAGE(L"btn_tool_intelligent", panel_tools_, &CKeyWnd::OnBtnToolIntelligent)
+        BIND_CTRL_CLICK_PAGE(L"btn_save", panel_tools_, &CKeyWnd::OnBtnSave)
+        BIND_CTRL_CLICK_PAGE(L"btn_delete", panel_tools_, &CKeyWnd::OnBtnDelete)
+        BIND_CTRL_EVENT_PAGE(L"key_slider_trans", panel_tools_, DUI_MSGTYPE_VALUECHANGED, &CKeyWnd::OnSliderKeyTransChanged)
+        BIND_CTRL_EVENT_PAGE(L"key_slider_trans", panel_tools_, DUI_MSGTYPE_VALUECHANGING, &CKeyWnd::OnSliderKeyTransChanged)
+        BIND_CTRL_EVENT_PAGE(L"combox_keyboard", panel_tools_, DUI_MSGTYPE_ITEMSELECT, &CKeyWnd::OnComboxKeyboard)
     END_BIND_CTRL()
 
 protected:
@@ -146,6 +148,8 @@ private:
 
     scoped_refptr<emulator::SceneInfo> scene_info_;
     scoped_refptr<emulator::SceneInfo> scene_bak_info_;
+
+    CKeyBrowserWnd* browser_wnd_;
 };
 
 #endif  // !#define (_KEY_WND_INCLUDE_H_)  

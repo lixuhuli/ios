@@ -10,6 +10,7 @@
 #include "GlobalData.h"
 #include "IntelligentUI.h"
 #include "MsgDefine.h"
+#include "KeyBrowserWnd.h"
 
 CKeyWnd::CKeyWnd()
  : btn_tool_handle_(nullptr)
@@ -18,6 +19,7 @@ CKeyWnd::CKeyWnd()
  , panel_tools_(nullptr)
  , opt_right_run_(nullptr)
  , browser_mode_(true)
+ , browser_wnd_(nullptr)
  , combox_keyboard_(nullptr)
  , m_pMDLDropTarget(nullptr)
  , m_pMDLDragDataSrc(nullptr)
@@ -48,6 +50,23 @@ base::WeakPtr<emulator::iSceneInfo> CKeyWnd::scene_info() {
 }
 
 void CKeyWnd::InitWindow() {
+    browser_wnd_ = new CKeyBrowserWnd;
+    if (!browser_wnd_) {
+        CIosMgr::Instance()->CloseKeyWnd();
+        return;
+    }
+
+    browser_wnd_->Create(m_hWnd, false);
+    browser_wnd_->ShowWindow(false);
+    UpdateBrowserWnd(nullptr);
+
+    panel_tools_ = (CVerticalLayoutUI*)browser_wnd_->GetRoot();
+
+    if (!panel_tools_) {
+        CIosMgr::Instance()->CloseKeyWnd();
+        return;
+    }
+
     __super::InitWindow();
 
     auto parent = GetParent(m_hWnd);
@@ -151,10 +170,10 @@ void CKeyWnd::SetBrowserMode(bool browser_mode) {
 
     browser_mode_ = browser_mode;
     if (browser_mode_) {
-        if (panel_tools_) panel_tools_->SetVisible(false);
         if (key_body_) key_body_->SetBkColor(0);
         LoadKeyItems();
 
+        if (browser_wnd_) browser_wnd_->ShowWindow(false);
         if (btn_tool_handle_) btn_tool_handle_->SetTag(0);
         if (btn_tool_normal_) btn_tool_normal_->SetTag(0);
         if (btn_tool_intelligent_) btn_tool_intelligent_->SetTag(0);
@@ -162,6 +181,7 @@ void CKeyWnd::SetBrowserMode(bool browser_mode) {
     else {
         if (panel_tools_) panel_tools_->SetVisible(true);
         if (key_body_) key_body_->SetBkColor(0x80000000);
+        if (browser_wnd_) browser_wnd_->ShowWindow(true);
     }
 
     if (!key_body_) return;
@@ -171,6 +191,26 @@ void CKeyWnd::SetBrowserMode(bool browser_mode) {
     for (int i = 0; i < key_body_->GetCount(); i++) {
         auto it = dynamic_cast<Ikey*>(key_body_->GetItemAt(i));
         if (it) it->UpdateBrowserMode(browser_mode, opacity);
+    }
+}
+
+void CKeyWnd::UpdateBrowserWnd(const QRect* lprc /*= nullptr*/) {
+    if (!browser_wnd_) return;
+
+    QRect rc;
+    if (!lprc) GetWindowRect(m_hWnd, &rc);
+    else rc = *lprc;
+
+    rc.right = rc.left;
+    rc.left -= 280;
+
+    MoveWindow(*browser_wnd_, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
+}
+
+void CKeyWnd::CloseBrowserWnd() {
+    if (browser_wnd_) {
+        browser_wnd_->Close(IDCLOSE);
+        browser_wnd_ = nullptr;
     }
 }
 
@@ -192,7 +232,6 @@ LRESULT CKeyWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 bool CKeyWnd::OnClickBtnClose(void* lpParam) {
     scene_bak_info_ = scene_info_->cloner();
     SetBrowserMode(true);
-    CIosMgr::Instance()->UpdateKeyWnd();
     return true;
 }
 
@@ -461,12 +500,14 @@ bool CKeyWnd::OnBtnSave(void* param) {
     CIosMgr::Instance()->UpdateKeyMap(key_elem->GetUserData().GetData());
 
     SetBrowserMode(true);
-    CIosMgr::Instance()->UpdateKeyWnd();
 
     return true;
 }
 
 bool CKeyWnd::OnBtnDelete(void* param) {
+    if (btn_tool_handle_) btn_tool_handle_->SetTag(0);
+    if (btn_tool_normal_) btn_tool_normal_->SetTag(0);
+    if (btn_tool_intelligent_) btn_tool_intelligent_->SetTag(0);
     scene_bak_info_ = scene_info_->cloner();
     LoadKeyItems();
     return true;

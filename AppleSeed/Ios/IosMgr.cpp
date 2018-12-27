@@ -423,16 +423,13 @@ void CIosMgr::UpdateKeyWnd(const QRect* lprc/* = nullptr*/) {
     if (lprc) rc = *lprc;
     else GetWindowRect(*ios_wnd_, &rc);
 
-    if (!key_wnd_->BrowserMode()) rc.left -= 280;
-
     MoveWindow(*key_wnd_, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
+
+    key_wnd_->UpdateBrowserWnd(&rc);
 }
 
 void CIosMgr::UpdateBrowserMode(bool browser_mode) {
-    if (key_wnd_) {
-        key_wnd_->SetBrowserMode(browser_mode);
-        UpdateKeyWnd();
-    }
+    if (key_wnd_) key_wnd_->SetBrowserMode(browser_mode);
 }
 
 void CIosMgr::CheckEngineUpdate() {
@@ -507,6 +504,7 @@ int CIosMgr::UpdateKeyMap(const std::wstring& file_path) {
 
 void CIosMgr::CloseKeyWnd() {
     if (key_wnd_){
+        key_wnd_->CloseBrowserWnd();
         key_wnd_->Close(IDCLOSE);
         key_wnd_ = nullptr;
     }

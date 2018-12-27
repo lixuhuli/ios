@@ -375,6 +375,9 @@
     <ClInclude Include="TaskCenter\TaskGetKeyboardConfig.h">
       <Filter>源文件\TaskCenter</Filter>
     </ClInclude>
+    <ClInclude Include="UI\KeyMap\KeyBrowserWnd.h">
+      <Filter>源文件\UI\KeyMap\Wnd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -553,6 +556,9 @@
     </ClCompile>
     <ClCompile Include="TaskCenter\TaskGetKeyboardConfig.cpp">
       <Filter>源文件\TaskCenter</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\KeyMap\KeyBrowserWnd.cpp">
+      <Filter>源文件\UI\KeyMap\Wnd</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

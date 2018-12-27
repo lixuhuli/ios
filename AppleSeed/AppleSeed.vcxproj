@@ -230,6 +230,7 @@
     <ClInclude Include="UI\KeyMap\IKey.h" />
     <ClInclude Include="UI\KeyMap\IntelligentUI.h" />
     <ClInclude Include="UI\KeyMap\KeyEditUI.h" />
+    <ClInclude Include="UI\KeyMap\KeyBrowserWnd.h" />
     <ClInclude Include="UI\KeyMap\KeyWnd.h" />
     <ClInclude Include="UI\KeyMap\NormalUI.h" />
     <ClInclude Include="UI\KeyMap\RemoteHandleUI.h" />
@@ -299,6 +300,7 @@
     </ClCompile>
     <ClCompile Include="UI\KeyMap\IntelligentUI.cpp" />
     <ClCompile Include="UI\KeyMap\KeyEditUI.cpp" />
+    <ClCompile Include="UI\KeyMap\KeyBrowserWnd.cpp" />
     <ClCompile Include="UI\KeyMap\KeyWnd.cpp" />
     <ClCompile Include="UI\KeyMap\NormalUI.cpp" />
     <ClCompile Include="UI\KeyMap\RemoteHandleUI.cpp" />
