@@ -90,10 +90,12 @@ protected:
         DECLARE_CTRL_TYPE(user_mask_ico_, CControlUI, L"user_mask_ico")
         DECLARE_CTRL_TYPE(client_layout_left_, CHorizontalLayoutUI, L"client_layout_left")
         DECLARE_CTRL_TYPE(client_layout_right_, CHorizontalLayoutUI, L"client_layout_right")
+        DECLARE_CTRL_TYPE(client_iphone_, CVerticalLayoutUI, L"client_iphone")
         DECLARE_CTRL_TYPE(client_iphone_emulator_, CVerticalLayoutUI, L"client_iphone_emulator")
         DECLARE_CTRL_TYPE(layout_update_, CVerticalLayoutUI, L"layout_update")
         DECLARE_CTRL_TYPE(progress_update_, CProgressUI, L"progress_update")
         DECLARE_CTRL_TYPE(lbl_update_status_, CLabelUI, L"lbl_update_status")
+        DECLARE_CTRL_TYPE(btn_install_home_, CButtonUI, L"btn_install_home")
     END_INIT_CTRL()
 
     BEGIN_BIND_CTRL()
@@ -205,6 +207,7 @@ private:
 
     CButtonUI* btn_ios_restart_;
     CButtonUI* btn_ios_home_;
+    CButtonUI* btn_install_home_;
 
     CButtonUI* btn_user_icon_;
     CControlUI* user_mask_ico_;
@@ -233,6 +236,7 @@ private:
 
     CHorizontalLayoutUI* client_layout_left_;
     CHorizontalLayoutUI* client_layout_right_;
+    CVerticalLayoutUI* client_iphone_;
     CVerticalLayoutUI* client_iphone_emulator_;
     bool need_hide_left_layout_;
 

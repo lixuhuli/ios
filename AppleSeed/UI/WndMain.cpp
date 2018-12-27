@@ -59,6 +59,8 @@ CWndMain::CWndMain()
  , layout_update_(nullptr)
  , progress_update_(nullptr)
  , lbl_update_status_(nullptr)
+ , client_iphone_(nullptr)
+ , btn_install_home_(nullptr)
  , client_iphone_emulator_(nullptr) {
     m_dwStyle = UI_WNDSTYLE_FRAME | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
     m_bShowShadow = true;
@@ -193,7 +195,33 @@ LRESULT CWndMain::OnSize(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     QRect rc;
     GetClientRect(m_hWnd, &rc);
 
-    if (client_layout_left_) client_layout_left_->SetFixedWidth((int)((float)rc.GetWidth() * 506.0 / 1334.0));
+    if (client_iphone_ && client_layout_left_ && btn_install_home_) {
+        auto client_left_width = (int)((float)rc.GetWidth() * 506.0 / 1334.0 + 0.5);
+        auto phone_width = (int)((float)rc.GetWidth() * 321.0 / 1334.0 + 0.5);
+        auto phone_height = (int)((float)phone_width * 646.0 / 321.0 + 0.5);
+
+        auto dis_height = (rc.GetHeight() - phone_height - 120) / 2;
+        if (dis_height < 30) {
+            dis_height = 30;
+            phone_height = rc.GetHeight() - 120 - dis_height * 2;
+            phone_width = (int)((float)phone_height * 321.0 / 646.0 + 0.5);
+        }
+
+        client_layout_left_->SetFixedWidth((int)((float)rc.GetWidth() * 506.0 / 1334.0));
+        client_iphone_->SetFixedWidth(phone_width);
+        client_iphone_->SetFixedHeight(phone_height);
+        client_iphone_->SetPadding(QRect(0, dis_height, 0, 0));
+
+        QRect inset(int((float)phone_width * 22.0 / 321.0), int((float)phone_height * 75.0 / 646.0), int((float)phone_width * 17.0 / 321.0), int((float)phone_height * 74.0 / 646.0));
+        client_iphone_->SetInset(inset);
+
+        QRect rc_home(int((float)phone_width * 138.0 / 321.0), int((float)phone_height * 587.0 / 646.0), int((float)phone_width * 183.0 / 321.0), int((float)phone_height * 632.0 / 646.0));
+
+        SIZE szXY = {rc_home.left >= 0 ? rc_home.left : rc_home.right, rc_home.top >= 0 ? rc_home.top : rc_home.bottom};
+        btn_install_home_->SetFixedXY(szXY);
+        btn_install_home_->SetFixedWidth(rc_home.GetWidth());
+        btn_install_home_->SetFixedHeight(rc_home.GetHeight());
+    }
 
     if (CIosMgr::Instance()->HorScreenMode()) {
         CIosMgr::Instance()->UpdateIosWnd(&rc);
@@ -677,7 +705,7 @@ LRESULT CWndMain::OnMsgFileUnzip(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 }
 
 LRESULT CWndMain::OnMsgEmulatorAlready(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    if (layout_install_) layout_install_->SelectItem(4);
+    if (layout_install_) layout_install_->SelectItem(3);
     KillTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS);
     return 0;
 }

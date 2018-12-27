@@ -380,10 +380,6 @@ void CIosMgr::UpdateIosWnd(const QRect* lprc /*= nullptr*/) {
 
         QRect rc;
         rc = *lprc;
-        rc.left = rc.left + 22;
-        rc.top = rc.top + 75;
-        rc.right = rc.left + 282;
-        rc.bottom = rc.top + 497;
 
         ::SetWindowPos(*ios_wnd_, nullptr, rc.left, rc.top, rc.GetWidth(), rc.GetHeight(), SWP_NOZORDER);
     }
