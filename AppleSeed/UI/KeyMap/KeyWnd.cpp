@@ -154,6 +154,10 @@ void CKeyWnd::SetBrowserMode(bool browser_mode) {
         if (panel_tools_) panel_tools_->SetVisible(false);
         if (key_body_) key_body_->SetBkColor(0);
         LoadKeyItems();
+
+        if (btn_tool_handle_) btn_tool_handle_->SetTag(0);
+        if (btn_tool_normal_) btn_tool_normal_->SetTag(0);
+        if (btn_tool_intelligent_) btn_tool_intelligent_->SetTag(0);
     }
     else {
         if (panel_tools_) panel_tools_->SetVisible(true);
