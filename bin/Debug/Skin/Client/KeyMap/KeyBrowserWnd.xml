@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window>
+	<Font name="微软雅黑" size="12" />
+	<Font name="微软雅黑" size="14" />
+	<Font name="微软雅黑" size="16" />
+	<Font name="微软雅黑" size="18" />
+	<Font name="微软雅黑" size="20" />
+	<Font name="微软雅黑" size="10" />
+	<Font name="微软雅黑" size="24" />
+	<Font name="微软雅黑" size="12" strikeout="true"/>
+	<Font name="宋体" size="12" />
+	<Font name="微软雅黑" size="16" bold="true"/><!--9-->
+	<Font name="宋体" size="14" />
+	<Font name="微软雅黑" size="18" bold="true"/>
+	<Font name="微软雅黑" size="16" bold="true"/>
+	
+	<Default name="HScrollBar" value="showbutton1=&quot;false&quot; showbutton2=&quot;false&quot; thumbnormalimage=&quot;file=&apos;scroll_bk1.png&apos; corner=&apos;1,1,1,1&apos;&quot;  railnormalimage=&quot;file=&apos;scroll_bk1.png&apos; corner=&apos;1,1,1,1&apos;&quot; bknormalimage=&quot;file=&apos;scroll_fore1.png&apos; corner=&apos;1,1,1,1&apos;&quot; height=&quot;4&quot; "/>
+
+  <VerticalLayout name="panel_tools" width="280" bkimage="file='KeyMap/tools/bk_image.png'">
+    <HorizontalLayout height="21" bkimage="file='KeyMap/tools/top.png'">
+      <Control width="8" />
+
+      <Label textcolor="#FF262626" text="键盘操控" padding="0,2,0,0" width="60" height="18" font="0" endellipsis="true"/>
+
+      <Control />
+
+      <Button name="btn_close" width="12" height="11" padding="0,5,0,0" normalimage="KeyMap/tools/btn_close.png"  showcursor="true" />
+
+      <Control width="5" />
+    </HorizontalLayout>
+
+    <VerticalLayout height="346" >
+      <Control height="20" />
+
+      <Label text="常用工具" width="48" height="17" padding="116,0,0,0" textcolor="#FF262626" font="0" />
+
+      <Control height="10" />
+
+      <VerticalLayout height="270" width="200" padding="40,0,0,0">
+        <HorizontalLayout height="60">
+          <Button name="btn_tool_handle" tooltip="拖动按钮到方向控制柄" width="60" height="60" normalimage="KeyMap/tools/tool_handle_nor.png" hotimage="file='KeyMap/tools/tool_handle_hot.png'" pushedimage="file='KeyMap/tools/tool_handle_nor.png'" showcursor="false" />
+
+          <Control width="10" />
+
+          <Button name="btn_tool_gravity" tooltip="拖拽按钮设置重力感应" width="60" height="60" normalimage="KeyMap/tools/tool_gravity_nor.png" hotimage="file='KeyMap/tools/tool_gravity_hot.png'" pushedimage="file='KeyMap/tools/tool_gravity_nor.png'" showcursor="false" />
+
+          <Control width="10" />
+
+          <Button name="btn_tool_aim" tooltip="射击游戏专用：拖动按钮到准星" width="60" height="60" normalimage="KeyMap/tools/tool_aim_nor.png" hotimage="file='KeyMap/tools/tool_aim_hot.png'" pushedimage="file='KeyMap/tools/tool_aim_nor.png'" showcursor="false" />
+        </HorizontalLayout>
+
+        <Control />
+
+        <HorizontalLayout height="60">
+          <Button name="btn_tool_fire" tooltip="射击游戏专用：拖动按钮到开火" width="60" height="60" normalimage="KeyMap/tools/tool_fire_nor.png" hotimage="file='KeyMap/tools/tool_fire_hot.png'" pushedimage="file='KeyMap/tools/tool_fire_nor.png'" showcursor="false" />
+
+          <Control width="10" />
+
+          <Button name="btn_tool_normal" tooltip="拖动按钮编辑按键" width="60" height="60" normalimage="KeyMap/tools/tool_key_nor.png" hotimage="file='KeyMap/tools/tool_key_hot.png'" pushedimage="file='KeyMap/tools/tool_key_nor.png'" showcursor="false" />
+
+          <Control width="10" />
+
+          <Button name="btn_tool_gps" tooltip="虚拟定位行走" width="60" height="60" normalimage="KeyMap/tools/tool_gps_nor.png" hotimage="file='KeyMap/tools/tool_gps_hot.png'" pushedimage="file='KeyMap/tools/tool_gps_nor.png'" showcursor="false" />
+        </HorizontalLayout>
+
+        <Control />
+
+        <HorizontalLayout height="60">
+          <Button name="btn_tool_intelligent" tooltip="MOBA游戏智能施法，请拖拽至技能位置并设置对应按键" width="60" height="60" normalimage="KeyMap/tools/tool_intelligent_nor.png" hotimage="file='KeyMap/tools/tool_intelligent_hot.png'" pushedimage="file='KeyMap/tools/tool_intelligent_nor.png'" showcursor="false" />
+
+          <Control width="10" />
+
+          <Button name="btn_tool_programming" tooltip="可编程按键，点击编辑图标查看并编辑" width="60" height="60" normalimage="KeyMap/tools/tool_programming_nor.png" hotimage="file='KeyMap/tools/tool_programming_hot.png'" pushedimage="file='KeyMap/tools/tool_programming_nor.png'" showcursor="false" />
+
+          <Control width="10" />
+
+          <Button name="btn_tool_doublehit" tooltip="连击按键，按下一次生效多次点击" width="60" height="60" normalimage="KeyMap/tools/tool_doublehit_nor.png" hotimage="file='KeyMap/tools/tool_doublehit_hot.png'" pushedimage="file='KeyMap/tools/tool_doublehit_nor.png'" showcursor="false" />
+        </HorizontalLayout>
+
+        <Control />
+
+        <HorizontalLayout height="60">
+          <Button name="btn_tool_view" tooltip="视角移动功能，拖拽至3D游戏中可以通过按键快捷移动视角" width="60" height="60" normalimage="KeyMap/tools/tool_view_nor.png" hotimage="file='KeyMap/tools/tool_view_hot.png'" pushedimage="file='KeyMap/tools/tool_view_nor.png'" showcursor="false" />
+        </HorizontalLayout>
+      </VerticalLayout>
+
+    </VerticalLayout>
+
+    <Control height="1" bkcolor="0xFFE9E9E9" />
+
+    <HorizontalLayout height="77">
+      <Control width="40" />
+
+      <Label width="84" height="20" text="鼠标右键行走" padding="0,27,0,0" textcolor="#FF262626" font="1" valign="center" />
+
+      <Control width="82" />
+
+      <Option name="opt_right_run" width="34" height="18" padding="0,29,0,0" normalimage="file='KeyMap/tools/opt_right_close.png'" selectedimage="file='KeyMap/tools/opt_right_open.png'" selected="false" />
+    </HorizontalLayout>
+
+    <Control height="1" bkcolor="0xFFE9E9E9" />
+
+    <Control height="30" />
+
+    <Label width="70" height="20" text="键位透明度" padding="105,0,0,0" textcolor="#FF262626" font="1" />
+
+    <Control height="7" />
+
+    <HorizontalLayout height="21">
+      <Control width="40" />
+
+      <Slider name="key_slider_trans" max="100" value="50" width="153" height="21" isstretchfore="false" thumbsize="16,21"
+        bkimage="file='KeyMap/tools/slider_bk.png' dest='0,8,153,13' corner='2,2,2,2'"
+        foreimage="file='KeyMap/tools/fore.png' corner='2,10,2,10'"
+        thumbimage="file='KeyMap/tools/thumb.png'"
+        thumbhotimage="file='KeyMap/tools/thumb.png'"
+        thumbpushedimage="file='KeyMap/tools/thumb.png'" />
+
+      <Control width="16" />
+
+      <Label name="lbl_trans_percent" width="35" height="20" text="45%" padding="0,1,0,0" textcolor="#FF262626" font="1" />
+    </HorizontalLayout>
+
+    <Control />
+
+    <Control height="1" bkcolor="0xFFE9E9E9" />
+
+    <Control height="35" />
+
+    <HorizontalLayout height="35" padding="40,0,0,0" >
+      <ComboBox name="combox_keyboard" width="200" height="35" font="1" normalimage="file='KeyMap/tools/combobox_nor.png' file='KeyMap/tools/combobox_btn.png' dest='181,9,191,25'"
+            hotimage="file='KeyMap/tools/combobox_nor.png' file='KeyMap/tools/combobox_btn.png' dest='181,9,191,25'" pushedimage="file='KeyMap/tools/combobox_nor.png' file='KeyMap/tools/combobox_btn.png' dest='181,9,191,25'"
+            itembkcolor="0xFFDEDEDE" itemalign="left" itemtextcolor="0xFF262626" itemhottextcolor="0xFF262626" itemselectedtextcolor="0xFF262626" itemtextpadding="10,0,30,0"
+            dropboxboardcolor="0xFFCFCFCF">
+        <ListLabelElement text="三技能英雄（云端）" height="35" selected="true" />
+        <ListLabelElement text="四技能英雄（云端）" height="35" />
+      </ComboBox>
+    </HorizontalLayout>
+
+    <Control height="20" />
+
+    <HorizontalLayout height="35">
+      <Control width="40" />
+
+      <Button name="btn_save" width="95" height="35" showcursor="true" normalimage="file='KeyMap/tools/btn_save_nor.png'" hotimage="file='KeyMap/tools/btn_save_hot.png'" pushedimage="file='KeyMap/tools/btn_save_nor.png'" animation="true" />
+
+      <Control width="10" />
+
+      <Button name="btn_delete" width="95" height="35" showcursor="true" normalimage="file='KeyMap/tools/btn_delete_nor.png'" hotimage="file='KeyMap/tools/btn_delete_hot.png'" pushedimage="file='KeyMap/tools/btn_delete_nor.png'" animation="true" />
+    </HorizontalLayout>
+
+    <Control height="24" />
+  </VerticalLayout>
+</Window>
