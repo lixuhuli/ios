@@ -51,6 +51,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     //settings.background_color = 0xFFFFFF;
     wstring strAppDataPath = GetAppDataPath();
     wstring strCachePath = strAppDataPath + L"CefCache";
+    PublicLib::RemoveDir(strCachePath.c_str());
     SHCreateDirectory(NULL, strCachePath.c_str());
     cef_string_set(strCachePath.c_str(), strCachePath.size(), &settings.cache_path, 1);
 #ifdef _DEBUG

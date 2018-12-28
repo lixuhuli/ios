@@ -60,6 +60,7 @@ protected:
 
     virtual LRESULT OnMsgIosEngineUpdating(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnMsgIosEngineUpdate(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    virtual LRESULT OnMsgIosEngineApplication(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
     LRESULT OnMsgCopyData(WPARAM wParam, LPARAM lParam);
     LRESULT OnCopyDataStartGame(COPYDATASTRUCT* pCopyData);
@@ -196,6 +197,8 @@ private:
     void ShowUserWnd();
 
     void SelectedHomePage(COptionUI* opt_select);
+
+    void RemoveSpilthVmdk();
 
 private:
     CCefWebkitUI *web_focus_;

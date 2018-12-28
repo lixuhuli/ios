@@ -463,6 +463,7 @@ void CIosMgr::OnPackUpdate(int status){
     if (status == 0 || status == -1) {
         if (ios_wnd_) ios_wnd_->ShowWindow(true);
         emulator_state_info_->set_state(emulator::STATE_ENGINE_ON);
+        //UpdateSynchronizationToClient();
         StartInstallApp();
     }
     else {
@@ -494,6 +495,7 @@ void CIosMgr::OnEngineOff(int state) {
     else {
         if (ios_wnd_) ios_wnd_->ShowWindow(true);
         emulator_state_info_->set_state(emulator::STATE_ENGINE_ON);
+        //UpdateSynchronizationToClient();
         StartInstallApp();
     }
 }
@@ -572,4 +574,52 @@ void CIosMgr::OnGetKeyboard(WPARAM wParam, LPARAM lParam) {
     }
 
     CIosMgr::Instance()->CreateKeyWnd(CGlobalData::Instance()->GetMainWnd());
+}
+
+bool CIosMgr::GetEngineApplications(std::vector<string>& engine_apps) {
+    auto app_count = GetInstalledAppCount();
+    if (app_count <= 0) return false;
+
+    PIOSAPPINFO app_info = new IOSAPPINFO[app_count];
+    if (!app_info) return false;
+
+    PIOSAPPINFO info = nullptr;
+    for (int i = 0; i < app_count; i++) {
+        info = (app_info + i);
+        if (!info) continue;
+        engine_apps.push_back(info->bundle_name);
+    }
+
+    delete []app_info;
+
+    return true;
+}
+
+void CIosMgr::UpdateSynchronizationToClient() {
+    auto app_count = GetInstalledAppCount();
+    if (app_count <= 0) return;
+
+    PIOSAPPINFO app_info = new IOSAPPINFO[app_count];
+    if (!app_info) return;
+
+    PIOSAPPINFO info = nullptr;
+    for (int i = 0; i < app_count; i++) {
+        info = (app_info + i);
+        if (!info) continue;
+
+        ITask* pTask = CDatabaseMgr::Instance()->GetGameInfo(info->bundle_name);
+        if (!pTask) continue;
+
+        auto nGameID = pTask->nGameID;
+
+        CDatabaseMgr::Instance()->DeleteGameInfo(nGameID);
+
+        SetWebGameStatus(nGameID, GameUnload);
+
+        auto observers = CCallBackMgr::Instance()->Observers();
+        if (observers) observers->Go(&AppleSeedCallback::ApplicationRemoved, nGameID);
+
+    }
+
+    delete []app_info;
 }

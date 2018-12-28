@@ -28,6 +28,8 @@ public:
     void RemoveLoadLayout(ITask* pTask, const CDownloadItemUI::Type& type);
     void RemoveLoadLayout(CDownloadItemUI* item, const CDownloadItemUI::Type& type);
 
+    void UpdateLoadLayout();
+
 protected:
 
 

@@ -354,6 +354,9 @@ bool CSetupModule::InstallMsi(const std::wstring& file_path) {
         if (!strPath.empty()) PublicLib::RemoveDir(strPath.c_str());
     }
 
+    auto document_path = GetDocumentPath();
+    PublicLib::RemoveDir(document_path.c_str());
+
     std::wstring install_path_prop = L"INSTALLDIR=\"";
     install_path_prop += m_strInstPath;
     install_path_prop += L"\"";

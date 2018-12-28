@@ -13,14 +13,12 @@
 	<Font name="宋体" size="14" />
 	<Font name="微软雅黑" size="18" bold="true"/>
 	<Font name="微软雅黑" size="16" bold="true"/>
-	
-	<Default name="HScrollBar" value="showbutton1=&quot;false&quot; showbutton2=&quot;false&quot; thumbnormalimage=&quot;file=&apos;scroll_bk1.png&apos; corner=&apos;1,1,1,1&apos;&quot;  railnormalimage=&quot;file=&apos;scroll_bk1.png&apos; corner=&apos;1,1,1,1&apos;&quot; bknormalimage=&quot;file=&apos;scroll_fore1.png&apos; corner=&apos;1,1,1,1&apos;&quot; height=&quot;4&quot; "/>
 
   <VerticalLayout name="panel_tools" width="280" bkimage="file='KeyMap/tools/bk_image.png'">
     <HorizontalLayout height="21" bkimage="file='KeyMap/tools/top.png'">
       <Control width="8" />
 
-      <Label textcolor="#FF262626" text="键盘操控" padding="0,2,0,0" width="60" height="18" font="0" endellipsis="true"/>
+      <Label textcolor="#FF262626" text="键盘操控" padding="0,2,0,0" width="80" height="18" font="0" endellipsis="true"/>
 
       <Control />
 
@@ -32,7 +30,7 @@
     <VerticalLayout height="346" >
       <Control height="20" />
 
-      <Label text="常用工具" width="48" height="17" padding="116,0,0,0" textcolor="#FF262626" font="0" />
+      <Label text="常用工具" width="60" height="17" padding="116,0,0,0" textcolor="#FF262626" font="0" />
 
       <Control height="10" />
 
@@ -91,7 +89,7 @@
     <HorizontalLayout height="77">
       <Control width="40" />
 
-      <Label width="84" height="20" text="鼠标右键行走" padding="0,27,0,0" textcolor="#FF262626" font="1" valign="center" />
+      <Label width="100" height="20" text="鼠标右键行走" padding="0,27,0,0" textcolor="#FF262626" font="1" valign="center" />
 
       <Control width="82" />
 
@@ -102,7 +100,7 @@
 
     <Control height="30" />
 
-    <Label width="70" height="20" text="键位透明度" padding="105,0,0,0" textcolor="#FF262626" font="1" />
+    <Label width="84" height="20" text="键位透明度" padding="105,0,0,0" textcolor="#FF262626" font="1" />
 
     <Control height="7" />
 
@@ -118,7 +116,7 @@
 
       <Control width="16" />
 
-      <Label name="lbl_trans_percent" width="35" height="20" text="45%" padding="0,1,0,0" textcolor="#FF262626" font="1" />
+      <Label name="lbl_trans_percent" width="50" height="20" text="45%" padding="0,1,0,0" textcolor="#FF262626" font="1" />
     </HorizontalLayout>
 
     <Control />

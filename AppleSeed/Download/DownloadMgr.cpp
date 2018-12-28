@@ -640,10 +640,7 @@ LRESULT CDownloadMgr::OnTimer(WPARAM wParam, LPARAM lParam)
 		for (auto itor = loadList.begin(); itor != loadList.end();++itor)
 		{
 			ITask* pTask = *itor;
-            if (pTask->state == Ts_Pause)
-                TryStartTask(pTask);
-            else if (pTask->state == Ts_Error)
-                AddTask((Tag_HelperThread)pTask->GetTag(), pTask->nGameID, pTask->strName);
+            NotifyCallback(pTask);
 		}
 	}
 	return 0;

@@ -4,6 +4,7 @@
 #include "PageLayout.h"
 #include "Download/DownloadMgr.h"
 #include "CallBack/callback_mgr.h"
+#include "Ios/IosMgr.h"
 
 CPageDownloadUI::CPageDownloadUI(CControlUI* root)
  : root_(dynamic_cast<CVerticalLayoutUI*>(root))
@@ -259,4 +260,18 @@ void CPageDownloadUI::ApplicationRemoved(const __int64& nGameID) {
 
 void CPageDownloadUI::UpdateLayoutPage() {
     if (layout_page_ && layout_page_game_) layout_page_->SelectItem(layout_page_game_->GetCount() > 0 ? 0 : 1);
+}
+
+void CPageDownloadUI::UpdateLoadLayout() {
+    if (!layout_page_game_) return;
+
+    //std::vector<string> engine_apps;
+
+    //if (!CIosMgr::Instance()->GetEngineApplications(engine_apps)) return;
+
+    //int index = 0;
+    //for (int i = 0; i < layout_page_game_->GetCount(); i++) {
+    //    auto item = (CDownloadItemUI*)layout_page_game_->GetItemAt(i);
+    //    if (!item || item->GetType() == CDownloadItemUI::history) continue;
+    //}
 }

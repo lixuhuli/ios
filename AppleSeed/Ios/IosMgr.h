@@ -63,6 +63,8 @@ public:
 
     wstring GetKeyMapDir();
 
+    bool GetEngineApplications(std::vector<string>& engine_apps);
+
 protected:
     int InstallAppThread(void * argument);
     int InstallFileThread(void * argument);
@@ -91,6 +93,8 @@ private:
     void CheckEngineUpdate();
 
     bool HasKeyMapFile();
+
+    void UpdateSynchronizationToClient();
 
 private:
     CWndIos* ios_wnd_;

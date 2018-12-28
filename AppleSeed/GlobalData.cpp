@@ -19,6 +19,7 @@ void CGlobalData::Init(){
     m_strAppVersion = GetApplicationVersion();
     m_strDocPath = GetDocumentPath();
     m_strDataPath = m_strDocPath + L"\\Data.dat";
+    m_strIosPath = m_strDocPath + L"\\ios";
     PublicLib::GetOSVersion(m_strOSName, m_strOSVersion);
     m_strOSType = PublicLib::Is64bitSystem() ? L"64" : L"32";
     PublicLib::GetMacAddress(m_strMacAddr);
@@ -46,6 +47,19 @@ const wstring& CGlobalData::GetDocPath() const
         SHCreateDirectory(NULL, m_strDocPath.c_str());
     }
     return m_strDocPath;
+}
+
+const wstring& CGlobalData::GetIosPath() const {
+    if (!PathFileExists(m_strIosPath.c_str()))
+        SHCreateDirectory(NULL, m_strIosPath.c_str());
+    return m_strIosPath;
+}
+
+wstring CGlobalData::GetIosVmPath() {
+    wstring strPath = m_strIosPath + L"\\vm";
+    if (!PathFileExists(strPath.c_str()))
+        SHCreateDirectory(NULL, strPath.c_str());
+    return strPath;
 }
 
 wstring CGlobalData::GetDefLoadPath()

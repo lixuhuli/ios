@@ -14,6 +14,8 @@
 #define INI_KEY_HEAD_FILE		    L"HeadIconFile"
 #define INI_KEY_HEAD_URL		    L"HeadIconUrl"
 
+#define USER_COOKIE_PATH		    L"UserCookie"
+
 CUserData::CUserData()
  : m_userState(UsNone)
  , m_nUserID(0)
@@ -26,7 +28,7 @@ CUserData::~CUserData() {
 }
 
 void CUserData::Init() {
-    wstring strIniPath = GetAppDataPath() + L"CefCache";
+    wstring strIniPath = GetAppDataPath() + USER_COOKIE_PATH;
     SHCreateDirectory(NULL, strIniPath.c_str());
     strIniPath.append(L"\\CefCookies_Data");
 
@@ -68,7 +70,7 @@ void CUserData::SetFileAccount(int nUid, const string& strToken) {
 
     m_nUserID = nUid;
     m_strToken = strToken;
-    wstring strIniPath = GetAppDataPath() + L"CefCache";
+    wstring strIniPath = GetAppDataPath() + USER_COOKIE_PATH;
     SHCreateDirectory(NULL, strIniPath.c_str());
     strIniPath.append(L"\\CefCookies_Data");
     wchar_t szValue[128] = { 0 };
@@ -82,7 +84,7 @@ void CUserData::SetAccountPhone(const string& strPhone) {
     if (m_strPhone == strPhone) return;
 
     m_strPhone = strPhone;
-    wstring strIniPath = GetAppDataPath() + L"CefCache";
+    wstring strIniPath = GetAppDataPath() + USER_COOKIE_PATH;
     SHCreateDirectory(NULL, strIniPath.c_str());
     strIniPath.append(L"\\CefCookies_Data");
     wchar_t szValue[128] = { 0 };
@@ -94,7 +96,7 @@ void CUserData::SetAccountPassword(const string& strPassword) {
     if (m_strPassword == strPassword) return;
 
     m_strPassword = strPassword;
-    wstring strIniPath = GetAppDataPath() + L"CefCache";
+    wstring strIniPath = GetAppDataPath() + USER_COOKIE_PATH;
     SHCreateDirectory(NULL, strIniPath.c_str());
     strIniPath.append(L"\\CefCookies_Data");
     wchar_t szValue[128] = { 0 };
@@ -106,7 +108,7 @@ void CUserData::SetAutoLogin(const bool& bAutoLogin) {
     if (m_bAutoLogin == bAutoLogin) return;
 
     m_bAutoLogin = bAutoLogin;
-    wstring strIniPath = GetAppDataPath() + L"CefCache";
+    wstring strIniPath = GetAppDataPath() + USER_COOKIE_PATH;
     SHCreateDirectory(NULL, strIniPath.c_str());
     strIniPath.append(L"\\CefCookies_Data");
     wchar_t szValue[128] = { 0 };
@@ -118,7 +120,7 @@ void CUserData::SetRememberPwd(const bool& bRememberPwd) {
     if (m_bRememberPwd == bRememberPwd) return;
 
     m_bRememberPwd = bRememberPwd;
-    wstring strIniPath = GetAppDataPath() + L"CefCache";
+    wstring strIniPath = GetAppDataPath() + USER_COOKIE_PATH;
     SHCreateDirectory(NULL, strIniPath.c_str());
     strIniPath.append(L"\\CefCookies_Data");
     wchar_t szValue[128] = { 0 };

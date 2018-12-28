@@ -87,6 +87,9 @@ public:
     const wstring& GetDocPath()const;
     wstring GetDefLoadPath();
 
+    const wstring& GetIosPath()const;
+    wstring GetIosVmPath();
+
     const string &GetUserIcoPath() const { return m_strUserIcoPath; }
     void SetUserIcoPath(const string &val) { m_strUserIcoPath = val; }
 
@@ -121,6 +124,7 @@ private:
 
     wstring m_strDataPath;
     wstring m_strDocPath;
+    wstring m_strIosPath;
 
     int cpu_type_;   // 0:intel  1:AMD
 

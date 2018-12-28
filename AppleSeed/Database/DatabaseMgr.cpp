@@ -195,7 +195,7 @@ bool CDatabaseMgr::GetLoadTasks(OUT vector<ITask*> &loadList)
 			{
 				nState = 0;
 			}
-			else if (nState == Ts_Loading || nState == Ts_Wait || nState == Ts_Install || nState == Ts_CheckEnd)
+			else if (nState == Ts_Loading || nState == Ts_Wait || nState == Ts_Install || nState == Ts_CheckEnd || nState == Ts_Error)
 			{
 				nState = (int)Ts_Pause;
 			}

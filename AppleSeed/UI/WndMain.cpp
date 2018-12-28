@@ -98,7 +98,7 @@ void CWndMain::InitWindow() {
 
     CIosMgr::Instance()->CreateWndIos(m_hWnd);
     
-    string iso_file = GetRunPathA() + "ios\\"+ GetUrlIsoName();
+    string iso_file = PublicLib::UToUtf8(CGlobalData::Instance()->GetIosVmPath()) + "\\"+ GetUrlIsoName();
     if (PathFileExistsA(iso_file.c_str())) {
         LoadIosEngine();
         if (layout_install_) layout_install_->SelectItem(2);
@@ -106,6 +106,7 @@ void CWndMain::InitWindow() {
         UpdateLoadingIcon();
         ::SetTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS, DOWNLOAD_PROGRESS_TIME, nullptr);
     }
+    else RemoveSpilthVmdk();
 
     if (client_iphone_emulator_) client_iphone_emulator_->OnSize += MakeDelegate(this, &CWndMain::OnIphoneEmulatorSize);
 }
@@ -144,6 +145,7 @@ LRESULT CWndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
     case WM_MAINWND_MSG_IOSENGINE_UPDATE: OnMsgIosEngineUpdate(wParam, lParam, bHandled); break;
     case WM_MAINWND_MSG_UPDATE_IOSWND_POS: OnMsgUpdateIosWndPos(wParam, lParam, bHandled); break;
     case WM_MAINWND_MSG_GET_KEYBOARD: OnMsgGetKeyboardConfig(wParam, lParam, bHandled); break;
+    case WM_MAINWND_MSG_IOSENGINE_APPLIACTION: OnMsgIosEngineApplication(wParam, lParam, bHandled); break;
     case WM_KEYDOWN: {
         bHandled = FALSE;
         break;
@@ -601,7 +603,7 @@ bool CWndMain::OnBtnClickKey(void* param) {
 }
 
 bool CWndMain::LoadIosEngine() {
-    string iso_file = GetRunPathA() + "ios\\"+ GetUrlIsoName();
+    string iso_file = PublicLib::UToUtf8(CGlobalData::Instance()->GetIosVmPath()) + "\\"+ GetUrlIsoName();
     return CIosMgr::Instance()->IosEngineOn(iso_file);
 }
 
@@ -619,10 +621,8 @@ void CWndMain::UnzipMirrorSystem() {
     msg.hwnd = m_hWnd;
     msg.message = WM_MAINWND_MSG_FILE_UNZIPING;
 
-    std::wstring strOutDir = CGlobalData::Instance()->GetRunPath() + L"ios";
-    if (!PathFileExists(strOutDir.c_str())) SHCreateDirectory(nullptr, strOutDir.c_str());
-
-    std::wstring save_path = strOutDir +  L"\\" + PublicLib::Utf8ToU(GetUrlPackageName());
+    std::wstring strOutDir = CGlobalData::Instance()->GetIosVmPath();
+    std::wstring save_path = CGlobalData::Instance()->GetIosPath() +  L"\\" + PublicLib::Utf8ToU(GetUrlPackageName());
 
     TaskCenter::CTaskCenter::Instance()->CreateUnzipFileTask(msg, WM_MAINWND_MSG_FILE_UNZIP, save_path, strOutDir);
 }
@@ -685,8 +685,8 @@ LRESULT CWndMain::OnMsgFileUnzip(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
         return 0;
     } 
 
-    string iso_file = GetRunPathA() + "ios\\"+ GetUrlIsoName();
-    string iso_init_file = GetRunPathA() + "ios\\"+ GetUrlInitIsoName();
+    string iso_file = PublicLib::UToUtf8(CGlobalData::Instance()->GetIosVmPath()) + "\\" + GetUrlIsoName();
+    string iso_init_file = PublicLib::UToUtf8(CGlobalData::Instance()->GetIosVmPath()) + "\\" + GetUrlInitIsoName();
 
     if (!MoveFileA(iso_init_file.c_str(), iso_file.c_str())) {
         KillTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS);
@@ -696,7 +696,7 @@ LRESULT CWndMain::OnMsgFileUnzip(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
         return 0;
     }
 
-    std::wstring save_path = CGlobalData::Instance()->GetRunPath() + L"ios\\" + PublicLib::Utf8ToU(GetUrlPackageName());
+    std::wstring save_path = CGlobalData::Instance()->GetIosPath() + L"\\" + PublicLib::Utf8ToU(GetUrlPackageName());
     if (PathFileExists(save_path.c_str())) DeleteFile(save_path.c_str());
 
     LoadIosEngine();
@@ -740,7 +740,7 @@ LRESULT CWndMain::OnTimer(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 
 void CWndMain::DownloadMirrorSystem() {
     std::string url = "http://guorenres.5fun.com/mirror/" + GetUrlPackageName();
-    std::wstring save_path = CGlobalData::Instance()->GetRunPath() + L"ios\\";
+    std::wstring save_path = CGlobalData::Instance()->GetIosPath() + L"\\";
     if (!PathFileExists(save_path.c_str())) SHCreateDirectory(nullptr, save_path.c_str());
 
     save_path += PublicLib::Utf8ToU(GetUrlPackageName());
@@ -897,6 +897,11 @@ void CWndMain::SelectedHomePage(COptionUI* opt_select) {
         opt_select->Selected(true);
         SwitchPage(opt_select->GetTag());
     }
+}
+
+void CWndMain::RemoveSpilthVmdk() {
+    wstring iso_path = CGlobalData::Instance()->GetIosVmPath();
+    PublicLib::RemoveDir(iso_path.c_str());
 }
 
 string CWndMain::GetUrlPackageName() {
@@ -1168,6 +1173,11 @@ LRESULT CWndMain::OnMsgIosEngineUpdate(WPARAM wParam, LPARAM lParam, BOOL& bHand
     }
 
     CIosMgr::Instance()->OnPackUpdate(wParam);
+    return 0;
+}
+
+LRESULT CWndMain::OnMsgIosEngineApplication(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    if (page_download_) page_download_->UpdateLoadLayout();
     return 0;
 }
 
