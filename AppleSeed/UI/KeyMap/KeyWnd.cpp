@@ -92,7 +92,7 @@ void CKeyWnd::InitWindow() {
 }
 
 void CKeyWnd::UpdateCtrls() {
-    if (!lbl_trans_percent_ || !key_slider_trans_) return;
+    if (!lbl_trans_percent_ || !key_slider_trans_ || !scene_info_) return;
 
     key_slider_trans_->SetValue(scene_info_->opacity());
 

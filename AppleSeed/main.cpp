@@ -153,6 +153,10 @@ bool InitModules(HINSTANCE hInstance) {
     CDatabaseMgr::Instance()->Init();
     OUTPUT_XYLOG(LEVEL_INFO, L"初始化下载中心模块");
 
+    // 数据库更新处理， 兼容新版本
+    if (CDatabaseMgr::Instance()->NeedUpdate()) CDatabaseMgr::Instance()->UpdateNewDbData();
+    OUTPUT_XYLOG(LEVEL_INFO, L"判断是否更新数据库，兼容新版本");
+
     AppSetting setting;
     CDatabaseMgr::Instance()->GetSetting(setting);
     OUTPUT_XYLOG(LEVEL_INFO, L"初始化任务中心模块");

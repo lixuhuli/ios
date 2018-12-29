@@ -4,9 +4,8 @@
 #include <atlstr.h>
 #include <algorithm>
 
-#define DATABASE_VERSION	"1.0"
+#define DATABASE_VERSION	"1.1"
 #define SOFT_VERSION		"1.0"
-#define ANDROID_EMU_VERSION	"1.0.1"
 
 CDatabaseMgr::CDatabaseMgr() {
 }
@@ -59,6 +58,10 @@ bool CDatabaseMgr::Open(const string& strDbFile)
 		{//表已经存在，读取版本信息
  			CppSQLite3Query query = m_sqliteDB.execQuery(SQL_READ_DB_VERSION);
             startup_db_version_ = query.getStringField("database_version");
+
+            if (startup_db_version_.compare("1.1") < 0) {
+                AddTableField(TB_LOADED, "pkg_name", "text");
+            }
 		}
 
 		GetDefSetting(m_setting);
@@ -366,6 +369,7 @@ bool CDatabaseMgr::GetFinishTasks(OUT vector<ITask*> &finishList)
 			pTask->gameType = (GameType)q.getIntField("game_type");
 			int nType = q.getIntField("file_type");
 			pTask->type = (nType == 0) ? Ft_Game : (FileType)nType;
+            pTask->strPkgName = q.fieldIsNull("pkg_name") ? "" : q.getStringField("pkg_name");
 			finishList.push_back(pTask);
 			q.nextRow();
 		}
@@ -391,7 +395,7 @@ bool CDatabaseMgr::InsertFinishTask(ITask* pTask)
 		db.open(m_strDbPath.c_str());
 		CStringA strSql;
 		strSql.Format(SQL_INSERT_DB_LOADED, PublicLib::UToUtf8(pTask->strName).c_str(), PublicLib::UToUtf8(pTask->strVersion).c_str(), pTask->nTotalSize,
-            PublicLib::UToUtf8(pTask->strSavePath).c_str(), pTask->nGameID, pTask->nDate, (int)pTask->gameType, (int)pTask->type, pTask->strGameInfo.c_str());
+            PublicLib::UToUtf8(pTask->strSavePath).c_str(), pTask->nGameID, pTask->nDate, (int)pTask->gameType, (int)pTask->type, pTask->strGameInfo.c_str(), pTask->strPkgName.c_str());
 		db.execDML(strSql);
 	}
 	catch (CppSQLite3Exception& e)
@@ -826,4 +830,22 @@ bool CDatabaseMgr::CheckFreeSpace()
 		}
 	}
 	return true;
+}
+
+bool CDatabaseMgr::NeedUpdate() {
+    return startup_db_version_.compare(DATABASE_VERSION) < 0;
+}
+
+void CDatabaseMgr::UpdateNewDbData() {
+    try {
+        CStringA strSql;
+        strSql.Format(SQL_UPDATE_DB_VERSION, DATABASE_VERSION);
+        m_sqliteDB.execDML(strSql);
+    }
+    catch (CppSQLite3Exception& e) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"failed error code:%d, error msg:%s", e.errorCode(), PublicLib::Utf8ToU(e.errorMessage()).c_str());
+    }
+    catch (...) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"更新数据库版本失败");
+    }
 }

@@ -94,7 +94,7 @@ private:
 
     bool HasKeyMapFile();
 
-    void UpdateSynchronizationToClient();
+    void WriteBaseKeyBoard(const string& app_id);
 
 private:
     CWndIos* ios_wnd_;

@@ -252,21 +252,19 @@ void CIosMgr::OnForegroundAppChanged(uintptr_t param1, uintptr_t param2) {
 
     if (!context || !ios_wnd_) return;
 
-    if (strcmp(context, "com.tencent.smoba") == 0) {
-        if (hor_screen_mode_) {
-            if (HasKeyMapFile()) CreateKeyWnd(CGlobalData::Instance()->GetMainWnd());
-            else {
-                MSG msg = { 0 };
-                msg.hwnd = CGlobalData::Instance()->GetMainWnd();
-                msg.message = WM_MAINWND_MSG_GET_KEYBOARD;
+    if (hor_screen_mode_) {
+        if (HasKeyMapFile()) CreateKeyWnd(CGlobalData::Instance()->GetMainWnd());
+        else {
+            MSG msg = { 0 };
+            msg.hwnd = CGlobalData::Instance()->GetMainWnd();
+            msg.message = WM_MAINWND_MSG_GET_KEYBOARD;
 
-                auto keymap_dir = GetKeyMapDir();
-                auto download_path = GetDocumentPath() + L"\\keymap\\"+ PublicLib::AToU(emulator_state_info_->running_app_id()) + L".zip";
-                if (!::PathFileExists(keymap_dir.c_str())) SHCreateDirectory(nullptr, keymap_dir.c_str());
+            auto keymap_dir = GetKeyMapDir();
+            auto download_path = GetDocumentPath() + L"\\keymap\\"+ PublicLib::AToU(emulator_state_info_->running_app_id()) + L".zip";
+            if (!::PathFileExists(keymap_dir.c_str())) SHCreateDirectory(nullptr, keymap_dir.c_str());
 
-                auto strAppId = emulator_state_info_->running_app_id();
-                TaskCenter::CTaskCenter::Instance()->CreateGetKeyBoardConfigTask(msg, strAppId, download_path, keymap_dir);
-            }
+            auto strAppId = emulator_state_info_->running_app_id();
+            TaskCenter::CTaskCenter::Instance()->CreateGetKeyBoardConfigTask(msg, strAppId, download_path, keymap_dir);
         }
     }
     else CloseKeyWnd();
@@ -463,7 +461,7 @@ void CIosMgr::OnPackUpdate(int status){
     if (status == 0 || status == -1) {
         if (ios_wnd_) ios_wnd_->ShowWindow(true);
         emulator_state_info_->set_state(emulator::STATE_ENGINE_ON);
-        //UpdateSynchronizationToClient();
+        ::PostMessage(CGlobalData::Instance()->GetMainWnd(), WM_MAINWND_MSG_IOSENGINE_APPLIACTION, 0, 0);
         StartInstallApp();
     }
     else {
@@ -495,7 +493,7 @@ void CIosMgr::OnEngineOff(int state) {
     else {
         if (ios_wnd_) ios_wnd_->ShowWindow(true);
         emulator_state_info_->set_state(emulator::STATE_ENGINE_ON);
-        //UpdateSynchronizationToClient();
+        ::PostMessage(CGlobalData::Instance()->GetMainWnd(), WM_MAINWND_MSG_IOSENGINE_APPLIACTION, 0, 0);
         StartInstallApp();
     }
 }
@@ -560,17 +558,17 @@ void CIosMgr::OnGetKeyboard(WPARAM wParam, LPARAM lParam) {
 
     bool bSuccess = strJson == "1";
 
-    if (!bSuccess) {
-        OUTPUT_XYLOG(LEVEL_ERROR, L"键盘映射文件下载失败");
-        return;
-    }
-
     string strAppId;
     TaskCenter::CTaskCenter::Instance()->GetKeyBoardConfigAppId(nTask, strAppId);
 
     if (strAppId != emulator_state_info_->running_app_id()) {
         OUTPUT_XYLOG(LEVEL_ERROR, L"该游戏已经不再运行");
         return;
+    }
+
+    if (!bSuccess) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"键盘映射文件下载失败");
+        WriteBaseKeyBoard(strAppId);
     }
 
     CIosMgr::Instance()->CreateKeyWnd(CGlobalData::Instance()->GetMainWnd());
@@ -582,6 +580,11 @@ bool CIosMgr::GetEngineApplications(std::vector<string>& engine_apps) {
 
     PIOSAPPINFO app_info = new IOSAPPINFO[app_count];
     if (!app_info) return false;
+
+    if (GetInstalledAppInfo(app_info, app_count) == 0) {
+        delete []app_info;
+        return false;
+    }
 
     PIOSAPPINFO info = nullptr;
     for (int i = 0; i < app_count; i++) {
@@ -595,31 +598,14 @@ bool CIosMgr::GetEngineApplications(std::vector<string>& engine_apps) {
     return true;
 }
 
-void CIosMgr::UpdateSynchronizationToClient() {
-    auto app_count = GetInstalledAppCount();
-    if (app_count <= 0) return;
+void CIosMgr::WriteBaseKeyBoard(const string& app_id) {
+    if (!emulator_state_info_) return;
 
-    PIOSAPPINFO app_info = new IOSAPPINFO[app_count];
-    if (!app_info) return;
+    auto config = GetKeyMapDir() + L"\\conf.ini";
 
-    PIOSAPPINFO info = nullptr;
-    for (int i = 0; i < app_count; i++) {
-        info = (app_info + i);
-        if (!info) continue;
+    if (!WritePrivateProfileString(L"setting", L"record", L"records_1", config.c_str())) return;
 
-        ITask* pTask = CDatabaseMgr::Instance()->GetGameInfo(info->bundle_name);
-        if (!pTask) continue;
-
-        auto nGameID = pTask->nGameID;
-
-        CDatabaseMgr::Instance()->DeleteGameInfo(nGameID);
-
-        SetWebGameStatus(nGameID, GameUnload);
-
-        auto observers = CCallBackMgr::Instance()->Observers();
-        if (observers) observers->Go(&AppleSeedCallback::ApplicationRemoved, nGameID);
-
-    }
-
-    delete []app_info;
+    WritePrivateProfileString(L"records_1", L"name", L"默认配置", config.c_str());
+    WritePrivateProfileString(L"records_1", L"file", PublicLib::AToU(app_id).c_str(), config.c_str());
 }
+

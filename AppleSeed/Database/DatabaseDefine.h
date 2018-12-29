@@ -29,12 +29,11 @@ values('%s', '%s', '%s', %I64d, %I64d, '%s', %d, '%I64d', '%s', '%s', %d, '%s', 
 
 #define TB_LOADED "tb_loaded"
 #define SQL_CREATE_DB_LOADED "create table tb_loaded(id INTEGER PRIMARY KEY AUTOINCREMENT, title text, version text, total_size INT64, \
-save_path text, game_id INT64, date INT64, game_type int, r1 text, r2 text, r3 text, file_type INTEGER, info text);"
-#define SQL_INSERT_DB_LOADED "insert into tb_loaded(title, version, total_size, save_path, game_id, date, game_type, r1, r2, r3, file_type, info) \
-values('%s', '%s', %I64d, '%s', '%I64d', %I64d, %d, '', '', '', %d, '%s');"
+save_path text, game_id INT64, date INT64, game_type int, r1 text, r2 text, r3 text, file_type INTEGER, info text, pkg_name text);"
+#define SQL_INSERT_DB_LOADED "insert into tb_loaded(title, version, total_size, save_path, game_id, date, game_type, r1, r2, r3, file_type, info, pkg_name) \
+values('%s', '%s', %I64d, '%s', '%I64d', %I64d, %d, '', '', '', %d, '%s', '%s');"
 #define SQL_READ_DB_LOADED "select * from tb_loaded"
 #define SQL_DELETE_DB_LOADED  "delete from tb_loaded where game_id = ?;"
-#define SQL_UPDATE_DB_LOADED  "update tb_loaded set info = '%s' where game_id = '%I64d'; "
 
 
 #define TB_GAMEINFO "tb_game_info"

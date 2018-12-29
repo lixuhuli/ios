@@ -256,6 +256,8 @@ void CPageDownloadUI::ApplicationRemoved(const __int64& nGameID) {
     RemoveLoadLayout(item, CDownloadItemUI::history);
 
     CDownloadMgr::Instance()->DeleteFinishTask(nTask, TRUE);
+
+    UpdateLayoutPage();
 }
 
 void CPageDownloadUI::UpdateLayoutPage() {
@@ -265,13 +267,42 @@ void CPageDownloadUI::UpdateLayoutPage() {
 void CPageDownloadUI::UpdateLoadLayout() {
     if (!layout_page_game_) return;
 
-    //std::vector<string> engine_apps;
+    std::vector<string> engine_apps;
 
-    //if (!CIosMgr::Instance()->GetEngineApplications(engine_apps)) return;
+    if (!CIosMgr::Instance()->GetEngineApplications(engine_apps)) return;
 
-    //int index = 0;
-    //for (int i = 0; i < layout_page_game_->GetCount(); i++) {
-    //    auto item = (CDownloadItemUI*)layout_page_game_->GetItemAt(i);
-    //    if (!item || item->GetType() == CDownloadItemUI::history) continue;
-    //}
+    int index = 0;
+    for (int i = 0; i < layout_page_game_->GetCount(); i++) {
+        auto item = (CDownloadItemUI*)layout_page_game_->GetItemAt(i);
+        if (!item || item->GetType() != CDownloadItemUI::history) continue;
+
+        UINT_PTR nTask = item->GetTag();
+
+        ITask* task = (ITask*)nTask;
+        if (!task) continue;
+
+        if (task->strPkgName.empty()) {
+            task = CDatabaseMgr::Instance()->GetGameInfo(task->nGameID);
+            if (task->strPkgName.empty()) continue;
+        }
+
+        auto it = std::find_if(engine_apps.begin(), engine_apps.end(),
+            [&](const string& node) {
+                return node == task->strPkgName;
+        });
+
+        if (it != engine_apps.end()) continue;
+
+        auto nGameID = task->nGameID;
+
+        CDatabaseMgr::Instance()->DeleteGameInfo(nGameID);
+
+        SetWebGameStatus(nGameID, GameUnload);
+
+        RemoveLoadLayout(item, CDownloadItemUI::history);
+
+        CDownloadMgr::Instance()->DeleteFinishTask(nTask, TRUE);
+    }
+
+    UpdateLayoutPage();
 }

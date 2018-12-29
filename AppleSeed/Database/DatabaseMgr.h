@@ -58,6 +58,10 @@ public:
 
 	bool CheckFreeSpace();
 
+    // 数据库是否需要更新   和老版数据库做兼容
+    bool NeedUpdate();
+    void UpdateNewDbData();
+
 protected:
 	CDatabaseMgr();
 	~CDatabaseMgr();
