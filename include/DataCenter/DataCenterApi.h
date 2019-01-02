@@ -35,6 +35,3 @@ DATA_CENTER_API void SetDataCenterVersion(const char* pVersion);
 
 //创建打点任务 C++ API
 DATA_CENTER_API void CreateDataTask(const char* pEventName, const Json::Value& vParams = Json::Value(Json::objectValue), int nUid=0);
-
-//获取token
-DATA_CENTER_API void GetDataCenterToken(OUT wstring& strToken);

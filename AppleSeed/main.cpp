@@ -170,6 +170,8 @@ bool InitModules(HINSTANCE hInstance) {
     CCallBackMgr::Instance()->Init();
 
     InitDataCenter(nullptr);
+    auto strAppVersion = CGlobalData::Instance()->GetAppVersion();
+    if (!strAppVersion.empty()) SetDataCenterVersion(PublicLib::UToUtf8(strAppVersion).c_str());
 
     // 初始化下载中心
     return CDownloadMgr::Instance()->Init(hInstance, 5, setting.nMaxLoadSpeed);

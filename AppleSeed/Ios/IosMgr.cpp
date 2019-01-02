@@ -16,6 +16,7 @@
 #include "CallBack/callback_mgr.h"
 #include "TaskCenter/TaskCenter.h"
 #include "UserData.h"
+#include "DataPost.h"
 
 static int engine_callbacks(int status, uintptr_t param1, uintptr_t param2) {
     return CIosMgr::Instance()->EngineCallback(status, param1, param2);
@@ -251,6 +252,9 @@ void CIosMgr::OnForegroundAppChanged(uintptr_t param1, uintptr_t param2) {
     emulator_state_info_->set_running_app_id(context ? context : "");
 
     if (!context || !ios_wnd_) return;
+
+    auto pTask = CDatabaseMgr::Instance()->GetGameInfo(context);
+    if (pTask) PostStartGame(pTask->nGameID, StatusSuccess, CUserData::Instance()->GetFileUserID());
 
     if (hor_screen_mode_) {
         if (HasKeyMapFile()) CreateKeyWnd(CGlobalData::Instance()->GetMainWnd());
@@ -543,6 +547,15 @@ void CIosMgr::OnGetUidAndToken(uintptr_t param1, uintptr_t param2) {
 }
 
 void CIosMgr::OnEmulationQuit(uintptr_t param1, uintptr_t param2) {
+    const char *context = (char *)param1;
+    if (context) {
+        string package_name = context;
+        ITask* pTask = CDatabaseMgr::Instance()->GetGameInfo(package_name);
+        if (pTask) {
+            PostStartGame(pTask->nGameID, StatusFail, CUserData::Instance()->GetFileUserID());
+        }
+    }
+
     ShowMsg(CGlobalData::Instance()->GetMainWnd(), L"提示", L"没有权限打开该游戏", MB_OK);
 }
 

@@ -207,6 +207,7 @@ bool CDownloadMgr::PauseTask(UINT_PTR nTaskID, BOOL bUpdateWaitList/* = TRUE*/)
 		if (bUpdateWaitList)
 			UpdateWaitList();
 	}
+    PostDownloadGame(pTask->nGameID, pTask->gameType, StatusPause, pTask->nLoadWay, pTask->nSpeed);
 	pTask->state = Ts_Pause;
 	NotifyCallback(pTask);
 	return true;
@@ -284,6 +285,7 @@ bool CDownloadMgr::TryStartTask(ITask* pTask)
 void CDownloadMgr::InstallTask(ITask* pTask) {
 	pTask->state = Ts_Install;
     CIosMgr::Instance()->InstallApp((UINT_PTR)pTask);
+    PostInstallGame(pTask->nGameID, StatusBegin, CUserData::Instance()->GetFileUserID());
 	NotifyCallback(pTask);
 }
 
@@ -583,17 +585,13 @@ LRESULT CDownloadMgr::OnMsgIpaInstall(WPARAM wParam, LPARAM lParam) {
         // 安装完成
 		FinishTask(pTask);
         ::DeleteFile(pTask->strSavePath.c_str());
-// 		CDuiString str;
-// 		str.Format(L"%s已下载完成，请重新操作", pTask->strName.c_str());
-// 		ShowBottomBar(str);
-		//PostUnzipGame(pTask->nGameID, pTask->gameType, StatusSuccess, lpParam->nSpeed);
-		//CUserData::Instance()->AddGameLoadCount();
+        PostInstallGame(pTask->nGameID, StatusSuccess, CUserData::Instance()->GetFileUserID());
 	}
 	else {   
         // 安装失败
 		pTask->state = Ts_Error;
 		NotifyCallback(pTask, 100);
-		//PostUnzipGame(pTask->nGameID, pTask->gameType, StatusFail, lpParam->nSpeed);
+        PostInstallGame(pTask->nGameID, StatusFail, CUserData::Instance()->GetFileUserID());
 	}
 
 	return 0;
