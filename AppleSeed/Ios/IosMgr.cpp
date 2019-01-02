@@ -552,7 +552,7 @@ wstring CIosMgr::GetKeyMapDir() {
 }
 
 void CIosMgr::OnGetUidAndToken(uintptr_t param1, uintptr_t param2) {
-    if (CUserData::Instance()->GetUserState() == UsNone)  SetUidAndToken(nullptr, nullptr);
+    if (CUserData::Instance()->GetUserState() == UsNone)  SetUidAndToken("", "");
     else if (CUserData::Instance()->GetUserState() == UsLogin) {
         char szUid[MAX_PATH] = { 0 };
         sprintf(szUid, "%d", CUserData::Instance()->GetFileUserID());
