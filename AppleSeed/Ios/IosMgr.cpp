@@ -25,6 +25,7 @@ static int engine_callbacks(int status, uintptr_t param1, uintptr_t param2) {
 CIosMgr::CIosMgr()
  : ios_wnd_(nullptr)
  , key_wnd_(nullptr)
+ , engine_on_(false)
  , hor_screen_mode_(false)
  , wnd_size_(CSize(0, 0))
  , ios_scale_(750.0 / 1334.0) {
@@ -253,25 +254,33 @@ void CIosMgr::OnForegroundAppChanged(uintptr_t param1, uintptr_t param2) {
 
     if (!context || !ios_wnd_) return;
 
-    auto pTask = CDatabaseMgr::Instance()->GetGameInfo(context);
-    if (pTask) PostStartGame(pTask->nGameID, StatusSuccess, CUserData::Instance()->GetFileUserID());
-
-    if (hor_screen_mode_) {
-        if (HasKeyMapFile()) CreateKeyWnd(CGlobalData::Instance()->GetMainWnd());
-        else {
-            MSG msg = { 0 };
-            msg.hwnd = CGlobalData::Instance()->GetMainWnd();
-            msg.message = WM_MAINWND_MSG_GET_KEYBOARD;
-
-            auto keymap_dir = GetKeyMapDir();
-            auto download_path = GetDocumentPath() + L"\\keymap\\"+ PublicLib::AToU(emulator_state_info_->running_app_id()) + L".zip";
-            if (!::PathFileExists(keymap_dir.c_str())) SHCreateDirectory(nullptr, keymap_dir.c_str());
-
-            auto strAppId = emulator_state_info_->running_app_id();
-            TaskCenter::CTaskCenter::Instance()->CreateGetKeyBoardConfigTask(msg, strAppId, download_path, keymap_dir);
+    if (strcmp(context, "com.apple.springboard") == 0) {
+        if (!engine_on_) {
+            engine_on_ = true;
+            OnEngineOn();
         }
     }
-    else CloseKeyWnd();
+    else {
+        auto pTask = CDatabaseMgr::Instance()->GetGameInfo(context);
+        if (pTask) PostStartGame(pTask->nGameID, StatusSuccess, CUserData::Instance()->GetFileUserID());
+
+        if (hor_screen_mode_) {
+            if (HasKeyMapFile()) CreateKeyWnd(CGlobalData::Instance()->GetMainWnd());
+            else {
+                MSG msg = { 0 };
+                msg.hwnd = CGlobalData::Instance()->GetMainWnd();
+                msg.message = WM_MAINWND_MSG_GET_KEYBOARD;
+
+                auto keymap_dir = GetKeyMapDir();
+                auto download_path = GetDocumentPath() + L"\\keymap\\"+ PublicLib::AToU(emulator_state_info_->running_app_id()) + L".zip";
+                if (!::PathFileExists(keymap_dir.c_str())) SHCreateDirectory(nullptr, keymap_dir.c_str());
+
+                auto strAppId = emulator_state_info_->running_app_id();
+                TaskCenter::CTaskCenter::Instance()->CreateGetKeyBoardConfigTask(msg, strAppId, download_path, keymap_dir);
+            }
+        }
+        else CloseKeyWnd();
+    }
 
     return;
 }
@@ -331,7 +340,7 @@ void CIosMgr::OnApplicationRemoved(uintptr_t param1, uintptr_t param2) {
 int CIosMgr::EngineCallback(int status, uintptr_t param1, uintptr_t param2) {
     switch (status) {
     case ENGINE_STATUS_SWITCHED_ON: 
-        CefPostTask(TID_UI, base::Bind(&CIosMgr::OnEngineOn, AsWeakPtr()));
+        //CefPostTask(TID_UI, base::Bind(&CIosMgr::OnEngineOn, AsWeakPtr()));
         break;
     case ENGINE_STATUS_SWITCHED_OFF: {
         break;
@@ -437,7 +446,11 @@ void CIosMgr::UpdateBrowserMode(bool browser_mode) {
 void CIosMgr::CheckEngineUpdate() {
     int version[3] = {0, 0, 0};
 
-    GetEngineVersion(&version[0], &version[1], &version[2]);
+    if (GetEngineVersion(&version[0], &version[1], &version[2]) != 0) {
+        ShowMsg(CGlobalData::Instance()->GetMainWnd(), L"提示", L"启动失败，请重启", MB_OK);
+        CreateEngineOffTask();
+        return;
+    }
     
     wchar_t szVersion[MAX_PATH + 1] = { 0 };
     wsprintf(szVersion, L"%d.%d.%d", version[0], version[1], version[2]);
@@ -469,6 +482,7 @@ void CIosMgr::OnPackUpdate(int status){
         StartInstallApp();
     }
     else {
+        ShowMsg(CGlobalData::Instance()->GetMainWnd(), L"提示", L"更新成功，请重启", MB_OK);
         CreateEngineOffTask();
     }
 }
@@ -490,11 +504,11 @@ int CIosMgr::EngineOffThread(void * argument){
 
 void CIosMgr::OnEngineOff(int state) {
     if (state == 0) {
-        ShowMsg(CGlobalData::Instance()->GetMainWnd(), L"提示", L"更新成功，请重启", MB_OK);
         CGlobalData::Instance()->SetNeedReboot(true);
         PostMessage(CGlobalData::Instance()->GetMainWnd(), WM_MAINWND_MSG_EXIT, 0, 0);
     }
     else {
+        ShowMsg(CGlobalData::Instance()->GetMainWnd(), L"提示", L"重启失败", MB_OK);
         if (ios_wnd_) ios_wnd_->ShowWindow(true);
         emulator_state_info_->set_state(emulator::STATE_ENGINE_ON);
         ::PostMessage(CGlobalData::Instance()->GetMainWnd(), WM_MAINWND_MSG_IOSENGINE_APPLIACTION, 0, 0);
@@ -542,7 +556,7 @@ void CIosMgr::OnGetUidAndToken(uintptr_t param1, uintptr_t param2) {
     else if (CUserData::Instance()->GetUserState() == UsLogin) {
         char szUid[MAX_PATH] = { 0 };
         sprintf(szUid, "%d", CUserData::Instance()->GetFileUserID());
-        SetUidAndToken(szUid, PublicLib::AToUtf(CUserData::Instance()->GetFileUserToken()).c_str());
+        SetUidAndToken(PublicLib::AToUtf(szUid).c_str(), PublicLib::AToUtf(CUserData::Instance()->GetFileUserToken()).c_str());
     }
 }
 

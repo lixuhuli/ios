@@ -65,6 +65,8 @@ public:
 
     bool GetEngineApplications(std::vector<string>& engine_apps);
 
+    void CreateEngineOffTask();
+
 protected:
     int InstallAppThread(void * argument);
     int InstallFileThread(void * argument);
@@ -86,7 +88,6 @@ protected:
 private:
     void CreateInstallAppTask(const UINT_PTR& task_ptr);
     void CreateInstallFileTask(const UINT_PTR& task_ptr);
-    void CreateEngineOffTask();
 
     void StartInstallApp();
 
@@ -102,6 +103,7 @@ private:
 
     bool hor_screen_mode_;
     double ios_scale_;
+    bool engine_on_;
 
     CSize wnd_size_;
 

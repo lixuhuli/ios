@@ -98,7 +98,7 @@ OGLAPI void KeyInputSync(const char op, WPARAM keyValue);
 OGLAPI int InstallIPA(const char *pathToFile);			// Install IPA file. Returning 0 means OK, otherwise it fails.
 OGLAPI int UpdatePack(const char *pathToFile);			// Update file to update the engine. Returning 0 means OK, otherwise it fails.
 
-OGLAPI void GetEngineVersion(int *major, int *minor, int *buildnumber);	// Get engine version.
+OGLAPI int GetEngineVersion(int *major, int *minor, int *buildnumber);	// Get engine version. Returning 0 means OK, otherwise it fails.
 
 typedef struct _IOSAPPINFO {
 	char bundle_name[256];		// eg: com.tencent.smoba

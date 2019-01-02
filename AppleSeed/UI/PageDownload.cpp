@@ -269,7 +269,7 @@ void CPageDownloadUI::UpdateLoadLayout() {
 
     std::vector<string> engine_apps;
 
-    if (!CIosMgr::Instance()->GetEngineApplications(engine_apps)) return;
+    bool bApps = CIosMgr::Instance()->GetEngineApplications(engine_apps);
 
     int index = 0;
     for (int i = 0; i < layout_page_game_->GetCount(); i++) {
@@ -286,12 +286,14 @@ void CPageDownloadUI::UpdateLoadLayout() {
             if (task->strPkgName.empty()) continue;
         }
 
-        auto it = std::find_if(engine_apps.begin(), engine_apps.end(),
-            [&](const string& node) {
-                return node == task->strPkgName;
-        });
+        if (bApps) {
+            auto it = std::find_if(engine_apps.begin(), engine_apps.end(),
+                [&](const string& node) {
+                    return node == task->strPkgName;
+            });
 
-        if (it != engine_apps.end()) continue;
+            if (it != engine_apps.end()) continue;
+        }
 
         auto nGameID = task->nGameID;
 
@@ -302,6 +304,8 @@ void CPageDownloadUI::UpdateLoadLayout() {
         RemoveLoadLayout(item, CDownloadItemUI::history);
 
         CDownloadMgr::Instance()->DeleteFinishTask(nTask, TRUE);
+
+        i--;
     }
 
     UpdateLayoutPage();

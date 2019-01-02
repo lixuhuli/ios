@@ -17,14 +17,14 @@
 #include "DataPost.h"
 #include "WndUserCenter.h"
 
-#define URL_PACKAGE_NAME_INTEL   "MotherDisc_Intel_1225.7z"
-#define URL_PACKAGE_NAME_AMD     "MotherDisc_AMD_1225.7z"
+#define URL_PACKAGE_NAME_INTEL   "MotherDisc_Intel_1230.7z"
+#define URL_PACKAGE_NAME_AMD     "MotherDisc_AMD_1230.7z"
 
-#define URL_ISO_NAME_INIT_INTEL  "MotherDisc_Intel_1225.vmdk"
-#define URL_ISO_NAME_INIT_AMD    "MotherDisc_AMD_1225.vmdk"
+#define URL_ISO_NAME_INIT_INTEL  "MotherDisc_Intel_1230.vmdk"
+#define URL_ISO_NAME_INIT_AMD    "MotherDisc_AMD_1230.vmdk"
 
-#define URL_ISO_NAME_INTEL       "MotherDisc_Intel_1225_Using.vmdk"
-#define URL_ISO_NAME_AMD         "MotherDisc_AMD_1225_Using.vmdk"
+#define URL_ISO_NAME_INTEL       "MotherDisc_Intel_1230_Using.vmdk"
+#define URL_ISO_NAME_AMD         "MotherDisc_AMD_1230_Using.vmdk"
 
 #define DOWNLOAD_PROGRESS_TIME   (int)150
 
@@ -100,7 +100,12 @@ void CWndMain::InitWindow() {
     
     string iso_file = PublicLib::UToUtf8(CGlobalData::Instance()->GetIosVmPath()) + "\\"+ GetUrlIsoName();
     if (PathFileExistsA(iso_file.c_str())) {
-        LoadIosEngine();
+        if (!LoadIosEngine()) {
+            ShowMsg(m_hWnd, L"提示", L"启动失败，请重启", MB_OK);
+            CIosMgr::Instance()->CreateEngineOffTask();
+            return;
+        }
+
         if (layout_install_) layout_install_->SelectItem(2);
         loading_frame_ = 0;
         UpdateLoadingIcon();
@@ -699,7 +704,11 @@ LRESULT CWndMain::OnMsgFileUnzip(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     std::wstring save_path = CGlobalData::Instance()->GetIosPath() + L"\\" + PublicLib::Utf8ToU(GetUrlPackageName());
     if (PathFileExists(save_path.c_str())) DeleteFile(save_path.c_str());
 
-    LoadIosEngine();
+    if (!LoadIosEngine()) {
+        ShowMsg(m_hWnd, L"提示", L"启动失败，请重启", MB_OK);
+        CIosMgr::Instance()->CreateEngineOffTask();
+        return 0;
+    }
 
     return 0;
 }
@@ -711,7 +720,12 @@ LRESULT CWndMain::OnMsgEmulatorAlready(WPARAM wParam, LPARAM lParam, BOOL& bHand
 }
 
 LRESULT CWndMain::OnMsgLoadIosEngine(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    LoadIosEngine();
+    if (!LoadIosEngine()) {
+        ShowMsg(m_hWnd, L"提示", L"启动失败，请重启", MB_OK);
+        CIosMgr::Instance()->CreateEngineOffTask();
+        return 0;
+    }
+
     if (layout_install_) layout_install_->SelectItem(2);
     loading_frame_ = 0;
     UpdateLoadingIcon();
