@@ -99,8 +99,8 @@
       <ImportLibrary>$(ProjectDir)..\lib\Debug\$(ProjectName).lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y .\DataCenterApi.h .\..\..\include\DataCenter\DataCenterApi.h
-copy /y .\TaskEnum.h .\..\..\include\DataCenter\TaskEnum.h</Command>
+      <Command>copy /y .\DataCenterApi.h .\..\include\DataCenter\DataCenterApi.h
+copy /y .\TaskEnum.h .\..\include\DataCenter\TaskEnum.h</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_s|Win32'">
@@ -120,8 +120,8 @@ copy /y .\TaskEnum.h .\..\..\include\DataCenter\TaskEnum.h</Command>
       <ImportLibrary>$(ProjectDir)..\..\lib\Debug\$(ProjectName).lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y .\DataCenterApi.h .\..\..\include\DataCenter\DataCenterApi.h
-copy /y .\TaskEnum.h .\..\..\include\DataCenter\TaskEnum.h</Command>
+      <Command>copy /y .\DataCenterApi.h .\..\include\DataCenter\DataCenterApi.h
+copy /y .\TaskEnum.h .\..\include\DataCenter\TaskEnum.h</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -144,8 +144,8 @@ copy /y .\TaskEnum.h .\..\..\include\DataCenter\TaskEnum.h</Command>
       <ImportLibrary>$(ProjectDir)..\lib\Release\$(ProjectName).lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y .\DataCenterApi.h .\..\..\include\DataCenter\DataCenterApi.h
-copy /y .\TaskEnum.h .\..\..\include\DataCenter\TaskEnum.h</Command>
+      <Command>copy /y .\DataCenterApi.h .\..\include\DataCenter\DataCenterApi.h
+copy /y .\TaskEnum.h .\..\include\DataCenter\TaskEnum.h</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release_s|Win32'">
@@ -169,8 +169,8 @@ copy /y .\TaskEnum.h .\..\..\include\DataCenter\TaskEnum.h</Command>
       <ImportLibrary>$(ProjectDir)..\..\lib\Release\$(ProjectName).lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y .\DataCenterApi.h .\..\..\include\DataCenter\DataCenterApi.h
-copy /y .\TaskEnum.h .\..\..\include\DataCenter\TaskEnum.h</Command>
+      <Command>copy /y .\DataCenterApi.h .\..\include\DataCenter\DataCenterApi.h
+copy /y .\TaskEnum.h .\..\include\DataCenter\TaskEnum.h</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

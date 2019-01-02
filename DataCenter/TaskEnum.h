@@ -11,6 +11,7 @@
 #define EVENT_START_CLIENT			"startClient"
 #define EVENT_GAME_DOWNLOAD			"gameDownload"
 #define EVENT_START_GAME			"gameStart"
+#define EVENT_INSTALL_GAME			"gameInstall"
 #define EVENT_UNINSTALL				"clientRemove"
 #define EVENT_INSTALL				"clientInstall"
 
@@ -33,14 +34,14 @@
 #define KEY_OS_VER				"osVersion"
 #define KEY_OS_TYPE				"osType"
 #define KEY_MAC					"mac"
-#define KEY_TIME				"opTime"				//操作时间
+#define KEY_TIME				"clickTime"				//操作时间
 #define KEY_GAME_ID				"gameId"
 #define KEY_GAME_TYPE			"gameType"				//街机、FC、PSP、GBA
 #define KEY_GAME_MODE			"gameMode"				//本地游戏、对战
 #define KEY_ROOM_ID				"roomId"
 #define KEY_GAME_VER			"gameVersion"			//游戏版本
 #define KEY_ROOM_NUMBER			"roomNumber"			//房间数目
-#define KEY_DOWNLOAD_SPEED		"downloadSpeed"			//下载速度
+#define KEY_DOWNLOAD_SPEED		"downSpeed"			    //下载速度
 #define KEY_DOWNLOAD_STATUS		"opStatus"				//下载状态（0.请求下载；1.下载失败；2.下载成功）
 #define KEY_UNZIP_SPEED			"unzipSpeed"			//解压速度
 #define KEY_UNZIP_STATUS		"opStatus"				//解压状态（0.请求解压；1：解压成功；2：解压失败）

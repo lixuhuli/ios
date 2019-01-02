@@ -21,33 +21,6 @@ DATA_CENTER_API void CreateDataTask(const char* pEventName, const Json::Value& v
 	CDataCenter::Instance()->CreatePostTask(pEventName, vParams, nUid);
 }
 
-DATA_CENTER_API void GetDataCenterToken(OUT wstring& strToken)
-{
-	strToken = CDataCenter::Instance()->GetToken();
-}
-
-DATA_CENTER_API void CreateDataTaskC(char* pEventName, char* pJsonParam, int nUid)
-{
-	if(NULL == pJsonParam || strlen(pJsonParam) == 0)
-	{
-		CDataCenter::Instance()->CreatePostTask(pEventName, Json::Value(Json::objectValue), nUid);
-		return;
-	}
-	try
-	{
-		Json::Value vParam;
-		Json::Reader read;
-		if (read.parse(pJsonParam, vParam))
-		{
-			CDataCenter::Instance()->CreatePostTask(pEventName, vParam, nUid);
-		}
-	}
-	catch(...)
-	{
-
-	}
-}
-
 DATA_CENTER_API void SetDataCenterID(int nAdID)
 {
 	CDataCenter::Instance()->SetAdID(nAdID);
