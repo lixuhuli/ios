@@ -45,6 +45,8 @@ public:
 
     void CloseKeyWnd();
 
+    void UpdateIosWndStatus();
+
 public:
     bool IosEngineOn(const string& iso_file);
     bool IosCheckLicense(const char *serial);
@@ -64,6 +66,8 @@ public:
     wstring GetKeyMapDir();
 
     bool GetEngineApplications(std::vector<string>& engine_apps);
+
+    bool SaveEngineReport(const std::wstring& input_file, const std::wstring& output_file);
 
     void CreateEngineOffTask();
 

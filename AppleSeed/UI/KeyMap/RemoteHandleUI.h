@@ -1,5 +1,6 @@
 #pragma once
 #include "IKey.h"
+#include "KeyEditUI.h"
 
 #define  UI_REMOTE_HANDLE   L"RemoteHandle"
 
@@ -24,6 +25,11 @@ public:
 
     void UpdateBrowserMode(bool browser_mode, int opacity = 100) override;
 
+    virtual CKeyEditUI* edit_key_1() { return edit_key_1_; };
+    virtual CKeyEditUI* edit_key_2() { return edit_key_2_; };
+    virtual CKeyEditUI* edit_key_3() { return edit_key_3_; };
+    virtual CKeyEditUI* edit_key_4() { return edit_key_4_; };
+
 public:
     virtual void PaintStatusImage(HDC hDC) override;
 
@@ -42,10 +48,10 @@ protected:
 
     BEGIN_INIT_CTRL()
         DECLARE_CTRL_TYPE_PAGE(btn_hand_circle_, CButtonUI, this, L"btn_hand_circle")
-        DECLARE_CTRL_TYPE_PAGE(edit_key_1_, CEditUI, this, L"edit_key_1")
-        DECLARE_CTRL_TYPE_PAGE(edit_key_2_, CEditUI, this, L"edit_key_2")
-        DECLARE_CTRL_TYPE_PAGE(edit_key_3_, CEditUI, this, L"edit_key_3")
-        DECLARE_CTRL_TYPE_PAGE(edit_key_4_, CEditUI, this, L"edit_key_4")
+        DECLARE_CTRL_TYPE_PAGE(edit_key_1_, CKeyEditUI, this, L"edit_key_1")
+        DECLARE_CTRL_TYPE_PAGE(edit_key_2_, CKeyEditUI, this, L"edit_key_2")
+        DECLARE_CTRL_TYPE_PAGE(edit_key_3_, CKeyEditUI, this, L"edit_key_3")
+        DECLARE_CTRL_TYPE_PAGE(edit_key_4_, CKeyEditUI, this, L"edit_key_4")
         DECLARE_CTRL_TYPE_PAGE(btn_hand_close_, CButtonUI, this, L"btn_hand_close")
     END_INIT_CTRL()
 
@@ -61,10 +67,10 @@ private:
     bool drag_;
 
     CButtonUI* btn_hand_circle_;
-    CEditUI* edit_key_1_;
-    CEditUI* edit_key_2_;
-    CEditUI* edit_key_3_;
-    CEditUI* edit_key_4_;
+    CKeyEditUI* edit_key_1_;
+    CKeyEditUI* edit_key_2_;
+    CKeyEditUI* edit_key_3_;
+    CKeyEditUI* edit_key_4_;
     CButtonUI* btn_hand_close_;
 
 };

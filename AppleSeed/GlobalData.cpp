@@ -7,6 +7,7 @@ CGlobalData::CGlobalData()
  , m_hWndIos(nullptr)
  , m_pWndMain(nullptr)
  , need_reboot_(false)
+ , programme_mode_(false)
  , cpu_type_(0) {
 }
 

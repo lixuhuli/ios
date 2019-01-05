@@ -3,6 +3,7 @@
 #include "Ios/EngineInterface.h"
 #include "GlobalData.h"
 #include "Ios/IosMgr.h"
+#include "CommonWnd.h"
 
 #define EVENT_OP_MOUSE_DOWN     10
 #define EVENT_OP_MOUSE_UP       11
@@ -13,7 +14,7 @@
 
 CWndIos::CWndIos() {
     m_dwStyle = WS_CHILD | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-    m_dwExStyle = WS_EX_ACCEPTFILES;
+    m_dwExStyle = 0;
     m_bShowShadow = false;
 }
 
@@ -162,10 +163,48 @@ LRESULT CWndIos::OnDropFiles(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
         DragQueryFile(hDrop, i, szPath, MAX_PATH + 1);
         std::wstring file_path = szPath;
 
-        auto pos = file_path.rfind(L".ipa");
+        if (PathIsDirectory(file_path.c_str())) continue;
 
-        if (pos != wstring::npos && pos == file_path.length() - 4) 
-            CIosMgr::Instance()->InstallApp(file_path);
+        auto pos = file_path.rfind(L".");
+
+        if (pos == wstring::npos) continue;
+
+        auto prefix = file_path.substr(pos + 1, file_path.length() - pos - 1); 
+
+        if (prefix == L"ipa")  CIosMgr::Instance()->InstallApp(file_path);
+        else if (prefix == L"pack") {
+            auto status = CIosMgr::Instance()->UpdatePackage(file_path);
+            wstring str_msg = (status == 0 ? L"更新成功：" : L"更新失败：");
+            str_msg += file_path;
+            ShowToast(CGlobalData::Instance()->GetMainWnd(), str_msg.c_str());
+        }
+        else {
+            OPENFILENAME ofn;  
+            ZeroMemory(&ofn, sizeof(ofn));  
+            TCHAR szFile[MAX_PATH + 1] = { 0 };
+
+            ofn.lStructSize = sizeof(OPENFILENAME);
+            ofn.hwndOwner = CGlobalData::Instance()->GetMainWnd(); 
+            ofn.lpstrFilter = L"All(*.*)\0*.*\0\0";
+            ofn.lpstrCustomFilter = nullptr;
+            ofn.nMaxCustFilter = 0;
+            ofn.nFilterIndex = 1;
+            ofn.lpstrFile = szFile;
+            ofn.nMaxFile = sizeof(szFile);
+            ofn.lpstrInitialDir = NULL;
+            ofn.lpstrTitle = L"Save File As";
+            ofn.nFileOffset = 0;
+            ofn.nFileExtension = 0;
+            ofn.lpstrDefExt = prefix.c_str();
+            ofn.lCustData = 0;
+            ofn.Flags = OFN_OVERWRITEPROMPT;
+            ofn.lpfnHook = (LPOFNHOOKPROC)(FARPROC)nullptr;
+            ofn.lpTemplateName = nullptr;
+
+            if (GetSaveFileName(&ofn)) {
+                ShowToast(CGlobalData::Instance()->GetMainWnd(), CIosMgr::Instance()->SaveEngineReport(file_path, szFile) ? L"保存成功" : L"保存失败");
+            }
+        }
     }
 
     DragFinish(hDrop);

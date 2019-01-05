@@ -207,6 +207,8 @@ void CIosMgr::OnInstallFile(const UINT_PTR& task_ptr, int state) {
         ShowMsg(CGlobalData::Instance()->GetMainWnd(), L"提示", prefix.c_str(), MB_OK);
     }
 
+    if (task) delete task;
+
     StartInstallApp();
 }
 
@@ -561,15 +563,16 @@ void CIosMgr::OnGetUidAndToken(uintptr_t param1, uintptr_t param2) {
 }
 
 void CIosMgr::OnEmulationQuit(uintptr_t param1, uintptr_t param2) {
-    const char *context = (char *)param1;
-    if (context) {
-        string package_name = context;
-        ITask* pTask = CDatabaseMgr::Instance()->GetGameInfo(package_name);
-        if (pTask) {
-            PostStartGame(pTask->nGameID, StatusFail, CUserData::Instance()->GetFileUserID());
-        }
-    }
+    if (!emulator_state_info_) return;
 
+    //string package_name = emulator_state_info_->running_app_id();
+    //if (package_name.compare("com.apple.springboard") == 0) return;
+
+    //ITask* pTask = CDatabaseMgr::Instance()->GetGameInfo(package_name);
+
+    //if (pTask) PostStartGame(pTask->nGameID, StatusFail, CUserData::Instance()->GetFileUserID());
+
+    OUTPUT_XYLOG(LEVEL_ERROR,L"该用户没有权限打开该游戏，code：%d", param1);
     ShowMsg(CGlobalData::Instance()->GetMainWnd(), L"提示", L"没有权限打开该游戏", MB_OK);
 }
 
@@ -634,5 +637,20 @@ void CIosMgr::WriteBaseKeyBoard(const string& app_id) {
 
     WritePrivateProfileString(L"records_1", L"name", L"默认配置", config.c_str());
     WritePrivateProfileString(L"records_1", L"file", PublicLib::AToU(app_id).c_str(), config.c_str());
+}
+
+void CIosMgr::UpdateIosWndStatus() {
+    if (!ios_wnd_ || !::IsWindow(*ios_wnd_)) return;
+
+    LONG styleValue = ::GetWindowLong(*ios_wnd_, GWL_EXSTYLE);
+
+    if (CGlobalData::Instance()->ProgrammeMode()) styleValue |= WS_EX_ACCEPTFILES;
+    else styleValue &= ~WS_EX_ACCEPTFILES;
+
+    SetWindowLong(*ios_wnd_, GWL_EXSTYLE, styleValue);
+}
+
+bool CIosMgr::SaveEngineReport(const std::wstring& input_file, const std::wstring& output_file) {
+    return (GetEngineReport(PublicLib::UToUtf8(input_file).c_str(), PublicLib::UToUtf8(output_file).c_str()) == 0);
 }
 

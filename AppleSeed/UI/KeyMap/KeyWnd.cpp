@@ -253,10 +253,66 @@ bool CKeyWnd::OnBtnToolHandle(void* param) {
     if (btn_tool_handle_->GetTag() == 1) return true;
 
     auto handle_ctrl = (CRemoteHandleUI*)CreateHandleKey();
+    if (!handle_ctrl) return true;
+
+    auto edit_key_1 = handle_ctrl->edit_key_1();
+    auto edit_key_2 = handle_ctrl->edit_key_2();
+    auto edit_key_3 = handle_ctrl->edit_key_3();
+    auto edit_key_4 = handle_ctrl->edit_key_4();
+
+    if (!edit_key_1 || !edit_key_2 || !edit_key_3 || !edit_key_4) return true;
 
     CenterKey(handle_ctrl);
-    KeyToScreen(handle_ctrl);
     btn_tool_handle_->SetTag(1);
+
+    QRect rc = handle_ctrl->GetPos();
+    QPoint point(rc.left, rc.top);
+    if (!KeyToScreen(&point)) return true;
+
+    emulator::ItemInfo item;
+    item.itemType = emulator::HANDLE_KEY;
+    item.nItemPosX = point.x;
+    item.nItemPosY = point.y;
+    item.nItemWidth = rc.GetWidth();
+    item.nItemHeight = rc.GetHeight();
+
+    emulator::KeyInfo info; 
+    auto rc_edit = edit_key_1->GetPos();
+    info.nValue = 87;
+    info.strDescription = PublicLib::AToUtf("");
+    info.strKeyString = PublicLib::AToUtf("W");
+    info.nPointX = point.x + int(double(rc_edit.GetWidth()) / 2.0 + 0.5) + rc_edit.left - rc.left;;
+    info.nPointY = point.y + int(double(rc_edit.GetHeight()) / 2.0 + 0.5) + rc_edit.top - rc.top;
+    item.keys.push_back(info);
+
+    rc_edit = edit_key_2->GetPos();
+    info.nValue = 65;
+    info.strDescription = PublicLib::AToUtf("");
+    info.strKeyString = PublicLib::AToUtf("A");
+    info.nPointX = point.x + int(double(rc_edit.GetWidth()) / 2.0 + 0.5) + rc_edit.left - rc.left;;
+    info.nPointY = point.y + int(double(rc_edit.GetHeight()) / 2.0 + 0.5) + rc_edit.top - rc.top;
+    item.keys.push_back(info);
+
+    rc_edit = edit_key_3->GetPos();
+    info.nValue = 83;
+    info.strDescription = PublicLib::AToUtf("");
+    info.strKeyString = PublicLib::AToUtf("S");
+    info.nPointX = point.x + int(double(rc_edit.GetWidth()) / 2.0 + 0.5) + rc_edit.left - rc.left;;
+    info.nPointY = point.y + int(double(rc_edit.GetHeight()) / 2.0 + 0.5) + rc_edit.top - rc.top;
+    item.keys.push_back(info);
+
+    rc_edit = edit_key_4->GetPos();
+    info.nValue = 68;
+    info.strDescription = PublicLib::AToUtf("");
+    info.strKeyString = PublicLib::AToUtf("D");
+    info.nPointX = point.x + int(double(rc_edit.GetWidth()) / 2.0 + 0.5) + rc_edit.left - rc.left;;
+    info.nPointY = point.y + int(double(rc_edit.GetHeight()) / 2.0 + 0.5) + rc_edit.top - rc.top;
+    item.keys.push_back(info);
+
+    scene_bak_info_->AddItem(item);
+
+    InitRemoteHandle(handle_ctrl, item);
+    btn_tool_normal_->SetTag(0);
 
     return true;
 }
@@ -388,8 +444,6 @@ bool CKeyWnd::OnBtnToolRightRun(void* param) {
     if (!opt_right_run_->IsSelected()) {
         auto right_ctrl = (CRightMouseMoveUI*)CreateRightMouse();
         if (!right_ctrl) return true;
-
-        auto rc_body = key_body_->GetPos();
 
         emulator::ItemInfo item;
         item.itemType = emulator::RIGHT_MOUSE_MOVE;
@@ -911,6 +965,51 @@ void CKeyWnd::InitIntelligent(CControlUI* control, const emulator::tagItemInfo& 
 
     auto opt_switch = intelligent_ctrl->opt_switch();
     if (opt_switch) opt_switch->Selected(item.nItemRightMoveStop == 0);
+}
+
+void CKeyWnd::InitRemoteHandle(CControlUI* control, const emulator::tagItemInfo& item) {
+    if (item.keys.size() < 4) return;
+    if (!control || !scene_info_) return;
+    auto handle_ctrl = (CRemoteHandleUI*)control;
+    if (!handle_ctrl) return;
+
+    auto opacity = (browser_mode_ ? scene_info_->opacity() : 100);
+
+    handle_ctrl->SetName(PublicLib::Utf8ToU(item.keys[0].strKeyString).c_str());
+    handle_ctrl->SetTag(item.keys[0].nValue);
+    handle_ctrl->UpdateBrowserMode(browser_mode_, opacity);
+    handle_ctrl->SetScreenPosX(item.nItemPosX);
+    handle_ctrl->SetScreenPosY(item.nItemPosY);
+    handle_ctrl->SetKeyType(item.itemType);
+    handle_ctrl->SetHasMapMemory(true);
+
+    auto edit_key = handle_ctrl->edit_key_1();
+    if (edit_key) {
+        edit_key->SetTag(item.keys[0].nValue);
+        edit_key->SetKeyValue(item.keys[0].nValue);
+        edit_key->CControlUI::SetText(PublicLib::Utf8ToU(item.keys[0].strKeyString).c_str());
+    }
+
+    edit_key = handle_ctrl->edit_key_2();
+    if (edit_key) {
+        edit_key->SetTag(item.keys[1].nValue);
+        edit_key->SetKeyValue(item.keys[1].nValue);
+        edit_key->CControlUI::SetText(PublicLib::Utf8ToU(item.keys[1].strKeyString).c_str());
+    }
+
+    edit_key = handle_ctrl->edit_key_3();
+    if (edit_key) {
+        edit_key->SetTag(item.keys[2].nValue);
+        edit_key->SetKeyValue(item.keys[2].nValue);
+        edit_key->CControlUI::SetText(PublicLib::Utf8ToU(item.keys[2].strKeyString).c_str());
+    }
+
+    edit_key = handle_ctrl->edit_key_4();
+    if (edit_key) {
+        edit_key->SetTag(item.keys[3].nValue);
+        edit_key->SetKeyValue(item.keys[3].nValue);
+        edit_key->CControlUI::SetText(PublicLib::Utf8ToU(item.keys[3].strKeyString).c_str());
+    }
 }
 
 void CKeyWnd::LoadKeyItems() {

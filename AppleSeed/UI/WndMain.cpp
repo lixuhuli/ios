@@ -86,8 +86,6 @@ void CWndMain::InitWindow() {
     // 暂时注销  后续扩展
     //AddNotifyIcon();
 
-    auto rererp = m_pm.FindControl(L"page_download");
-
     BIND_SUB_PAGE(page_download_, CPageDownloadUI, L"page_download")
 
     if (web_home_page_) {
@@ -114,6 +112,8 @@ void CWndMain::InitWindow() {
     else RemoveSpilthVmdk();
 
     if (client_iphone_emulator_) client_iphone_emulator_->OnSize += MakeDelegate(this, &CWndMain::OnIphoneEmulatorSize);
+
+    RegisterHotKey(m_hWnd, ID_HOTKEY_BOS, MOD_ALT + MOD_CONTROL, 'N');
 }
 
 void CWndMain::InitTasks() {
@@ -155,6 +155,7 @@ LRESULT CWndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
         bHandled = FALSE;
         break;
     }
+    case WM_HOTKEY: OnMsgHotkey(wParam, lParam, bHandled); break;
     case WM_SETFOCUS: {
         if (web_focus_ && IsWindow(web_focus_->GetHostWnd())) {
             POINT pt;
@@ -1192,6 +1193,20 @@ LRESULT CWndMain::OnMsgIosEngineUpdate(WPARAM wParam, LPARAM lParam, BOOL& bHand
 
 LRESULT CWndMain::OnMsgIosEngineApplication(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     if (page_download_) page_download_->UpdateLoadLayout();
+    return 0;
+}
+
+LRESULT CWndMain::OnMsgHotkey(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    if (wParam == ID_HOTKEY_BOS) {
+        auto fuModifiers = (UINT)LOWORD(lParam);     // 辅助按键 
+        auto uVirtKey = (UINT)HIWORD(lParam);        // 键值 
+
+        bool programme_mode = CGlobalData::Instance()->ProgrammeMode();
+        CGlobalData::Instance()->SetProgrammeMode(!programme_mode);
+        CIosMgr::Instance()->UpdateIosWndStatus();
+        ShowToast(m_hWnd, programme_mode ? L"已关闭编程键" : L"已开启编程键");
+    }
+
     return 0;
 }
 

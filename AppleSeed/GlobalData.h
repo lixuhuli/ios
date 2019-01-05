@@ -96,6 +96,9 @@ public:
     const bool& NeedReboot() const { return need_reboot_; }
     void SetNeedReboot(const bool &val) { need_reboot_ = val; }
 
+    const bool& ProgrammeMode() const { return programme_mode_; }
+    void SetProgrammeMode(const bool &val) { programme_mode_ = val; }
+
     const int& GetCpuType() const { return cpu_type_; }
 
     std::wstring GetKeyboardStr(int key_code);
@@ -133,6 +136,7 @@ private:
     string m_strUserIcoPath;
 
     bool need_reboot_;
+    bool programme_mode_;
 
     map<int, std::wstring> keyboard_mapping_;
 };

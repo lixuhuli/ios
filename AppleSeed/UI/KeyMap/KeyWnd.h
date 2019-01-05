@@ -118,6 +118,7 @@ private:
     void InitIntelligent(CControlUI* control, const emulator::tagItemInfo& item);
     void InitNormalKey(CControlUI* control, const emulator::tagItemInfo& item);
     void InitRightMouse(CControlUI* control, const emulator::tagItemInfo& item);
+    void InitRemoteHandle(CControlUI* control, const emulator::tagItemInfo& item);
 
     void CenterKey(CControlUI* control);
     bool KeyToScreen(CControlUI* control);
