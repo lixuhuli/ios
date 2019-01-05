@@ -28,7 +28,7 @@ class CKeyBrowserWnd;
 class CKeyWnd :
     public CWndBase {
 public:
-    CKeyWnd();
+    CKeyWnd(const string& key_id);
     virtual ~CKeyWnd();
 
 public:
@@ -151,6 +151,8 @@ private:
     scoped_refptr<emulator::SceneInfo> scene_bak_info_;
 
     CKeyBrowserWnd* browser_wnd_;
+
+    string key_id_;
 };
 
 #endif  // !#define (_KEY_WND_INCLUDE_H_)  

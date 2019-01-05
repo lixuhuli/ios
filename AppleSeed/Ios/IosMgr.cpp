@@ -18,6 +18,8 @@
 #include "UserData.h"
 #include "DataPost.h"
 
+#define ID_COM_DESKTOP   "com.apple.springboard"
+
 static int engine_callbacks(int status, uintptr_t param1, uintptr_t param2) {
     return CIosMgr::Instance()->EngineCallback(status, param1, param2);
 }
@@ -256,7 +258,7 @@ void CIosMgr::OnForegroundAppChanged(uintptr_t param1, uintptr_t param2) {
 
     if (!context || !ios_wnd_) return;
 
-    if (strcmp(context, "com.apple.springboard") == 0) {
+    if (strcmp(context, ID_COM_DESKTOP) == 0) {
         if (!engine_on_) {
             engine_on_ = true;
             OnEngineOn();
@@ -267,7 +269,7 @@ void CIosMgr::OnForegroundAppChanged(uintptr_t param1, uintptr_t param2) {
         if (pTask) PostStartGame(pTask->nGameID, StatusSuccess, CUserData::Instance()->GetFileUserID());
 
         if (hor_screen_mode_) {
-            if (HasKeyMapFile()) CreateKeyWnd(CGlobalData::Instance()->GetMainWnd());
+            if (HasKeyMapFile()) CreateKeyWnd(CGlobalData::Instance()->GetMainWnd(), context);
             else {
                 MSG msg = { 0 };
                 msg.hwnd = CGlobalData::Instance()->GetMainWnd();
@@ -416,10 +418,10 @@ bool CIosMgr::IosSnap(const std::string& save_path) {
     return (0 == CapturePictureToFile(save_path.c_str()));
 }
 
-void CIosMgr::CreateKeyWnd(HWND hParentWnd) {
+void CIosMgr::CreateKeyWnd(HWND hParentWnd, const string& strAppId) {
     CloseKeyWnd();
 
-    key_wnd_ = new CKeyWnd;
+    key_wnd_ = new CKeyWnd(strAppId);
     if (!key_wnd_ || !ios_wnd_) return;
 
     QRect rc;
@@ -565,12 +567,11 @@ void CIosMgr::OnGetUidAndToken(uintptr_t param1, uintptr_t param2) {
 void CIosMgr::OnEmulationQuit(uintptr_t param1, uintptr_t param2) {
     if (!emulator_state_info_) return;
 
-    //string package_name = emulator_state_info_->running_app_id();
-    //if (package_name.compare("com.apple.springboard") == 0) return;
+    string package_name = emulator_state_info_->running_app_id();
+    if (strcmp(package_name.c_str(), ID_COM_DESKTOP) == 0) return;
 
-    //ITask* pTask = CDatabaseMgr::Instance()->GetGameInfo(package_name);
-
-    //if (pTask) PostStartGame(pTask->nGameID, StatusFail, CUserData::Instance()->GetFileUserID());
+    ITask* pTask = CDatabaseMgr::Instance()->GetGameInfo(package_name);
+    if (pTask) PostStartGame(pTask->nGameID, StatusFail, CUserData::Instance()->GetFileUserID());
 
     OUTPUT_XYLOG(LEVEL_ERROR,L"该用户没有权限打开该游戏，code：%d", param1);
     ShowMsg(CGlobalData::Instance()->GetMainWnd(), L"提示", L"没有权限打开该游戏", MB_OK);
@@ -601,7 +602,7 @@ void CIosMgr::OnGetKeyboard(WPARAM wParam, LPARAM lParam) {
         WriteBaseKeyBoard(strAppId);
     }
 
-    CIosMgr::Instance()->CreateKeyWnd(CGlobalData::Instance()->GetMainWnd());
+    CIosMgr::Instance()->CreateKeyWnd(CGlobalData::Instance()->GetMainWnd(), strAppId);
 }
 
 bool CIosMgr::GetEngineApplications(std::vector<string>& engine_apps) {

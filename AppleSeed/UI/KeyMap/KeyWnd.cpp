@@ -12,10 +12,11 @@
 #include "MsgDefine.h"
 #include "KeyBrowserWnd.h"
 
-CKeyWnd::CKeyWnd()
+CKeyWnd::CKeyWnd(const string& key_id)
  : btn_tool_handle_(nullptr)
  , btn_tool_normal_(nullptr)
  , key_body_(nullptr)
+ , key_id_(key_id)
  , panel_tools_(nullptr)
  , opt_right_run_(nullptr)
  , browser_mode_(true)
@@ -111,7 +112,12 @@ void CKeyWnd::UpdateSceneInfo() {
     if (!key_elem) return;
 
     scene_info_ = new emulator::SceneInfo();
-    scene_info_->loadScene(PublicLib::UToUtf8(key_elem->GetUserData().GetData()).c_str());
+    wstring file_path = key_elem->GetUserData().GetData();
+    if (!PathFileExists(file_path.c_str())) scene_info_->set_pack_id(key_id_);
+    else {
+        scene_info_->loadScene(PublicLib::UToUtf8(key_elem->GetUserData().GetData()).c_str());
+        if (scene_info_->pack_id().empty()) scene_info_->set_pack_id(key_id_);
+    }
 
     scene_bak_info_ = scene_info_->cloner();
 

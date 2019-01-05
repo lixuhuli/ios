@@ -26,7 +26,7 @@ public:
 
 public:
     void CreateWndIos(HWND hParentWnd);
-    void CreateKeyWnd(HWND hParentWnd);
+    void CreateKeyWnd(HWND hParentWnd, const string& strAppId);
     void UpdateIosWnd(const QRect* lprc = nullptr);
     void UpdateKeyWnd(const QRect* lprc = nullptr);
 

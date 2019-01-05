@@ -74,6 +74,9 @@ namespace emulator {
         virtual void set_opacity(int nOpacity) { m_nOpacity = nOpacity; }
         virtual int opacity() override { return m_nOpacity; }
 
+        virtual void set_pack_id(const string& id) { m_strID = id; };
+        virtual const string& pack_id() override { return m_strID; };
+
         void loadScene(const char* keyXmlFile);
         void saveScene(const char* keyXmlFile);
 
