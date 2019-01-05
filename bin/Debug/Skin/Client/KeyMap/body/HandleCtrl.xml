@@ -2,10 +2,10 @@
 <Window >
 	<RemoteHandle width="240" minwidth="200" height="240" minheight="200" tag="240" sepwidth="4" float="true" bkimage="KeyMap/body/Handle/hand_edge_frame.png">
 	  <Button name="btn_hand_circle" bkimage="KeyMap/body/Handle/hand_circle.png" pos="24,24,216,216" float="true" mouse="false" />
-	  <Edit name="edit_key_1" width="39" height="39" pos="8,100,47,139" float="true" bkimage="KeyMap/body/Handle/hand_small_circle.png" nativebkcolor="#00262626" />
-	  <Edit name="edit_key_2" width="39" height="39" pos="100,8,139,47" float="true" bkimage="KeyMap/body/Handle/hand_small_circle.png" nativebkcolor="#00262626" />
-	  <Edit name="edit_key_3" width="39" height="39" pos="100,193,139,232" float="true" bkimage="KeyMap/body/Handle/hand_small_circle.png" nativebkcolor="#00262626" />
-	  <Edit name="edit_key_4" width="39" height="39" pos="193,100,232,139" float="true" bkimage="KeyMap/body/Handle/hand_small_circle.png" nativebkcolor="#00262626" />
+	  <KeyEdit name="edit_key_1" width="39" height="39" pos="100,8,139,47" float="true" font="0" maxchar="1" align="center" textpadding="4,0,4,0" bkimage="file='KeyMap/body/normal/normal_circle.png'" nativebkcolor="0xFF555555" textcolor="0xFFFFFFFF" />
+	  <KeyEdit name="edit_key_2" width="39" height="39" pos="8,100,47,139" float="true" font="0" maxchar="1" align="center" textpadding="4,0,4,0" bkimage="file='KeyMap/body/normal/normal_circle.png'" nativebkcolor="0xFF555555" textcolor="0xFFFFFFFF" />
+	  <KeyEdit name="edit_key_3" width="39" height="39" pos="100,193,139,232" float="true" font="0" maxchar="1" align="center" textpadding="4,0,4,0" bkimage="file='KeyMap/body/normal/normal_circle.png'" nativebkcolor="0xFF555555" textcolor="0xFFFFFFFF" />
+	  <KeyEdit name="edit_key_4" width="39" height="39" pos="193,100,232,139" float="true" font="0" maxchar="1" align="center" textpadding="4,0,4,0" bkimage="file='KeyMap/body/normal/normal_circle.png'" nativebkcolor="0xFF555555" textcolor="0xFFFFFFFF" />
 	  <Button name="btn_hand_close" width="19" height="19" float="true" pos="213,8,232,27" normalimage="KeyMap/body/btn_close_nor.png"  showcursor="false" />
 	</RemoteHandle>
 </Window>
