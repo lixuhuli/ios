@@ -144,7 +144,7 @@
 
       <Control width="10" />
 
-      <Button name="btn_delete" width="95" height="35" showcursor="true" normalimage="file='KeyMap/tools/btn_delete_nor.png'" hotimage="file='KeyMap/tools/btn_delete_hot.png'" pushedimage="file='KeyMap/tools/btn_delete_nor.png'" animation="true" />
+      <Button name="btn_restore" width="95" height="35" showcursor="true" normalimage="file='KeyMap/tools/btn_restore_nor.png'" hotimage="file='KeyMap/tools/btn_restore_hot.png'" pushedimage="file='KeyMap/tools/btn_restore_nor.png'" animation="true" />
     </HorizontalLayout>
 
     <Control height="24" />
