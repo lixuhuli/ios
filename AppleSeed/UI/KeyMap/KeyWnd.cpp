@@ -257,6 +257,18 @@ CControlUI* CKeyWnd::CreateHandleKey() {
     if (!handle_ctrl) return nullptr;
     key_body_->Add(handle_ctrl);
 
+    auto edit_key = handle_ctrl->edit_key_1();
+    if (edit_key) edit_key->Subscribe(DUI_MSGTYPE_CHARCHANGED, MakeDelegate(this, &CKeyWnd::OnEditHandleCtrlChanged));
+
+    edit_key = handle_ctrl->edit_key_2();
+    if (edit_key) edit_key->Subscribe(DUI_MSGTYPE_CHARCHANGED, MakeDelegate(this, &CKeyWnd::OnEditHandleCtrlChanged));
+
+    edit_key = handle_ctrl->edit_key_3();
+    if (edit_key) edit_key->Subscribe(DUI_MSGTYPE_CHARCHANGED, MakeDelegate(this, &CKeyWnd::OnEditHandleCtrlChanged));
+
+    edit_key = handle_ctrl->edit_key_4();
+    if (edit_key) edit_key->Subscribe(DUI_MSGTYPE_CHARCHANGED, MakeDelegate(this, &CKeyWnd::OnEditHandleCtrlChanged));
+
     handle_ctrl->Subscribe(DUI_MSGTYPE_POS_CHANGED, MakeDelegate(this, &CKeyWnd::OnKeyPosChanged));
 
     handle_ctrl->SetKeyType(emulator::HANDLE_KEY);
@@ -861,20 +873,59 @@ bool CKeyWnd::OnEditHandleCtrlChanged(void* param) {
     if (!handle_ctrl) return true;
 
     auto edit_key_1 = handle_ctrl->edit_key_1();
-    if (edit_key_1 && edit_key_1->GetTag() != edit_key->GetTag()) {
-        if (edit_key->GetKeyValue() == edit_key_1->GetKeyValue()) {
-            //scene_bak_info_->set_key(emulator::HANDLE_KEY, edit_key_1->GetKeyValue(), -1, );
+    auto edit_key_2 = handle_ctrl->edit_key_2();
+    auto edit_key_3 = handle_ctrl->edit_key_3();
+    auto edit_key_4 = handle_ctrl->edit_key_4();
 
-            //if (scene_bak_info_->DeleteKey(edit_key->GetKeyValue())) {
-            //    auto key_string = CGlobalData::Instance()->GetKeyboardStr(edit_key->GetKeyValue());
-            //    auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
-            //    if (normal_ctrl) {
-            //        auto key = dynamic_cast<Ikey*>(normal_ctrl);
-            //        if (key && key->KeyType() == emulator::RIGHT_MOUSE_MOVE && opt_right_run_) opt_right_run_->Selected(false);
-            //        key_body_->Remove(normal_ctrl);
-            //    }
-            //}
+    auto CheckEditKey = [&](CKeyEditUI* edit_key_x, int key_value, const std::string& key_string) -> bool {
+        if (!edit_key_x) return false;
+
+        if (edit_key->GetTag() == edit_key_x->GetTag()) return false;
+
+        if (edit_key->GetKeyValue() == edit_key_x->GetKeyValue()) {
+            scene_bak_info_->set_key(emulator::HANDLE_KEY, edit_key_x->GetKeyValue(), key_value, key_string);
+
+            edit_key_x->SetTag(key_value);
+            edit_key_x->SetKeyValue(key_value);
+            edit_key_x->CControlUI::SetText(PublicLib::Utf8ToU(key_string).c_str());
+
+            scene_bak_info_->set_key(emulator::HANDLE_KEY, edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard));
+            edit_key->SetTag(edit_key->GetKeyValue());
+            edit_key->CControlUI::SetText(keyboard.c_str());
+
+            if (edit_key->GetTag() == edit_key_1->GetTag()) {
+                handle_ctrl->SetName(keyboard.c_str());
+                handle_ctrl->SetTag(edit_key->GetKeyValue());
+            }
+            
+            return true;
         }
+
+        return false;
+    };
+
+    if (CheckEditKey(edit_key_1, -1, "-1")) return true;
+    if (CheckEditKey(edit_key_2, -2, "-2")) return true;
+    if (CheckEditKey(edit_key_3, -3, "-3")) return true;
+    if (CheckEditKey(edit_key_4, -4, "-4")) return true;
+
+    if (scene_bak_info_->DeleteKey(edit_key->GetKeyValue())) {
+        auto key_string = CGlobalData::Instance()->GetKeyboardStr(edit_key->GetKeyValue());
+        auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
+        if (normal_ctrl) {
+            auto key = dynamic_cast<Ikey*>(normal_ctrl);
+            if (key && key->KeyType() == emulator::RIGHT_MOUSE_MOVE && opt_right_run_) opt_right_run_->Selected(false);
+            key_body_->Remove(normal_ctrl);
+        }
+    }        
+
+    scene_bak_info_->set_key(emulator::HANDLE_KEY, edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard));
+
+    edit_key->SetTag(edit_key->GetKeyValue());
+
+    if (edit_key->GetTag() == edit_key_1->GetTag()) {
+        handle_ctrl->SetName(keyboard.c_str());
+        handle_ctrl->SetTag(edit_key->GetKeyValue());
     }
 
     return true;
