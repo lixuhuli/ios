@@ -115,7 +115,7 @@ void CKeyWnd::UpdateSceneInfo() {
     wstring file_path = key_elem->GetUserData().GetData();
     if (!PathFileExists(file_path.c_str())) scene_info_->set_pack_id(key_id_);
     else {
-        scene_info_->loadScene(PublicLib::UToUtf8(key_elem->GetUserData().GetData()).c_str());
+        scene_info_->loadScene(PublicLib::UToUtf8(file_path).c_str());
         if (scene_info_->pack_id().empty()) scene_info_->set_pack_id(key_id_);
     }
 
@@ -157,12 +157,20 @@ void CKeyWnd::ReadCloudKeyboardToCombox() {
         wstring key_file = szValue;
         key_file =  CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_file;
 
+        memset(szValue, 0, sizeof(szValue));
+        dwLen = GetPrivateProfileString(record.c_str(), L"default", L"", szValue, 1024, config.c_str());
+
+        wstring key_default = szValue;
+        if (key_default.empty()) key_default = PublicLib::Utf8ToU(key_id_) + L"_default";
+        key_default =  CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_default;
+
         CListLabelElementUI* key_elem = new CListLabelElementUI;
         if (!key_elem) continue;
 
         key_elem->SetFixedHeight(35);
         key_elem->SetName(key_name.c_str());
         key_elem->SetUserData(key_file.c_str());
+        key_elem->SetInheritableUserData(key_default.c_str());
         key_elem->SetText(key_name.c_str());
 
         combox_keyboard_->Add(key_elem);
@@ -249,6 +257,8 @@ CControlUI* CKeyWnd::CreateHandleKey() {
     if (!handle_ctrl) return nullptr;
     key_body_->Add(handle_ctrl);
 
+    handle_ctrl->Subscribe(DUI_MSGTYPE_POS_CHANGED, MakeDelegate(this, &CKeyWnd::OnKeyPosChanged));
+
     handle_ctrl->SetKeyType(emulator::HANDLE_KEY);
 
     return handle_ctrl;
@@ -274,6 +284,23 @@ bool CKeyWnd::OnBtnToolHandle(void* param) {
     QRect rc = handle_ctrl->GetPos();
     QPoint point(rc.left, rc.top);
     if (!KeyToScreen(&point)) return true;
+
+    auto DeleteKey = [&](int key_value) -> void {
+        if (scene_bak_info_->DeleteKey(key_value)) {
+            auto key_string = CGlobalData::Instance()->GetKeyboardStr(key_value);
+            auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
+            if (normal_ctrl) {
+                auto key = dynamic_cast<Ikey*>(normal_ctrl);
+                if (key && key->KeyType() == emulator::RIGHT_MOUSE_MOVE && opt_right_run_) opt_right_run_->Selected(false);
+                key_body_->Remove(normal_ctrl);
+            }
+        }
+    };
+
+    DeleteKey(87);
+    DeleteKey(65);
+    DeleteKey(83);
+    DeleteKey(68);
 
     emulator::ItemInfo item;
     item.itemType = emulator::HANDLE_KEY;
@@ -318,7 +345,7 @@ bool CKeyWnd::OnBtnToolHandle(void* param) {
     scene_bak_info_->AddItem(item);
 
     InitRemoteHandle(handle_ctrl, item);
-    btn_tool_normal_->SetTag(0);
+    btn_tool_handle_->SetTag(0);
 
     return true;
 }
@@ -573,6 +600,31 @@ bool CKeyWnd::OnBtnDelete(void* param) {
     return true;
 }
 
+bool CKeyWnd::OnBtnRestore(void* param) {
+    auto index = combox_keyboard_->GetCurSel();
+    if (index < 0) return true;
+
+    CListLabelElementUI* key_elem = (CListLabelElementUI*)combox_keyboard_->GetItemAt(index);
+    if (!key_elem) return true;
+
+    scene_info_ = new emulator::SceneInfo();
+    wstring file_path = key_elem->GetInheritableUserData().GetData();
+    if (!PathFileExists(file_path.c_str())) scene_info_->set_pack_id(key_id_);
+    else {
+        scene_info_->loadScene(PublicLib::UToUtf8(file_path).c_str());
+        if (scene_info_->pack_id().empty()) scene_info_->set_pack_id(key_id_);
+    }
+
+    scene_bak_info_ = scene_info_->cloner();
+
+    scene_info_->saveScene(PublicLib::UToUtf8(key_elem->GetUserData().GetData()).c_str());
+
+    CIosMgr::Instance()->UpdateKeyMap(key_elem->GetUserData().GetData());
+
+    LoadKeyItems();
+    return true;
+}
+
 LRESULT CKeyWnd::OnSetCursor(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     bHandled = FALSE;
     return 0;
@@ -792,6 +844,42 @@ bool CKeyWnd::OnEditIntelligentChanged(void* param) {
     return true;
 }
 
+bool CKeyWnd::OnEditHandleCtrlChanged(void* param) {
+    TNotifyUI* pNotify = (TNotifyUI*)param;
+    if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_ || !btn_tool_handle_) return true;
+
+    CKeyEditUI* edit_key = dynamic_cast<CKeyEditUI*>(pNotify->pSender);
+    if (!edit_key) return true;
+
+    if (edit_key->GetTag() == edit_key->GetKeyValue()) return true;
+
+    wstring keyboard = edit_key->GetText().GetData();
+
+    if (keyboard.empty()) return true;
+
+    auto handle_ctrl = (CRemoteHandleUI*)edit_key->GetParent();
+    if (!handle_ctrl) return true;
+
+    auto edit_key_1 = handle_ctrl->edit_key_1();
+    if (edit_key_1 && edit_key_1->GetTag() != edit_key->GetTag()) {
+        if (edit_key->GetKeyValue() == edit_key_1->GetKeyValue()) {
+            //scene_bak_info_->set_key(emulator::HANDLE_KEY, edit_key_1->GetKeyValue(), -1, );
+
+            //if (scene_bak_info_->DeleteKey(edit_key->GetKeyValue())) {
+            //    auto key_string = CGlobalData::Instance()->GetKeyboardStr(edit_key->GetKeyValue());
+            //    auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
+            //    if (normal_ctrl) {
+            //        auto key = dynamic_cast<Ikey*>(normal_ctrl);
+            //        if (key && key->KeyType() == emulator::RIGHT_MOUSE_MOVE && opt_right_run_) opt_right_run_->Selected(false);
+            //        key_body_->Remove(normal_ctrl);
+            //    }
+            //}
+        }
+    }
+
+    return true;
+}
+
 bool CKeyWnd::OnEditRightMouseChanged(void* param) {
     TNotifyUI* pNotify = (TNotifyUI*)param;
     if (!pNotify || !pNotify->pSender || !scene_bak_info_ || !key_body_) return true;
@@ -987,6 +1075,8 @@ void CKeyWnd::InitRemoteHandle(CControlUI* control, const emulator::tagItemInfo&
     handle_ctrl->SetScreenPosX(item.nItemPosX);
     handle_ctrl->SetScreenPosY(item.nItemPosY);
     handle_ctrl->SetKeyType(item.itemType);
+    handle_ctrl->SetFixedWidth(item.nItemWidth);
+    handle_ctrl->SetFixedHeight(item.nItemHeight);
     handle_ctrl->SetHasMapMemory(true);
 
     auto edit_key = handle_ctrl->edit_key_1();
@@ -1053,6 +1143,14 @@ void CKeyWnd::LoadKeyItems() {
 
             InitIntelligent(intelligent_ctrl, *it);
         }
+        else if (it->itemType == emulator::HANDLE_KEY) {
+            if (it->keys.size() < 4) continue;
+
+            auto handle_ctrl = (CRemoteHandleUI*)CreateHandleKey();
+            if (!handle_ctrl) continue;
+
+            InitRemoteHandle(handle_ctrl, *it);
+        }
         
     }
 }
@@ -1117,7 +1215,12 @@ bool CKeyWnd::OnKeyPosChanged(void* param) {
     auto control = pNotify->pSender;
     if (!control) return true;
 
-    KeyToScreen(control);
+    auto rc = control->GetPos();
+    QPoint point(rc.left, rc.top);
+    if (!KeyToScreen(&point)) return true;
+
+    if (it) it->SetScreenPosX(point.x);
+    if (it) it->SetScreenPosY(point.y);
 
     if (!it->HasMapMemory()) return true;
 
@@ -1127,10 +1230,6 @@ bool CKeyWnd::OnKeyPosChanged(void* param) {
         if (!normal_ctrl) break;
         auto edit_key = normal_ctrl->edit_key();
         if (!edit_key) break;
-
-        auto rc = normal_ctrl->GetPos();
-        QPoint point(rc.left, rc.top);
-        if (!KeyToScreen(&point)) break;
 
         auto rc_edit = edit_key->GetPos();
 
@@ -1146,10 +1245,6 @@ bool CKeyWnd::OnKeyPosChanged(void* param) {
         auto edit_key = intelligent_ctrl->edit_key();
         if (!edit_key) break;
 
-        auto rc = intelligent_ctrl->GetPos();
-        QPoint point(rc.left, rc.top);
-        if (!KeyToScreen(&point)) break;
-
         auto rc_edit = edit_key->GetPos();
 
         point.x = point.x + int(double(rc_edit.GetWidth()) / 2.0 + 0.5) + rc_edit.left - rc.left;
@@ -1164,10 +1259,6 @@ bool CKeyWnd::OnKeyPosChanged(void* param) {
         auto edit_key = right_ctrl->edit_key();
         if (!edit_key) break;
 
-        auto rc = right_ctrl->GetPos();
-        QPoint point(rc.left, rc.top);
-        if (!KeyToScreen(&point)) break;
-
         auto rc_edit = edit_key->GetPos();
 
         point.x = point.x + int(double(rc_edit.GetWidth()) / 2.0 + 0.5) + rc_edit.left - rc.left;
@@ -1175,6 +1266,37 @@ bool CKeyWnd::OnKeyPosChanged(void* param) {
 
         scene_bak_info_->set_key_pos(edit_key->GetKeyValue(), it->ScreenPosX(), it->ScreenPosY(), point);
         scene_bak_info_->set_key_pos(-9, point);
+    }
+    break;
+    case emulator::HANDLE_KEY: {
+        auto handle_ctrl = (CRemoteHandleUI*)control;
+        if (!handle_ctrl) break;
+
+        auto SetKeyPos = [&](CKeyEditUI* edit_key, QPoint pt) -> void {
+            if (!edit_key) return;
+
+            auto rc_edit = edit_key->GetPos();
+
+            pt.x = pt.x + int(double(rc_edit.GetWidth()) / 2.0 + 0.5) + rc_edit.left - rc.left;
+            pt.y = pt.y + int(double(rc_edit.GetHeight()) / 2.0 + 0.5) + rc_edit.top - rc.top;
+
+            scene_bak_info_->set_key_pos(edit_key->GetKeyValue(), it->ScreenPosX(), it->ScreenPosY(), pt);
+        };
+
+        auto edit_key = handle_ctrl->edit_key_1();
+        SetKeyPos(edit_key, point);
+
+        edit_key = handle_ctrl->edit_key_2();
+        SetKeyPos(edit_key, point);
+
+        edit_key = handle_ctrl->edit_key_3();
+        SetKeyPos(edit_key, point);
+
+        edit_key = handle_ctrl->edit_key_4();
+        SetKeyPos(edit_key, point);
+
+        scene_bak_info_->set_item_width(edit_key->GetKeyValue(), rc.GetWidth());
+        scene_bak_info_->set_item_height(edit_key->GetKeyValue(), rc.GetHeight());
     }
     break;
     default:

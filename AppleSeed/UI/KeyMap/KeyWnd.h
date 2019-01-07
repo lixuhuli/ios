@@ -61,10 +61,12 @@ protected:
     bool OnBtnToolIntelligent(void* param);
     bool OnBtnSave(void* param);
     bool OnBtnDelete(void* param);
+    bool OnBtnRestore(void* param);
     
     bool OnEditKeyChanged(void* param);
     bool OnEditRightMouseChanged(void* param);
     bool OnEditIntelligentChanged(void* param);
+    bool OnEditHandleCtrlChanged(void* param);
 
     bool OnSliderRightMouseValueChanged(void* param);
     bool OnSliderIntelligentChanged(void* param);
@@ -94,7 +96,7 @@ protected:
         BIND_CTRL_CLICK_PAGE(L"opt_right_run", panel_tools_, &CKeyWnd::OnBtnToolRightRun)
         BIND_CTRL_CLICK_PAGE(L"btn_tool_intelligent", panel_tools_, &CKeyWnd::OnBtnToolIntelligent)
         BIND_CTRL_CLICK_PAGE(L"btn_save", panel_tools_, &CKeyWnd::OnBtnSave)
-        BIND_CTRL_CLICK_PAGE(L"btn_delete", panel_tools_, &CKeyWnd::OnBtnDelete)
+        BIND_CTRL_CLICK_PAGE(L"btn_restore", panel_tools_, &CKeyWnd::OnBtnRestore)
         BIND_CTRL_EVENT_PAGE(L"key_slider_trans", panel_tools_, DUI_MSGTYPE_VALUECHANGED, &CKeyWnd::OnSliderKeyTransChanged)
         BIND_CTRL_EVENT_PAGE(L"key_slider_trans", panel_tools_, DUI_MSGTYPE_VALUECHANGING, &CKeyWnd::OnSliderKeyTransChanged)
         BIND_CTRL_EVENT_PAGE(L"combox_keyboard", panel_tools_, DUI_MSGTYPE_ITEMSELECT, &CKeyWnd::OnComboxKeyboard)

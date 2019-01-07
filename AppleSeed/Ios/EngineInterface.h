@@ -35,7 +35,7 @@
 #define LoadKeyMap						Export0015
 #define SetUidAndToken					Export0016
 #define GetEngineReport					Export0017
-
+#define EnableKeyMap                    Export0018
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -119,7 +119,7 @@ OGLAPI int LoadKeyMap(const char *string);                          // Load key 
 OGLAPI void SetUidAndToken(const char *user, const char *token);	// Set uid & its token.
 
 OGLAPI int GetEngineReport(const char *input_file, const char *output_file);	// Get the engine report to save in the path specified in the output_file. Returning 0 means OK.
-
+OGLAPI int EnableKeyMap(const bool IsEnableKeyMap);
 #ifdef __cplusplus
 }
 #endif

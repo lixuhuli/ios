@@ -136,33 +136,33 @@ void CRemoteHandleUI::SetPos(RECT rc) {
     }
 
     if (edit_key_1_) {
-        rc_ctrl.left = rc.left + 8;
+        rc_ctrl.left = (rc.left + rc.right - 39) / 2;
         rc_ctrl.right = rc_ctrl.left + 39;
-        rc_ctrl.top = (rc.top + rc.bottom - 39) / 2;
+        rc_ctrl.top = rc.top + 8;
         rc_ctrl.bottom = rc_ctrl.top + 39;
         edit_key_1_->SetPos(rc_ctrl);
     }
 
     if (edit_key_2_) {
-        rc_ctrl.left = (rc.left + rc.right - 39) / 2;
+        rc_ctrl.left = rc.left + 8;
         rc_ctrl.right = rc_ctrl.left + 39;
-        rc_ctrl.top = rc.top + 8;
+        rc_ctrl.top = (rc.top + rc.bottom - 39) / 2;
         rc_ctrl.bottom = rc_ctrl.top + 39;
         edit_key_2_->SetPos(rc_ctrl);
     }
 
     if (edit_key_3_) {
-        rc_ctrl.left = rc.right - 8 - 39;
+        rc_ctrl.left = (rc.left + rc.right - 39) / 2;
         rc_ctrl.right = rc_ctrl.left + 39;
-        rc_ctrl.top = (rc.top + rc.bottom - 39) / 2;
+        rc_ctrl.top = rc.bottom  - 8 - 39;
         rc_ctrl.bottom = rc_ctrl.top + 39;
         edit_key_3_->SetPos(rc_ctrl);
     }
 
     if (edit_key_4_) {
-        rc_ctrl.left = (rc.left + rc.right - 39) / 2;
+        rc_ctrl.left = rc.right - 8 - 39;
         rc_ctrl.right = rc_ctrl.left + 39;
-        rc_ctrl.top = rc.bottom  - 8 - 39;
+        rc_ctrl.top = (rc.top + rc.bottom - 39) / 2;
         rc_ctrl.bottom = rc_ctrl.top + 39;
         edit_key_4_->SetPos(rc_ctrl);
     }
@@ -224,6 +224,7 @@ void CRemoteHandleUI::OnMouseMove(UINT nFlags, QPoint point) {
                     m_rcNewPos.bottom -= distance;
                     SetPos(m_rcNewPos);
                 }
+                m_pManager->SendNotify(this, DUI_MSGTYPE_POS_CHANGED);
             };
 
             int distance = 0;
@@ -293,6 +294,7 @@ void CRemoteHandleUI::OnMouseMove(UINT nFlags, QPoint point) {
         m_rcNewPos.bottom += cy;
         SetPos(m_rcNewPos);
         ::SetCursor(::LoadCursor(NULL, IDC_HAND));
+        m_pManager->SendNotify(this, DUI_MSGTYPE_POS_CHANGED);
         return;
     }
 }
@@ -311,6 +313,7 @@ void CRemoteHandleUI::UpdateBrowserMode(bool browser_mode, int opacity/* = 100*/
     if (edit_key_2_) edit_key_2_->SetTransparent(transparent);
     if (edit_key_3_) edit_key_3_->SetTransparent(transparent);
     if (edit_key_4_) edit_key_4_->SetTransparent(transparent);
+    this->CControlUI::SetTransparent(transparent);
 
     SetEnabled(!browser_mode);
     if (btn_hand_circle_) btn_hand_circle_->SetEnabled(!browser_mode);

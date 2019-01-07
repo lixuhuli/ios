@@ -276,7 +276,7 @@ void CIosMgr::OnForegroundAppChanged(uintptr_t param1, uintptr_t param2) {
                 msg.message = WM_MAINWND_MSG_GET_KEYBOARD;
 
                 auto keymap_dir = GetKeyMapDir();
-                auto download_path = GetDocumentPath() + L"\\keymap\\"+ PublicLib::AToU(emulator_state_info_->running_app_id()) + L".zip";
+                auto download_path = GetDocumentPath() + L"\\keymap\\"+ PublicLib::Utf8ToU(emulator_state_info_->running_app_id()) + L".zip";
                 if (!::PathFileExists(keymap_dir.c_str())) SHCreateDirectory(nullptr, keymap_dir.c_str());
 
                 auto strAppId = emulator_state_info_->running_app_id();
@@ -536,7 +536,7 @@ bool CIosMgr::HasKeyMapFile() {
     auto key_dir = GetDocumentPath() + L"\\keymap";
     if (!::PathFileExists(key_dir.c_str())) return false;
 
-    auto keymap_dir = key_dir + L"\\" + PublicLib::AToU(emulator_state_info_->running_app_id());
+    auto keymap_dir = key_dir + L"\\" + PublicLib::Utf8ToU(emulator_state_info_->running_app_id());
     if (!::PathFileExists(keymap_dir.c_str())) return false;
 
     auto config_name = keymap_dir + L"\\conf.ini";
@@ -551,7 +551,7 @@ bool CIosMgr::HasKeyMapFile() {
 
 wstring CIosMgr::GetKeyMapDir() {
     if (!emulator_state_info_) return L"";
-    wstring keymap_dir = GetDocumentPath() + L"\\keymap\\" + PublicLib::AToU(emulator_state_info_->running_app_id());
+    wstring keymap_dir = GetDocumentPath() + L"\\keymap\\" + PublicLib::Utf8ToU(emulator_state_info_->running_app_id());
     return keymap_dir;
 }
 
@@ -636,8 +636,11 @@ void CIosMgr::WriteBaseKeyBoard(const string& app_id) {
 
     if (!WritePrivateProfileString(L"setting", L"record", L"records_1", config.c_str())) return;
 
+    string default_file = app_id + "_default";
+
     WritePrivateProfileString(L"records_1", L"name", L"ƒ¨»œ≈‰÷√", config.c_str());
-    WritePrivateProfileString(L"records_1", L"file", PublicLib::AToU(app_id).c_str(), config.c_str());
+    WritePrivateProfileString(L"records_1", L"file", PublicLib::Utf8ToU(app_id).c_str(), config.c_str());
+    WritePrivateProfileString(L"records_1", L"default", PublicLib::Utf8ToU(default_file).c_str(), config.c_str());
 }
 
 void CIosMgr::UpdateIosWndStatus() {

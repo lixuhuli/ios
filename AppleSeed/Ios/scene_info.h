@@ -125,6 +125,36 @@ namespace emulator {
             return false;
         }
 
+        bool set_item_width(int src_value, int width) {
+            auto it = m_items.begin();
+            for (; it != m_items.end(); it++) {
+                auto itr = it->keys.begin();
+                for (; itr != it->keys.end(); itr++) {
+                    if (itr->nValue == src_value) {
+                        it->nItemWidth = width;
+
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        bool set_item_height(int src_value, int height) {
+            auto it = m_items.begin();
+            for (; it != m_items.end(); it++) {
+                auto itr = it->keys.begin();
+                for (; itr != it->keys.end(); itr++) {
+                    if (itr->nValue == src_value) {
+                        it->nItemHeight = height;
+
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         bool set_right_mouse_value(int value) {
             auto it = m_items.begin();
             for (; it != m_items.end(); it++) {
