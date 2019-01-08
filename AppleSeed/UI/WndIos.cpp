@@ -49,6 +49,8 @@ LRESULT CWndIos::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
     case WM_RBUTTONDOWN: lRes = OnRButtonDown(wParam, lParam, bHandled); break;
     case WM_RBUTTONUP: lRes = OnRButtonUp(wParam, lParam, bHandled); break;
     case WM_DROPFILES: lRes = OnDropFiles(wParam, lParam, bHandled); break;
+    case WM_KILLFOCUS : EnableKeyMap(false); break;
+    case WM_SETFOCUS : EnableKeyMap(true); break;
     default: bHandled = FALSE; break;
     }
 

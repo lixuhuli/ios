@@ -841,6 +841,14 @@ bool CKeyWnd::OnEditIntelligentChanged(void* param) {
         info.nPointY = point.y + int(double(rc_edit.GetHeight()) / 2.0 + 0.5) + rc_edit.top - rc.top;
 
         item.keys.push_back(info);
+
+        info.nValue = -5;
+        info.strDescription = PublicLib::AToUtf("ÖÐ¶ÏÊ©·¨");
+        info.strKeyString = PublicLib::AToUtf("-5");
+        info.nPointX = 1205;
+        info.nPointY = 200;
+        item.keys.push_back(info);
+
         scene_bak_info_->AddItem(item);
 
         InitIntelligent(intelligent, item);
