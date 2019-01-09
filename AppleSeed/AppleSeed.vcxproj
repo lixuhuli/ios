@@ -180,6 +180,7 @@
     <ClInclude Include="CallBack\callback_mgr.h" />
     <ClInclude Include="CallBack\appleseed_callback.h" />
     <ClInclude Include="CallBack\ref_observer_list.h" />
+    <ClInclude Include="CPUID.h" />
     <ClInclude Include="Database\DatabaseDefine.h" />
     <ClInclude Include="Database\DatabaseMgr.h" />
     <ClInclude Include="Database\sqlite3\CppSQLite3.h" />
@@ -267,6 +268,7 @@
     <ClCompile Include="7z\CPP\Windows\PropVariant.cpp" />
     <ClCompile Include="CallBack\callBack_mgr.cpp" />
     <ClCompile Include="CallBack\ref_observer_list.cpp" />
+    <ClCompile Include="CPUID.cpp" />
     <ClCompile Include="Database\DatabaseMgr.cpp" />
     <ClCompile Include="Database\sqlite3\CppSQLite3.cpp" />
     <ClCompile Include="DataPost.cpp" />

@@ -378,6 +378,9 @@
     <ClInclude Include="UI\KeyMap\KeyBrowserWnd.h">
       <Filter>源文件\UI\KeyMap\Wnd</Filter>
     </ClInclude>
+    <ClInclude Include="CPUID.h">
+      <Filter>Public</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -559,6 +562,9 @@
     </ClCompile>
     <ClCompile Include="UI\KeyMap\KeyBrowserWnd.cpp">
       <Filter>源文件\UI\KeyMap\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUID.cpp">
+      <Filter>Public</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

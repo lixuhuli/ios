@@ -472,7 +472,8 @@ void CIosMgr::CheckEngineUpdate() {
 }
 
 int CIosMgr::UpdatePackage(const std::wstring& file_path) {
-    return UpdatePack(PublicLib::UToUtf8(file_path).c_str());
+    BOOL restart[1] = { FALSE };
+    return UpdatePack(PublicLib::UToUtf8(file_path).c_str(), restart);
 }
 
 void CIosMgr::OnPackUpdating(int percent) {

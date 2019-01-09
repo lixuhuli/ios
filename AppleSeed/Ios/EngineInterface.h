@@ -97,7 +97,7 @@ OGLAPI void KeyInputSync(const char op, WPARAM keyValue);
 //////////////////////////////////////////////
 
 OGLAPI int InstallIPA(const char *pathToFile);			// Install IPA file. Returning 0 means OK, otherwise it fails.
-OGLAPI int UpdatePack(const char *pathToFile);			// Update file to update the engine. Returning 0 means OK, otherwise it fails.
+OGLAPI int UpdatePack(const char *pathToFile, PBOOL pbPowerOffRequired);			// Update file to update the engine. Returning 0 means OK, otherwise it fails.
 
 OGLAPI int GetEngineVersion(int *major, int *minor, int *buildnumber);	// Get engine version. Returning 0 means OK, otherwise it fails.
 

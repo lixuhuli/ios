@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "GlobalData.h"
 #include <algorithm>
+#include "CPUID.h"
 
 CGlobalData::CGlobalData()
  : m_hWndMain(nullptr)
@@ -78,24 +79,14 @@ std::wstring CGlobalData::GetKeyboardStr(int key_code) {
 }
 
 void CGlobalData::GetCpuInfo() {
-    SYSTEM_INFO SysInfo;  
-    memset(&SysInfo, 0, sizeof(SYSTEM_INFO));  
-    GetSystemInfo(&SysInfo);  
+    CPUID cpuid;
+    auto info = cpuid.GetBrand();
 
-    switch (SysInfo.dwProcessorType) {  
-    case PROCESSOR_INTEL_386:   
-    case PROCESSOR_INTEL_486:    
-    case PROCESSOR_INTEL_PENTIUM:   
-    case PROCESSOR_INTEL_IA64: 
-        cpu_type_ = 0;
-        break;
-    case PROCESSOR_AMD_X8664:  
-        cpu_type_ = 1;
-        break;  
-    default:
-        cpu_type_ = -1;
-        break;  
-    }  
+    if (info.find("Intel") != string::npos) cpu_type_ = 0;
+    else if (info.find("AMD") != string::npos) cpu_type_ = 1;
+    else cpu_type_ = -1;
+
+    OUTPUT_XYLOG(LEVEL_INFO, L"获取处理器类型：%s, 类型值：%d", PublicLib::AToU(info).c_str(), cpu_type_);
 }
 
 void CGlobalData::InitKeyboardMapping() {
