@@ -82,6 +82,8 @@ protected:
         BIND_CTRL_EVENT(L"edit_password", DUI_MSGTYPE_TEXTCHANGED, &CWndUser::OnEditPasswordChanged);
         BIND_CTRL_EVENT(L"edit_input_user", DUI_MSGTYPE_TEXTCHANGED, &CWndUser::OnEditInputUserChanged);
         BIND_CTRL_EVENT(L"edit_input_password", DUI_MSGTYPE_TEXTCHANGED, &CWndUser::OnEditInputPasswordTextChanged);
+        BIND_CTRL_EVENT(L"edit_input_user", DUI_MSGTYPE_RETURN, &CWndUser::OnEditReturn);
+        BIND_CTRL_EVENT(L"edit_input_password", DUI_MSGTYPE_RETURN, &CWndUser::OnEditReturn);
     END_BIND_CTRL()
 
     /* --------------------------------------------------------- */
@@ -93,6 +95,7 @@ protected:
     bool OnBtnClickRegister(void* param);
     bool OnEditInputUserChanged(void* param);
     bool OnEditInputPasswordTextChanged(void* param);
+    bool OnEditReturn(void* param);
 
 
     /* --------------------------------------------------------- */

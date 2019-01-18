@@ -59,7 +59,7 @@ LRESULT CWndUser::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
     case WM_USERWND_MSG_USER_CODE_LOGIN: return OnUserCodeLogin(wParam, lParam, bHandled);
     case WM_USERWND_MSG_USER_CHECKMOBILECODE: OnUserCheckMobileCode(wParam, lParam, bHandled); break;
     case WM_USERWND_MSG_USER_MODIFYPASSWORD: OnUserModifyPassword(wParam, lParam, bHandled); break;
-    //case WM_KEYDOWN: OnUserKeyDown(wParam, lParam, bHandled); break;
+    case WM_KEYDOWN: OnUserKeyDown(wParam, lParam, bHandled); break;
     default: bHandled = FALSE;
     }
 
@@ -168,15 +168,12 @@ void CWndUser::IntEditEvent() {
 }
 
 LRESULT CWndUser::OnUserKeyDown(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    if (layout_user_->GetCurSel() == 0) {
-        OnBtnClickLogin(nullptr);
-    }
-    else if (layout_user_->GetCurSel() == 2) {
-        OnBtnClickLogin(nullptr);
-    }
-    else if (layout_user_->GetCurSel() == 3) {
-        if (btn_login3_ && btn_login3_->IsVisible() && btn_login3_->IsEnabled())
-            OnBtnClickLogin3(nullptr);
+    if (wParam == VK_RETURN) {
+        if (layout_user_->GetCurSel() == 0) {
+            if (btn_login_ && btn_login_->IsEnabled()) { 
+                OnBtnClickLogin(nullptr);
+            }
+        }
     }
 
     return 0;
@@ -235,6 +232,14 @@ bool CWndUser::OnEditInputUserChanged(void* param) {
 
 bool CWndUser::OnEditInputPasswordTextChanged(void* param) {
     UpdateBtnLoginStatus();
+    return true;
+}
+
+bool CWndUser::OnEditReturn(void* param) {
+    if (btn_login_ && btn_login_->IsEnabled()) { 
+        OnBtnClickLogin(nullptr);
+    }
+
     return true;
 }
 
