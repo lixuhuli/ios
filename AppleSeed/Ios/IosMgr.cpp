@@ -160,7 +160,7 @@ int CIosMgr::InstallAppThread(void * argument) {
     ITask* task = (ITask*)argument;
     if (!task) return 0;
 
-    auto state = InstallIPA(PublicLib::UToUtf8(task->strSavePath).c_str());
+    auto state = InstallIPA(PublicLib::UToA(task->strSavePath).c_str());
 
     CefPostTask(TID_UI, base::Bind(&CIosMgr::OnInstallApp, AsWeakPtr(), (UINT_PTR)task, state));
 
@@ -189,7 +189,7 @@ int CIosMgr::InstallFileThread(void * argument) {
     ITask* task = (ITask*)argument;
     if (!task) return 0;
 
-    auto state = InstallIPA(PublicLib::UToUtf8(task->strSavePath).c_str());
+    auto state = InstallIPA(PublicLib::UToA(task->strSavePath).c_str());
 
     CefPostTask(TID_UI, base::Bind(&CIosMgr::OnInstallFile, AsWeakPtr(), (UINT_PTR)task, state));
 
@@ -473,7 +473,7 @@ void CIosMgr::CheckEngineUpdate() {
 
 int CIosMgr::UpdatePackage(const std::wstring& file_path) {
     BOOL restart[1] = { FALSE };
-    return UpdatePack(PublicLib::UToUtf8(file_path).c_str(), restart);
+    return UpdatePack(PublicLib::UToA(file_path).c_str(), restart);
 }
 
 void CIosMgr::OnPackUpdating(int percent) {
@@ -522,7 +522,7 @@ void CIosMgr::OnEngineOff(int state) {
 }
 
 int CIosMgr::UpdateKeyMap(const std::wstring& file_path) {
-    return LoadKeyMap(PublicLib::UToUtf8(file_path).c_str());
+    return LoadKeyMap(PublicLib::UToA(file_path).c_str());
 }
 
 void CIosMgr::CloseKeyWnd() {
@@ -656,6 +656,6 @@ void CIosMgr::UpdateIosWndStatus() {
 }
 
 bool CIosMgr::SaveEngineReport(const std::wstring& input_file, const std::wstring& output_file) {
-    return (GetEngineReport(PublicLib::UToUtf8(input_file).c_str(), PublicLib::UToUtf8(output_file).c_str()) == 0);
+    return (GetEngineReport(PublicLib::UToA(input_file).c_str(), PublicLib::UToA(output_file).c_str()) == 0);
 }
 

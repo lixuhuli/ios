@@ -96,7 +96,7 @@ void CWndMain::InitWindow() {
 
     CIosMgr::Instance()->CreateWndIos(m_hWnd);
     
-    string iso_file = PublicLib::UToUtf8(CGlobalData::Instance()->GetIosVmPath()) + "\\"+ GetUrlIsoName();
+    string iso_file = PublicLib::UToA(CGlobalData::Instance()->GetIosVmPath()) + "\\"+ GetUrlIsoName();
     if (PathFileExistsA(iso_file.c_str())) {
         if (!LoadIosEngine()) {
             ShowMsg(m_hWnd, L"提示", L"启动失败，请重启", MB_OK);
@@ -609,7 +609,7 @@ bool CWndMain::OnBtnClickKey(void* param) {
 }
 
 bool CWndMain::LoadIosEngine() {
-    string iso_file = PublicLib::UToUtf8(CGlobalData::Instance()->GetIosVmPath()) + "\\"+ GetUrlIsoName();
+    string iso_file = PublicLib::UToA(CGlobalData::Instance()->GetIosVmPath()) + "\\"+ GetUrlIsoName();
     return CIosMgr::Instance()->IosEngineOn(iso_file);
 }
 
@@ -691,8 +691,8 @@ LRESULT CWndMain::OnMsgFileUnzip(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
         return 0;
     } 
 
-    string iso_file = PublicLib::UToUtf8(CGlobalData::Instance()->GetIosVmPath()) + "\\" + GetUrlIsoName();
-    string iso_init_file = PublicLib::UToUtf8(CGlobalData::Instance()->GetIosVmPath()) + "\\" + GetUrlInitIsoName();
+    string iso_file = PublicLib::UToA(CGlobalData::Instance()->GetIosVmPath()) + "\\" + GetUrlIsoName();
+    string iso_init_file = PublicLib::UToA(CGlobalData::Instance()->GetIosVmPath()) + "\\" + GetUrlInitIsoName();
 
     if (!MoveFileA(iso_init_file.c_str(), iso_file.c_str())) {
         KillTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS);

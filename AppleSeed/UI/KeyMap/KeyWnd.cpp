@@ -115,7 +115,7 @@ void CKeyWnd::UpdateSceneInfo() {
     wstring file_path = key_elem->GetUserData().GetData();
     if (!PathFileExists(file_path.c_str())) scene_info_->set_pack_id(key_id_);
     else {
-        scene_info_->loadScene(PublicLib::UToUtf8(file_path).c_str());
+        scene_info_->loadScene(PublicLib::UToA(file_path).c_str());
         if (scene_info_->pack_id().empty()) scene_info_->set_pack_id(key_id_);
     }
 
@@ -594,7 +594,7 @@ bool CKeyWnd::OnBtnSave(void* param) {
     CListLabelElementUI* key_elem = (CListLabelElementUI*)combox_keyboard_->GetItemAt(index);
     if (!key_elem) return true;
 
-    scene_info_->saveScene(PublicLib::UToUtf8(key_elem->GetUserData().GetData()).c_str());
+    scene_info_->saveScene(PublicLib::UToA(key_elem->GetUserData().GetData()).c_str());
 
     CIosMgr::Instance()->UpdateKeyMap(key_elem->GetUserData().GetData());
 
@@ -623,13 +623,13 @@ bool CKeyWnd::OnBtnRestore(void* param) {
     wstring file_path = key_elem->GetInheritableUserData().GetData();
     if (!PathFileExists(file_path.c_str())) scene_info_->set_pack_id(key_id_);
     else {
-        scene_info_->loadScene(PublicLib::UToUtf8(file_path).c_str());
+        scene_info_->loadScene(PublicLib::UToA(file_path).c_str());
         if (scene_info_->pack_id().empty()) scene_info_->set_pack_id(key_id_);
     }
 
     scene_bak_info_ = scene_info_->cloner();
 
-    scene_info_->saveScene(PublicLib::UToUtf8(key_elem->GetUserData().GetData()).c_str());
+    scene_info_->saveScene(PublicLib::UToA(key_elem->GetUserData().GetData()).c_str());
 
     CIosMgr::Instance()->UpdateKeyMap(key_elem->GetUserData().GetData());
 
