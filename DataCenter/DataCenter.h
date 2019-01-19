@@ -20,6 +20,7 @@ namespace DataCenter{
 
 		int GetAdID()const { return m_nAdID; }
 		void SetAdID(int nID) { m_nAdID = nID;}
+        const wstring& GetGuid()const { return m_strGuid; }
 		void SetPCVersion(const string& strVersion) { m_strPCVersion = strVersion; }
 		string& GetPCVersion() { return m_strPCVersion; }
 		const string& GetMacAddress()const { return m_strMac;}
@@ -37,6 +38,7 @@ namespace DataCenter{
 	private:
 		int m_nAdID;
 		string m_strMac;
+        wstring m_strGuid;
 		string m_strPCVersion;
 		list<UINT_PTR>	m_taskList;
         UINT m_nThreadID;

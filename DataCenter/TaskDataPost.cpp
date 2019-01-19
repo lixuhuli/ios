@@ -35,11 +35,11 @@ namespace DataCenter{
         int nCode = 0;
         PublicLib::CHttpClient http(PublicLib::ContentJson);
         http.AddHttpHeader(L"X-WuFan-App-ID", g_pStrAppID);
-        http.AddHttpHeader(L"X-WuFan-Client-ID", L"");
+        http.AddHttpHeader(L"X-WuFan-Client-ID", CDataCenter::Instance()->GetGuid().c_str());
 
         Json::Value vData;
         vData[KEY_USER_ID] = m_nUid;
-        vData[KEY_DEVICE_ID] = "";
+        vData[KEY_DEVICE_ID] = PublicLib::UToA(CDataCenter::Instance()->GetGuid());
         vData[KEY_TIME] = time(NULL);
         vData[KEY_MAC] = CDataCenter::Instance()->GetMacAddress();
         vData[KEY_APP_VER] = CDataCenter::Instance()->GetPCVersion();

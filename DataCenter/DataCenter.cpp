@@ -45,6 +45,7 @@ namespace DataCenter{
 
 	void CDataCenter::Init(const char* pToken)
 	{
+        GetDeviceGuid(m_strGuid);
 		wstring strMac;
 		PublicLib::GetMacAddress(strMac);
 		m_strMac = PublicLib::UToUtf8(strMac);
