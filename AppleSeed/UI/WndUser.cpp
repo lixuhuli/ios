@@ -82,16 +82,19 @@ void CWndUser::InitWindow() {
     if (!CUserData::Instance()->HasFileAccount()) return;
 
     auto nUid = CUserData::Instance()->GetFileUserID();
+    wstring strAccount = CUserData::Instance()->GetAccount();
     string strPhone = CUserData::Instance()->GetFileUserPhone();
 
-    if (strPhone.empty()) {
+    if (strAccount.empty()) strAccount = PublicLib::AToU(strPhone);
+
+    if (strAccount.empty() && strPhone.empty()) {
         wchar_t szValue[128] = { 0 };
         swprintf_s(szValue, L"%d", nUid);
         edit_input_user_->SetText(szValue);
     }
     else {
         edit_phone2_->SetText(PublicLib::AToU(strPhone).c_str());
-        edit_input_user_->SetText(PublicLib::AToU(strPhone).c_str());
+        edit_input_user_->SetText(strAccount.c_str());
 
         bool enabled = (edit_phone2_->GetText().GetLength() >= 11);
         btn_verification_code2_->SetEnabled(enabled);
@@ -684,6 +687,15 @@ LRESULT CWndUser::OnUserLogin(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
         ShowToast(m_hWnd, str_msg.empty() ? L"登录失败" : str_msg.c_str());
         return 0;
     }
+
+    int nParamUid = 0;
+    wstring strAccount;
+    if (!TaskCenter::CTaskCenter::Instance()->GetUserLoginTaskParam(nTask, strAccount)) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"获取用户账号信息失败信息失败");
+        return 0;
+    }
+
+    CUserData::Instance()->SetAccount(strAccount);
 
     Json::Value& vData = vRoot["data_info"];
     uint32_t nUid = vData["uid"].asUInt();

@@ -9,6 +9,7 @@
 #define INI_KEY_COOKIE_PASSWORD	    L"cookie_password"
 #define INI_KEY_COOKIE_AUTOLOGIN    L"cookie_autologin"
 #define INI_KEY_COOKIE_REMEMBERPWD  L"cookie_rememberpwd"
+#define INI_KEY_COOKIE_ACCOUNT	    L"cookie_account"
 
 #define INI_USER_DATA			    L"UserData"
 #define INI_KEY_HEAD_FILE		    L"HeadIconFile"
@@ -47,6 +48,9 @@ void CUserData::Init() {
 
                 dwLen = GetPrivateProfileString(INI_APP_COOKIE, INI_KEY_COOKIE_PASSWORD, L"", szValue, 128, strIniPath.c_str());
                 if (dwLen > 0) m_strPassword = PublicLib::UToA(szValue);
+
+                dwLen = GetPrivateProfileString(INI_APP_COOKIE, INI_KEY_COOKIE_ACCOUNT, L"", szValue, 128, strIniPath.c_str());
+                if (dwLen > 0) m_strAccount = szValue;
 
                 m_bAutoLogin = (GetPrivateProfileIntW(INI_APP_COOKIE, INI_KEY_COOKIE_AUTOLOGIN, 0, strIniPath.c_str()) == 1);
                 m_bRememberPwd = (GetPrivateProfileIntW(INI_APP_COOKIE, INI_KEY_COOKIE_REMEMBERPWD, 0, strIniPath.c_str()) == 1);
@@ -102,6 +106,18 @@ void CUserData::SetAccountPassword(const string& strPassword) {
     wchar_t szValue[128] = { 0 };
     swprintf_s(szValue, L"%s", PublicLib::AToU(strPassword).c_str());
     WritePrivateProfileString(INI_APP_COOKIE, INI_KEY_COOKIE_PASSWORD, szValue, strIniPath.c_str());
+}
+
+void CUserData::SetAccount(const wstring& strAccount) {
+    if (m_strAccount == strAccount) return;
+
+    m_strAccount = strAccount;
+    wstring strIniPath = GetAppDataPath() + USER_COOKIE_PATH;
+    SHCreateDirectory(NULL, strIniPath.c_str());
+    strIniPath.append(L"\\CefCookies_Data");
+    wchar_t szValue[128] = { 0 };
+    swprintf_s(szValue, L"%s", strAccount.c_str());
+    WritePrivateProfileString(INI_APP_COOKIE, INI_KEY_COOKIE_ACCOUNT, szValue, strIniPath.c_str());
 }
 
 void CUserData::SetAutoLogin(const bool& bAutoLogin) {

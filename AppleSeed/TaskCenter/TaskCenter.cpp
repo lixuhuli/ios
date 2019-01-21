@@ -261,6 +261,20 @@ namespace TaskCenter{
         return (UINT_PTR)pTask;
     }
 
+    bool CTaskCenter::GetUserLoginTaskParam(UINT_PTR nTaskID, OUT wstring& strAccountId) {
+        TaskItor itor = std::find(m_taskList.begin(), m_taskList.end(), nTaskID);
+        if (itor == m_taskList.end())
+            return false;
+        ITask* pTask = (ITask*)nTaskID;
+        if (NULL == pTask || pTask->GetTaskType() != TaskUserLogin)
+            return false;
+        CTaskUserLogin* pTaskUser = dynamic_cast<CTaskUserLogin*>(pTask);
+        if (NULL == pTaskUser)
+            return false;
+        pTaskUser->GetParam(strAccountId);
+        return true;
+    }
+
     UINT_PTR CTaskCenter::CreateUserCodeLoginTask(const MSG& msg, const wstring& strPhoneNum, const wstring& strCode) {
         ITask* pTask = GetFreeTaskByType(m_taskList, TaskGetUserCodeLogin);
         if (NULL == pTask)

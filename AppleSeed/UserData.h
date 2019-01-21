@@ -37,6 +37,9 @@ public:
     void SetAccountPassword(const string& strPassword);
     const string& GetFileUserPassword()const { return m_strPassword; }
 
+    void SetAccount(const wstring& strAccount);
+    const wstring& GetAccount()const { return m_strAccount; }
+
     void SetAutoLogin(const bool& bAutoLogin);
     const bool& GetAutoLogin()const { return m_bAutoLogin; }
 
@@ -59,6 +62,7 @@ private:
     string m_strToken;
     string m_strPhone;
     string m_strPassword;
+    wstring m_strAccount;
     bool m_bAutoLogin;
     bool m_bRememberPwd;
 

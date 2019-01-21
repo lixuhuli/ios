@@ -30,6 +30,7 @@ namespace TaskCenter{
         UINT_PTR CreateUserCheckMobileCode(const MSG& msg, const wstring& strPhoneNum, const wstring& strCode, const wstring& strCheckType);
         UINT_PTR CreateUserRegister(const MSG& msg, const wstring& strPhoneNumber, const wstring& strVerificationCode, const wstring& strActiveCode, const wstring& strPassword);
         UINT_PTR CreateUserLoginTask(const MSG& msg, const wstring& strAccountId, const wstring& strPassword);
+        bool GetUserLoginTaskParam(UINT_PTR nTaskID, OUT wstring& strAccountId);
         UINT_PTR CreateUserCodeLoginTask(const MSG& msg, const wstring& strPhoneNum, const wstring& strCode);
         UINT_PTR CreateUserModifyPassword(const MSG& msg, const wstring& strPhoneNumber, const wstring& strCode, const wstring& strPassword);
 		UINT_PTR CreateUserInfoTask(const MSG& msg, int nUid, const string& strToken, bool bUpdateInfo=false);

@@ -215,7 +215,7 @@ namespace TaskCenter{
     public:
         CTaskUserLogin(const MSG& msg, const wstring& strAccountId, const wstring& strPassword)
             : ITask(msg) {
-                m_type = TaskGetUserLogin;
+                m_type = TaskUserLogin;
                 m_bUsed = TRUE;
                 account_id_ = strAccountId;
                 password_ = strPassword;
@@ -226,6 +226,10 @@ namespace TaskCenter{
             m_bUsed = TRUE;
             account_id_ = strAccountId;
             password_ = strPassword;
+        }
+
+        void GetParam(OUT wstring& strAccountId) {
+            strAccountId = account_id_;
         }
 
     protected:
