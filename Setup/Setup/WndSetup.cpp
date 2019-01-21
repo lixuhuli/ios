@@ -131,7 +131,6 @@ LRESULT CWndSetup::OnMsgInstall(WPARAM wParam, LPARAM lParam)
 		break;
 	case Mw_Finish://安装完成
 		m_pTabMain->SelectItem(3);
-		CreateDataTask(EVENT_INSTALL);
         CSetupModule::Instance()->SetShowUpdateWnd(true);
 		break;
 	default:
