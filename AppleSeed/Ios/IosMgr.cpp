@@ -260,6 +260,7 @@ void CIosMgr::OnForegroundAppChanged(uintptr_t param1, uintptr_t param2) {
 
     if (strcmp(context, ID_COM_DESKTOP) == 0) {
         if (!engine_on_) {
+            PostStartApp(StatusSuccess, CUserData::Instance()->GetFileUserID());
             engine_on_ = true;
             OnEngineOn();
         }

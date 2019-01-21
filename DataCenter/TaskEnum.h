@@ -9,6 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////
 //定义事件名称
 #define EVENT_START_CLIENT			"startClient"
+#define EVENT_START_APP			    "startAPP"
 #define EVENT_GAME_DOWNLOAD			"gameDownload"
 #define EVENT_START_GAME			"gameStart"
 #define EVENT_INSTALL_GAME			"gameInstall"

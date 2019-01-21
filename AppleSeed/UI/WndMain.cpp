@@ -610,7 +610,10 @@ bool CWndMain::OnBtnClickKey(void* param) {
 
 bool CWndMain::LoadIosEngine() {
     string iso_file = PublicLib::UToA(CGlobalData::Instance()->GetIosVmPath()) + "\\"+ GetUrlIsoName();
-    return CIosMgr::Instance()->IosEngineOn(iso_file);
+    PostStartApp(StatusBegin, CUserData::Instance()->GetFileUserID());
+    auto success = CIosMgr::Instance()->IosEngineOn(iso_file);
+    if (!success) PostStartApp(StatusFail, CUserData::Instance()->GetFileUserID());
+    return success;
 }
 
 void CWndMain::UpdateLoadingIcon() {

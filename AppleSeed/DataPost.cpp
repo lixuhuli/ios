@@ -12,6 +12,12 @@ void PostStartPC(bool bAuto)
 	CreateDataTask(EVENT_START_CLIENT, vParams, 0);
 }
 
+void PostStartApp(DataStatus status, int nUid) {
+    Json::Value vParams;
+    vParams[KEY_DOWNLOAD_STATUS] = status;
+    CreateDataTask(EVENT_START_APP, vParams, nUid);
+}
+
 void PostDownloadGame(__int64 nGameID, int nGameType, DataStatus status, int nLoadWay/* = 1*/, int nSpeed/* = 0*/) {
 	Json::Value vParams;
 	vParams[KEY_GAME_ID] = nGameID;

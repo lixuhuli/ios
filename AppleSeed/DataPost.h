@@ -18,6 +18,8 @@ enum DataStatus
 
 void PostStartPC(bool bAuto);
 
+void PostStartApp(DataStatus status, int nUid);
+
 void PostDownloadGame(__int64 nGameID, int nGameType, DataStatus status, int nLoadWay = 1, int nSpeed = 0);
 
 void PostStartGame(__int64 nGameID, DataStatus status, int nUid);
