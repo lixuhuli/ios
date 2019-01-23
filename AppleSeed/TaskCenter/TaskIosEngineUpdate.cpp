@@ -40,7 +40,7 @@ namespace TaskCenter{
 
         string strJson = http.Request(URL_CHECK_IOS_ENGINE_UPDATE, PublicLib::Post, strData.c_str(), strData.size());
         bool success = false;
-        wstring str_msg;
+        BOOL need_reboot = FALSE;
         do {
             if (strJson.empty()){
                 OUTPUT_XYLOG(LEVEL_ERROR, L"接口请求失败，错误信息：%s", http.GetError());
@@ -57,11 +57,8 @@ namespace TaskCenter{
             string strCode = vRoot["code"].asString();
             if (strCode.compare("600") != 0) {
                 OUTPUT_XYLOG(LEVEL_ERROR, L"接口返回失败，code = %s", PublicLib::Utf8ToU(strCode).c_str());
-                str_msg = PublicLib::Utf8ToU(vRoot["msg"].asString());
                 break;
             }
-
-            success = true;
 
             Json::Value& vData = vRoot["data_info"];
             size_t down_count = vData.size();
@@ -72,6 +69,81 @@ namespace TaskCenter{
             }
 
             ::PostMessage(m_msg.hwnd, m_msg.message, 0, 0);
+
+            if (down_count > 2) {
+                do {
+                    strJson = http.Request(URL_CHECK_IOS_ENGINE_ALL_UPDATE, PublicLib::Post, strData.c_str(), strData.size());
+
+                    if (strJson.empty()){
+                        OUTPUT_XYLOG(LEVEL_ERROR, L"接口请求失败，错误信息：%s", http.GetError());
+                        break;
+                    }
+
+                    Json::Value vRootFull;
+                    if (!rd.parse(strJson, vRootFull)) {
+                        OUTPUT_XYLOG(LEVEL_ERROR, L"解析返回json失败");
+                        break;
+                    }
+
+                    strCode = vRootFull["code"].asString();
+                    if (strCode.compare("600") != 0) {
+                        OUTPUT_XYLOG(LEVEL_ERROR, L"接口返回失败，code = %s", PublicLib::Utf8ToU(strCode).c_str());
+                        break;
+                    }
+
+                    Json::Value& vDataFull = vRootFull["data_info"];
+                    size_t full_count = vDataFull.size();
+                    if (full_count <= 0) {
+                        OUTPUT_XYLOG(LEVEL_ERROR, L"没有更新的数据包");
+                        break;
+                    }
+
+                    success = true;
+
+                    ::PostMessage(m_msg.hwnd, m_msg.message, 0, 30);
+
+                    string down_url = vDataFull[0]["downUrl"].asString();
+                    if (down_url.empty()) {
+                        success = false;
+                        break;
+                    }
+
+                    auto pos = down_url.rfind("/");
+                    if (pos == string::npos) {
+                        success = false;
+                        break;
+                    }
+
+                    string file_name = down_url.substr(pos + 1, down_url.length() - pos - 1);
+
+                    std::wstring strUpdatePath = GetAppDataPath() + L"UpdatePack\\";
+                    if (!PathFileExists(strUpdatePath.c_str())) SHCreateDirectory(NULL, strUpdatePath.c_str());
+                    strUpdatePath += PublicLib::Utf8ToU(file_name);
+
+                    if (!http.DownLoadFile(PublicLib::Utf8ToU(down_url).c_str(), strUpdatePath.c_str())) {
+                        success = false;
+                        break;
+                    }
+
+                    ::PostMessage(m_msg.hwnd, m_msg.message, 0, 60);
+
+                    BOOL restart = FALSE;
+                    if (0 != CIosMgr::Instance()->UpdatePackage(strUpdatePath, restart)) {
+                        success = false;
+                        break;
+                    }
+
+                    if (restart) need_reboot = TRUE;
+
+                    ::PostMessage(m_msg.hwnd, m_msg.message, 0, 100);
+                    DeleteFile(strUpdatePath.c_str());
+
+                } while(false);
+            }
+
+            if (success) break;
+            
+            success = true;
 
             for (size_t i = 0; i < down_count; ++i) {
                 string down_url = vData[i]["downUrl"].asString();
@@ -97,15 +169,19 @@ namespace TaskCenter{
                     break;
                 }
 
-                if (0 != CIosMgr::Instance()->UpdatePackage(strUpdatePath)) {
+                BOOL restart = FALSE;
+                if (0 != CIosMgr::Instance()->UpdatePackage(strUpdatePath, restart)) {
                     success = false;
                     break;
                 }
+
+                if (restart) need_reboot = TRUE;
 
                 int nPercent = (int)(((float)(i + 1)) * 100.0 / (float)down_count);
                 ::PostMessage(m_msg.hwnd, m_msg.message, 0, nPercent);
                 DeleteFile(strUpdatePath.c_str());
             }
+
         } while(false);
 
         if (!success){
@@ -119,7 +195,7 @@ namespace TaskCenter{
         }
         else Sleep(1500);
 
-		::PostMessage(m_msg.hwnd, m_uMsg, 1, 0);
+		::PostMessage(m_msg.hwnd, m_uMsg, 1, (need_reboot == TRUE ? 1 : 0));
 
 		m_msg.hwnd = nullptr;
 	}

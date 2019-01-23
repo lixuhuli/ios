@@ -33,7 +33,7 @@ public:
     void UpdateBrowserMode(bool browser_mode);
 
     void OnPackUpdating(int percent);
-    void OnPackUpdate(int status);
+    void OnPackUpdate(int status, bool reboot);
 
     void OnGetKeyboard(WPARAM wParam, LPARAM lParam);
 
@@ -57,7 +57,7 @@ public:
     void InstallApp(const UINT_PTR& task_ptr);
     void InstallApp(const std::wstring& file_path);
 
-    int UpdatePackage(const std::wstring& file_path);
+    int UpdatePackage(const std::wstring& file_path, BOOL& restart);
 
     int UpdateKeyMap(const std::wstring& file_path);
 

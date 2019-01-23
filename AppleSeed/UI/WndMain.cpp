@@ -113,6 +113,8 @@ void CWndMain::InitWindow() {
 
     if (client_iphone_emulator_) client_iphone_emulator_->OnSize += MakeDelegate(this, &CWndMain::OnIphoneEmulatorSize);
 
+    if (btn_ios_volume_) btn_ios_volume_->SetEnabled(false);
+
     RegisterHotKey(m_hWnd, ID_HOTKEY_BOS, MOD_ALT + MOD_CONTROL, 'N');
 }
 
@@ -1190,7 +1192,7 @@ LRESULT CWndMain::OnMsgIosEngineUpdate(WPARAM wParam, LPARAM lParam, BOOL& bHand
         if (lbl_update_status_) lbl_update_status_->SetText(L"");
     }
 
-    CIosMgr::Instance()->OnPackUpdate(wParam);
+    CIosMgr::Instance()->OnPackUpdate(wParam, lParam == 1);
     return 0;
 }
 

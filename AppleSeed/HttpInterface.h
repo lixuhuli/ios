@@ -83,6 +83,9 @@
 //查询游戏更新接口
 #define URL_CHECK_IOS_ENGINE_UPDATE		  L"http://testguoren.abcs8.com/v1/upgrade/index"
 
+//查询游戏一次性更新接口
+#define URL_CHECK_IOS_ENGINE_ALL_UPDATE	  L"http://testguoren.abcs8.com/v1/upgrade/allUpgrade"
+
 
 
 //获取游戏合集列表

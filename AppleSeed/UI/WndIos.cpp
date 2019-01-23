@@ -175,7 +175,8 @@ LRESULT CWndIos::OnDropFiles(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 
         if (prefix == L"ipa")  CIosMgr::Instance()->InstallApp(file_path);
         else if (prefix == L"pack") {
-            auto status = CIosMgr::Instance()->UpdatePackage(file_path);
+            BOOL restart = FALSE;
+            auto status = CIosMgr::Instance()->UpdatePackage(file_path, restart);
             wstring str_msg = (status == 0 ? L"更新成功：" : L"更新失败：");
             str_msg += file_path;
             ShowToast(CGlobalData::Instance()->GetMainWnd(), str_msg.c_str());

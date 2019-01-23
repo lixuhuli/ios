@@ -472,15 +472,14 @@ void CIosMgr::CheckEngineUpdate() {
     emulator_state_info_->set_state(emulator::STATE_UPDATING);
 }
 
-int CIosMgr::UpdatePackage(const std::wstring& file_path) {
-    BOOL restart[1] = { FALSE };
-    return UpdatePack(PublicLib::UToA(file_path).c_str(), restart);
+int CIosMgr::UpdatePackage(const std::wstring& file_path, BOOL& restart) {
+    return UpdatePack(PublicLib::UToA(file_path).c_str(), &restart);
 }
 
 void CIosMgr::OnPackUpdating(int percent) {
 }
 
-void CIosMgr::OnPackUpdate(int status){
+void CIosMgr::OnPackUpdate(int status, bool reboot){
     if (status == 0 || status == -1) {
         if (ios_wnd_) ios_wnd_->ShowWindow(true);
         emulator_state_info_->set_state(emulator::STATE_ENGINE_ON);
@@ -489,7 +488,11 @@ void CIosMgr::OnPackUpdate(int status){
     }
     else {
         ShowMsg(CGlobalData::Instance()->GetMainWnd(), L"提示", L"更新成功，请重启", MB_OK);
-        CreateEngineOffTask();
+        if (reboot) CreateEngineOffTask();
+        else {
+            CGlobalData::Instance()->SetNeedReboot(true);
+            PostMessage(CGlobalData::Instance()->GetMainWnd(), WM_MAINWND_MSG_EXIT, 0, 0);
+        }
     }
 }
 
