@@ -24,6 +24,7 @@ CWndUser::CWndUser()
  , edit_active_code_(nullptr)
  , verification_count_down_(0)
  , edit_password_(nullptr)
+ , edit_confirm_password_(nullptr)
  , check_show_password_(nullptr)
  , btn_login_(nullptr)
  , btn_login2_(nullptr)
@@ -510,27 +511,45 @@ bool CWndUser::OnBtnClickBack2(void* param){
 }
 
 bool CWndUser::OnCheckShowPassword(void* param) {
-    if (!check_show_password_ || !edit_password_) return true;
+    if (!check_show_password_ || !edit_password_ || !edit_confirm_password_) return true;
 
     bool check = check_show_password_->IsSelected();
     edit_password_->SetPasswordMode(check);
+    edit_confirm_password_->SetPasswordMode(check);
 
     return true;
 }
 
 bool CWndUser::OnEditPasswordChanged(void* param) {
-    if (!btn_login2_ || !edit_password_ || !btn_confirm_) return true;
+    if (!btn_login2_ || !edit_password_ || !edit_confirm_password_ || !btn_confirm_) return true;
 
     auto password_length = edit_password_->GetText().GetLength();
-    bool enabled = (password_length >= 8 && password_length <= 16);
+    auto confirm_password_length = edit_confirm_password_->GetText().GetLength();
+
+    bool enabled = (password_length >= 8 && password_length <= 16 
+        && confirm_password_length >=8 && confirm_password_length <= 16);
+
     btn_login2_->SetEnabled(enabled);
     btn_confirm_->SetEnabled(enabled);
 
     return true;
 }
 
+bool CWndUser::IsPasswordConsistent() {
+    if (!edit_password_ || !edit_confirm_password_) return false;
+
+    if (_tcscmp(edit_password_->GetText(), edit_confirm_password_->GetText()) != 0) return false;
+
+    return true;
+}
+
 bool CWndUser::OnBtnClickLogin2(void* param) {
-    if (!edit_phone_ || !edit_verification_code_ || !edit_active_code_ || !btn_verification_code_ || !edit_password_) return true;
+    if (!edit_phone_ || !edit_verification_code_ || !edit_active_code_ || !btn_verification_code_ || !edit_password_ || !edit_confirm_password_) return true;
+
+    if (!IsPasswordConsistent()) {
+        ShowToast(m_hWnd, L"两次输入密码不一致");
+        return true;
+    }
 
     wstring phone_number = edit_phone_->GetText().GetData();
     wstring verification_code = edit_verification_code_->GetText().GetData();
@@ -546,7 +565,12 @@ bool CWndUser::OnBtnClickLogin2(void* param) {
 }
 
 bool CWndUser::OnBtnClickConfirm(void* param) {
-    if (!edit_phone2_ || !edit_verification_code2_ || !edit_password_) return true;
+    if (!edit_phone2_ || !edit_verification_code2_ || !edit_password_ || !edit_confirm_password_) return true;
+
+    if (!IsPasswordConsistent()) {
+        ShowToast(m_hWnd, L"两次输入密码不一致");
+        return true;
+    }
 
     wstring phone_number = edit_phone2_->GetText().GetData();
     wstring code = edit_verification_code2_->GetText().GetData();

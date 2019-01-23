@@ -40,6 +40,7 @@ protected:
         DECLARE_CTRL_TYPE(edit_verification_code_, CEditUI, L"edit_verification_code")
         DECLARE_CTRL_TYPE(edit_active_code_, CEditUI, L"edit_active_code")
         DECLARE_CTRL_TYPE(edit_password_, CEditUI, L"edit_password")
+        DECLARE_CTRL_TYPE(edit_confirm_password_, CEditUI, L"edit_confirm_password")
         DECLARE_CTRL_TYPE(check_show_password_, COptionUI, L"check_show_password")
         DECLARE_CTRL_TYPE(btn_login_, CButtonUI, L"btn_login")
         DECLARE_CTRL_TYPE(btn_login2_, CButtonUI, L"btn_login2")
@@ -80,6 +81,7 @@ protected:
         BIND_CTRL_CLICK(L"btn_used_item", &CWndUser::OnBtnUsedItem);
         BIND_CTRL_CLICK(L"btn_private_item", &CWndUser::OnBtnPrivateItem);
         BIND_CTRL_EVENT(L"edit_password", DUI_MSGTYPE_TEXTCHANGED, &CWndUser::OnEditPasswordChanged);
+        BIND_CTRL_EVENT(L"edit_confirm_password", DUI_MSGTYPE_TEXTCHANGED, &CWndUser::OnEditPasswordChanged);
         BIND_CTRL_EVENT(L"edit_input_user", DUI_MSGTYPE_TEXTCHANGED, &CWndUser::OnEditInputUserChanged);
         BIND_CTRL_EVENT(L"edit_input_password", DUI_MSGTYPE_TEXTCHANGED, &CWndUser::OnEditInputPasswordTextChanged);
         BIND_CTRL_EVENT(L"edit_input_user", DUI_MSGTYPE_RETURN, &CWndUser::OnEditReturn);
@@ -139,6 +141,7 @@ protected:
     void UpdateNextBtnStatus2();
     void UpdateBtnLoginStatus3();
     void UpdateBtnVerificationCode2();
+    bool IsPasswordConsistent();
 
     void IntEditEvent();
 
@@ -167,6 +170,7 @@ private:
 
     /* --------------------------------------------------------- */
     CEditUI* edit_password_;
+    CEditUI* edit_confirm_password_;
     COptionUI* check_show_password_;
     CButtonUI* btn_login2_;
     CButtonUI* btn_confirm_;

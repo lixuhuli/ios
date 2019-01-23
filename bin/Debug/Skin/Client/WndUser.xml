@@ -162,9 +162,17 @@
 	        <Label name="lbl_password_prefix" text="设置密码" font="5" textcolor="#FF262626" width="300" height="50" />
 	      </HorizontalLayout>
 	      
-	      <Control height="78" />
+	      <Control height="40" />
 	      
 	      <Edit name="edit_password" height="27" font="3" padding="94,0,0,0" textcolor="#FF333333" password="true" wndoffset="3,-2" deftextcolor="#FFB1B1B1" deftext="8~16位 至少数字/字母两种组合" maxchar="16" nativebkcolor="#FFFFFFFF" />
+	  
+	      <Control height="8" />
+	      
+	      <Control height="1" bkcolor="#FFD8D8D8" width="420" padding="100,0,0,0" />
+	      
+	      <Control height="20" />
+	      
+	      <Edit name="edit_confirm_password" height="27" font="3" padding="94,0,0,0" textcolor="#FF333333" password="true" wndoffset="3,-2" deftextcolor="#FFB1B1B1" deftext="再次输入密码" maxchar="16" nativebkcolor="#FFFFFFFF" />
 	  
 	      <Control height="8" />
 	      
@@ -176,7 +184,7 @@
 	        <Option name="check_show_password" text="显示密码" font="3" height="25" width="108" align="left" textcolor="#FF262626" textpadding="25,0,0,0" normalimage="file='user/opt_nor.png' dest='0,2,20,22'" selectedimage="file='user/opt_sel.png' dest='0,2,20,22'" showcursor="true" />
 	      </HorizontalLayout>
 	      
-	      <Control height="77" />
+	      <Control height="59" />
 	      
 	      <Button name="btn_login2" width="330" height="55" padding="145,0,0,0" enabled="false" normalimage="user/btn_login_nor2.png" hotimage="user/btn_login_hot2.png" pushedimage="user/btn_login_nor2.png" disabledimage="user/btn_login_disabled2.png" showcursor="true"/>
 	      <Button name="btn_confirm" visible="false" width="330" height="55" enabled="false" padding="145,0,0,0" normalimage="user/btn_confirm_nor.png" hotimage="user/btn_confirm_hot.png" pushedimage="user/btn_confirm_nor.png" disabledimage="user/btn_confirm_disabled.png" showcursor="true"/>
