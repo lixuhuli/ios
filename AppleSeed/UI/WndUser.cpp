@@ -169,6 +169,22 @@ void CWndUser::IntEditEvent() {
         }
         return true;
     }));
+
+    if (edit_password_) edit_password_->Subscribe(DUI_MSGTYPE_TABCHAR, MakeDelegate([&]()->bool {
+        if (edit_confirm_password_) {
+            edit_confirm_password_->SetFocus();
+            edit_confirm_password_->SetSel(0, -1);
+        }
+        return true;
+    }));
+
+    if (edit_confirm_password_) edit_confirm_password_->Subscribe(DUI_MSGTYPE_TABCHAR, MakeDelegate([&]()->bool {
+        if (edit_password_) {
+            edit_password_->SetFocus();
+            edit_password_->SetSel(0, -1);
+        }
+        return true;
+    }));
 }
 
 LRESULT CWndUser::OnUserKeyDown(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
@@ -714,7 +730,8 @@ LRESULT CWndUser::OnUserLogin(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 
     int nParamUid = 0;
     wstring strAccount;
-    if (!TaskCenter::CTaskCenter::Instance()->GetUserLoginTaskParam(nTask, strAccount)) {
+    if (!TaskCenter::CTaskCenter::Instance()->GetUserLoginTaskParam(nTask, strAccount)
+        && !TaskCenter::CTaskCenter::Instance()->GetUserCodeLoginTaskParam(nTask, strAccount)) {
         OUTPUT_XYLOG(LEVEL_ERROR, L"获取用户账号信息失败信息失败");
         return 0;
     }

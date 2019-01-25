@@ -278,6 +278,10 @@ namespace TaskCenter{
             code_ = strCode;
         }
 
+        void GetParam(OUT wstring& strAccountId) {
+            strAccountId = phone_number_;
+        }
+
     protected:
         virtual void Run() {
             PublicLib::CHttpClient http;
