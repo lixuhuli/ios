@@ -32,7 +32,6 @@ namespace TaskCenter{
         UINT_PTR CreateUserLoginTask(const MSG& msg, const wstring& strAccountId, const wstring& strPassword);
         bool GetUserLoginTaskParam(UINT_PTR nTaskID, OUT wstring& strAccountId);
         UINT_PTR CreateUserCodeLoginTask(const MSG& msg, const wstring& strPhoneNum, const wstring& strCode);
-        bool GetUserCodeLoginTaskParam(UINT_PTR nTaskID, OUT wstring& strAccountId);
         UINT_PTR CreateUserModifyPassword(const MSG& msg, const wstring& strPhoneNumber, const wstring& strCode, const wstring& strPassword);
 		UINT_PTR CreateUserInfoTask(const MSG& msg, int nUid, const string& strToken, bool bUpdateInfo=false);
 		bool IsUpdateUserInfoTask(UINT_PTR nTaskID, OUT bool& bUpdateInfo);

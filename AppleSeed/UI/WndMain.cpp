@@ -133,26 +133,35 @@ LRESULT CWndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
     LRESULT lRes = 0;
     BOOL bHandled = TRUE;
 
+    if (uMsg > WM_MAINWND_MSG_BEGIN && uMsg < WM_MAINWND_MSG_END) {
+        switch (uMsg) {
+        case WM_MAINWND_MSG_DOWNLOAD_MIRRORSYSTEM: lRes = OnDownloadMirrorSystem(wParam, lParam, bHandled); break;
+        case WM_MAINWND_MSG_FILE_UNZIPING: OnMsgFileUnziping(wParam, lParam, bHandled); break;
+        case WM_MAINWND_MSG_FILE_UNZIP: OnMsgFileUnzip(wParam, lParam, bHandled); break;
+        case WM_MAINWND_MSG_EMULATOR_ALREADY: return OnMsgEmulatorAlready(wParam, lParam, bHandled);
+        case WM_MAINWND_MSG_LOAD_IOS_ENGINE: return OnMsgLoadIosEngine(wParam, lParam, bHandled);
+        case WM_MAINWND_MSG_EXIT: OnMsgExit(wParam, lParam, bHandled); break;
+        case WM_MAINWND_MSG_USERINFO: OnMsgUserInfo(wParam, lParam, bHandled); break;
+        case WM_MAINWND_MSG_COMMON: return OnMsgCommon(wParam, lParam, bHandled);
+        case WM_MAINWND_MSG_USER_ICO: OnMsgUserIco(wParam, lParam, bHandled); break;
+        case WM_MAINWND_MSG_IOSENGINE_UPDATING: OnMsgIosEngineUpdating(wParam, lParam, bHandled); break;
+        case WM_MAINWND_MSG_IOSENGINE_UPDATE: OnMsgIosEngineUpdate(wParam, lParam, bHandled); break;
+        case WM_MAINWND_MSG_UPDATE_IOSWND_POS: OnMsgUpdateIosWndPos(wParam, lParam, bHandled); break;
+        case WM_MAINWND_MSG_GET_KEYBOARD: OnMsgGetKeyboardConfig(wParam, lParam, bHandled); break;
+        case WM_MAINWND_MSG_IOSENGINE_APPLIACTION: OnMsgIosEngineApplication(wParam, lParam, bHandled); break;
+        default: bHandled = FALSE; break;
+        }
+
+        TaskCenter::CTaskCenter::Instance()->DetachTask((UINT_PTR)lParam);
+        return 0;
+    }
+
     switch (uMsg) {
     case WM_SIZE: lRes = OnSize(wParam, lParam, bHandled); break;
     case WM_SIZING: lRes = OnSizing(wParam, lParam, bHandled); break;
     case WM_MOVE: lRes = OnMoving(wParam, lParam, bHandled); break;
-    case WM_MAINWND_MSG_DOWNLOAD_MIRRORSYSTEM: lRes = OnDownloadMirrorSystem(wParam, lParam, bHandled); break;
-    case WM_MAINWND_MSG_FILE_UNZIPING: OnMsgFileUnziping(wParam, lParam, bHandled); break;
-    case WM_MAINWND_MSG_FILE_UNZIP: OnMsgFileUnzip(wParam, lParam, bHandled); break;
-    case WM_MAINWND_MSG_EMULATOR_ALREADY: return OnMsgEmulatorAlready(wParam, lParam, bHandled);
-    case WM_MAINWND_MSG_LOAD_IOS_ENGINE: return OnMsgLoadIosEngine(wParam, lParam, bHandled);
-    case WM_MAINWND_MSG_EXIT: return OnMsgExit(wParam, lParam, bHandled);
-    case WM_MAINWND_MSG_USERINFO: return OnMsgUserInfo(wParam, lParam, bHandled);
     case WM_COPYDATA: return OnMsgCopyData(wParam, lParam);
     case WM_TIMER: OnTimer(wParam, lParam, bHandled); bHandled = FALSE; break;
-    case WM_MAINWND_MSG_COMMON: return OnMsgCommon(wParam, lParam, bHandled);
-    case WM_MAINWND_MSG_USER_ICO: OnMsgUserIco(wParam, lParam, bHandled); break;
-    case WM_MAINWND_MSG_IOSENGINE_UPDATING: OnMsgIosEngineUpdating(wParam, lParam, bHandled); break;
-    case WM_MAINWND_MSG_IOSENGINE_UPDATE: OnMsgIosEngineUpdate(wParam, lParam, bHandled); break;
-    case WM_MAINWND_MSG_UPDATE_IOSWND_POS: OnMsgUpdateIosWndPos(wParam, lParam, bHandled); break;
-    case WM_MAINWND_MSG_GET_KEYBOARD: OnMsgGetKeyboardConfig(wParam, lParam, bHandled); break;
-    case WM_MAINWND_MSG_IOSENGINE_APPLIACTION: OnMsgIosEngineApplication(wParam, lParam, bHandled); break;
     case WM_KEYDOWN: {
         bHandled = FALSE;
         break;

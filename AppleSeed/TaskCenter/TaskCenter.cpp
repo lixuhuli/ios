@@ -266,12 +266,23 @@ namespace TaskCenter{
         if (itor == m_taskList.end())
             return false;
         ITask* pTask = (ITask*)nTaskID;
-        if (NULL == pTask || pTask->GetTaskType() != TaskUserLogin)
+        if (NULL == pTask)
             return false;
-        CTaskUserLogin* pTaskUser = dynamic_cast<CTaskUserLogin*>(pTask);
-        if (NULL == pTaskUser)
-            return false;
-        pTaskUser->GetParam(strAccountId);
+
+        if (pTask->GetTaskType() == TaskUserLogin) {
+            CTaskUserLogin* pTaskUser = dynamic_cast<CTaskUserLogin*>(pTask);
+            if (NULL == pTaskUser)
+                return false;
+            pTaskUser->GetParam(strAccountId);
+        }
+        else if (pTask->GetTaskType() == TaskGetUserCodeLogin) {
+            CTaskUserCodeLogin* pTaskUser = dynamic_cast<CTaskUserCodeLogin*>(pTask);
+            if (NULL == pTaskUser)
+                return false;
+            pTaskUser->GetParam(strAccountId);
+        }
+        else return false;
+
         return true;
     }
 
@@ -290,20 +301,6 @@ namespace TaskCenter{
         HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, Thread, pTask, 0, NULL);
         pTask->SetThread(hThread);
         return (UINT_PTR)pTask;
-    }
-
-    bool CTaskCenter::GetUserCodeLoginTaskParam(UINT_PTR nTaskID, OUT wstring& strAccountId) {
-        TaskItor itor = std::find(m_taskList.begin(), m_taskList.end(), nTaskID);
-        if (itor == m_taskList.end())
-            return false;
-        ITask* pTask = (ITask*)nTaskID;
-        if (NULL == pTask || pTask->GetTaskType() != TaskGetUserCodeLogin)
-            return false;
-        CTaskUserCodeLogin* pTaskUser = dynamic_cast<CTaskUserCodeLogin*>(pTask);
-        if (NULL == pTaskUser)
-            return false;
-        pTaskUser->GetParam(strAccountId);
-        return true;
     }
 
     UINT_PTR CTaskCenter::CreateUserModifyPassword(const MSG& msg, const wstring& strPhoneNumber, const wstring& strCode, const wstring& strPassword) {

@@ -49,17 +49,26 @@ LRESULT CWndUser::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
     LRESULT lRes = 0;
     BOOL bHandled = TRUE;
 
+    if (uMsg > WM_USERWND_MSG_BEGIN && uMsg < WM_USERWND_MSG_END) {
+        switch (uMsg) {
+        case WM_USERWND_MSG_GET_VERIFICATION: OnGetVerificationCode(wParam, lParam, bHandled); break;
+        case WM_USERWND_MSG_GET_VERIFICATION2: OnGetVerificationCode2(wParam, lParam, bHandled); break;
+        case WM_USERWND_MSG_USER_CHECKCODE: OnUserCheckCode(wParam, lParam, bHandled); break;
+        case WM_USERWND_MSG_USER_REGISTER: OnUserRegister(wParam, lParam, bHandled); break;
+        case WM_USERWND_MSG_USER_LOGIN: OnUserLogin(wParam, lParam, bHandled); break;
+        case WM_USERWND_MSG_USER_FIND_PASSWORD: OnUserFindPassword(wParam, lParam, bHandled); break;
+        case WM_USERWND_MSG_USER_CODE_LOGIN: OnUserCodeLogin(wParam, lParam, bHandled); break;
+        case WM_USERWND_MSG_USER_CHECKMOBILECODE: OnUserCheckMobileCode(wParam, lParam, bHandled); break;
+        case WM_USERWND_MSG_USER_MODIFYPASSWORD: OnUserModifyPassword(wParam, lParam, bHandled); break;
+        default: bHandled = FALSE; break;
+        }
+
+        TaskCenter::CTaskCenter::Instance()->DetachTask((UINT_PTR)lParam);
+        return 0;
+    }
+
     switch (uMsg) {
-    case WM_USERWND_MSG_GET_VERIFICATION: OnGetVerificationCode(wParam, lParam, bHandled); break;
-    case WM_USERWND_MSG_GET_VERIFICATION2: OnGetVerificationCode2(wParam, lParam, bHandled); break;
-    case WM_USERWND_MSG_USER_CHECKCODE: OnUserCheckCode(wParam, lParam, bHandled); break;
-    case WM_USERWND_MSG_USER_REGISTER: OnUserRegister(wParam, lParam, bHandled); break;
-    case WM_USERWND_MSG_USER_LOGIN: return OnUserLogin(wParam, lParam, bHandled);
     case WM_TIMER: OnTimer(wParam, lParam, bHandled); bHandled = FALSE; break;
-    case WM_USERWND_MSG_USER_FIND_PASSWORD: return OnUserFindPassword(wParam, lParam, bHandled);
-    case WM_USERWND_MSG_USER_CODE_LOGIN: return OnUserCodeLogin(wParam, lParam, bHandled);
-    case WM_USERWND_MSG_USER_CHECKMOBILECODE: OnUserCheckMobileCode(wParam, lParam, bHandled); break;
-    case WM_USERWND_MSG_USER_MODIFYPASSWORD: OnUserModifyPassword(wParam, lParam, bHandled); break;
     case WM_KEYDOWN: OnUserKeyDown(wParam, lParam, bHandled); break;
     default: bHandled = FALSE;
     }
@@ -730,8 +739,7 @@ LRESULT CWndUser::OnUserLogin(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 
     int nParamUid = 0;
     wstring strAccount;
-    if (!TaskCenter::CTaskCenter::Instance()->GetUserLoginTaskParam(nTask, strAccount)
-        && !TaskCenter::CTaskCenter::Instance()->GetUserCodeLoginTaskParam(nTask, strAccount)) {
+    if (!TaskCenter::CTaskCenter::Instance()->GetUserLoginTaskParam(nTask, strAccount)) {
         OUTPUT_XYLOG(LEVEL_ERROR, L"获取用户账号信息失败信息失败");
         return 0;
     }
