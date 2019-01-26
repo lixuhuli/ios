@@ -57,34 +57,34 @@
 #define URL_GUEST_LOGIN		L"http://pcv3cjapi.5fun.cn/user/tourist/login"
 
 //注册验证码获取
-#define URL_GET_VERIFICATION   L"http://testguoren.abcs8.com/v1/user/getMobileCode"
+#define URL_GET_VERIFICATION   L"http://guorenapi.5fun.com/v1/user/getMobileCode"
 
 //用户验证
-#define URL_USER_CHECKCODE     L"http://testguoren.abcs8.com/v1/user/checkCode"
+#define URL_USER_CHECKCODE     L"http://guorenapi.5fun.com/v1/user/checkCode"
 
 //短信验证
-#define URL_USER_CHECKMOBILECODE     L"http://testguoren.abcs8.com/v1/user/checkMobileCode"
+#define URL_USER_CHECKMOBILECODE     L"http://guorenapi.5fun.com/v1/user/checkMobileCode"
 
 //用户注册
-#define URL_USER_REGISTER      L"http://testguoren.abcs8.com/v1/user/reg"
+#define URL_USER_REGISTER      L"http://guorenapi.5fun.com/v1/user/reg"
 
 //用户登录
-#define URL_USER_LOGIN         L"http://testguoren.abcs8.com/v1/user/login"
+#define URL_USER_LOGIN         L"http://guorenapi.5fun.com/v1/user/login"
 
 //短信登录
-#define URL_USER_CODE_LOGIN    L"http://testguoren.abcs8.com/v1/user/codeLogin"
+#define URL_USER_CODE_LOGIN    L"http://guorenapi.5fun.com/v1/user/codeLogin"
 
 //修改密码
-#define URL_USER_MODIFYPASSWORD      L"http://testguoren.abcs8.com/v1/user/modifyPassword"
+#define URL_USER_MODIFYPASSWORD      L"http://guorenapi.5fun.com/v1/user/modifyPassword"
 
 //用户信息
-#define URL_USER_INFO		L"http://testguoren.abcs8.com/v1/user/getUserData"
+#define URL_USER_INFO		L"http://guorenapi.5fun.com/v1/user/getUserData"
 
 //查询游戏更新接口
-#define URL_CHECK_IOS_ENGINE_UPDATE		  L"http://testguoren.abcs8.com/v1/upgrade/index"
+#define URL_CHECK_IOS_ENGINE_UPDATE		  L"http://guorenapi.5fun.com/v1/upgrade/index"
 
 //查询游戏一次性更新接口
-#define URL_CHECK_IOS_ENGINE_ALL_UPDATE	  L"http://testguoren.abcs8.com/v1/upgrade/allUpgrade"
+#define URL_CHECK_IOS_ENGINE_ALL_UPDATE	  L"http://guorenapi.5fun.com/v1/upgrade/allUpgrade"
 
 
 
