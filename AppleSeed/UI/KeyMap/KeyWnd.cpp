@@ -299,8 +299,7 @@ bool CKeyWnd::OnBtnToolHandle(void* param) {
 
     auto DeleteKey = [&](int key_value) -> void {
         if (scene_bak_info_->DeleteKey(key_value)) {
-            auto key_string = CGlobalData::Instance()->GetKeyboardStr(key_value);
-            auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
+            auto normal_ctrl = FindKeyUI(key_value);
             if (normal_ctrl) {
                 auto key = dynamic_cast<Ikey*>(normal_ctrl);
                 if (key && key->KeyType() == emulator::RIGHT_MOUSE_MOVE && opt_right_run_) opt_right_run_->Selected(false);
@@ -515,8 +514,7 @@ bool CKeyWnd::OnBtnToolRightRun(void* param) {
 
         // 首先要删除对应的key值
         if (scene_bak_info_->DeleteKey(info.nValue)) {
-            auto key_string = CGlobalData::Instance()->GetKeyboardStr(info.nValue);
-            auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
+            auto normal_ctrl = FindKeyUI(info.nValue);
             if (normal_ctrl) key_body_->Remove(normal_ctrl);
         }
 
@@ -743,8 +741,7 @@ bool CKeyWnd::OnEditKeyChanged(void* param) {
     if (keyboard.empty()) return true;
 
     if (scene_bak_info_->DeleteKey(edit_key->GetKeyValue())) {
-        auto key_string = CGlobalData::Instance()->GetKeyboardStr(edit_key->GetKeyValue());
-        auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
+        auto normal_ctrl = FindKeyUI(edit_key->GetKeyValue());
         if (normal_ctrl) {
             auto key = dynamic_cast<Ikey*>(normal_ctrl);
             if (key && key->KeyType() == emulator::RIGHT_MOUSE_MOVE && opt_right_run_) opt_right_run_->Selected(false);
@@ -806,8 +803,7 @@ bool CKeyWnd::OnEditIntelligentChanged(void* param) {
     if (keyboard.empty()) return true;
 
     if (scene_bak_info_->DeleteKey(edit_key->GetKeyValue())) {
-        auto key_string = CGlobalData::Instance()->GetKeyboardStr(edit_key->GetKeyValue());
-        auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
+        auto normal_ctrl = FindKeyUI(edit_key->GetKeyValue());
         if (normal_ctrl) {
             auto key = dynamic_cast<Ikey*>(normal_ctrl);
             if (key && key->KeyType() == emulator::RIGHT_MOUSE_MOVE && opt_right_run_) opt_right_run_->Selected(false);
@@ -895,7 +891,7 @@ bool CKeyWnd::OnEditHandleCtrlChanged(void* param) {
 
             edit_key_x->SetTag(key_value);
             edit_key_x->SetKeyValue(key_value);
-            edit_key_x->CControlUI::SetText(PublicLib::Utf8ToU(key_string).c_str());
+            edit_key_x->CControlUI::SetText(L"");
 
             scene_bak_info_->set_key(emulator::HANDLE_KEY, edit_key->GetTag(), edit_key->GetKeyValue(), PublicLib::UToUtf8(keyboard));
             edit_key->SetTag(edit_key->GetKeyValue());
@@ -918,8 +914,7 @@ bool CKeyWnd::OnEditHandleCtrlChanged(void* param) {
     if (CheckEditKey(edit_key_4, -4, "-4")) return true;
 
     if (scene_bak_info_->DeleteKey(edit_key->GetKeyValue())) {
-        auto key_string = CGlobalData::Instance()->GetKeyboardStr(edit_key->GetKeyValue());
-        auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
+        auto normal_ctrl = FindKeyUI(edit_key->GetKeyValue());
         if (normal_ctrl) {
             auto key = dynamic_cast<Ikey*>(normal_ctrl);
             if (key && key->KeyType() == emulator::RIGHT_MOUSE_MOVE && opt_right_run_) opt_right_run_->Selected(false);
@@ -960,8 +955,7 @@ bool CKeyWnd::OnEditRightMouseChanged(void* param) {
     if (keyboard.empty()) return true;
 
     if (scene_bak_info_->DeleteKey(edit_key->GetKeyValue())) {
-        auto key_string = CGlobalData::Instance()->GetKeyboardStr(edit_key->GetKeyValue());
-        auto normal_ctrl = key_body_->FindSubControl(key_string.c_str());
+        auto normal_ctrl = FindKeyUI(edit_key->GetKeyValue());
         if (normal_ctrl) key_body_->Remove(normal_ctrl);
     }
 
@@ -1142,28 +1136,28 @@ void CKeyWnd::InitRemoteHandle(CControlUI* control, const emulator::tagItemInfo&
     if (edit_key) {
         edit_key->SetTag(item.keys[0].nValue);
         edit_key->SetKeyValue(item.keys[0].nValue);
-        edit_key->CControlUI::SetText(PublicLib::Utf8ToU(item.keys[0].strKeyString).c_str());
+        if (item.keys[0].nValue > 0) edit_key->CControlUI::SetText(PublicLib::Utf8ToU(item.keys[0].strKeyString).c_str());
     }
 
     edit_key = handle_ctrl->edit_key_2();
     if (edit_key) {
         edit_key->SetTag(item.keys[1].nValue);
         edit_key->SetKeyValue(item.keys[1].nValue);
-        edit_key->CControlUI::SetText(PublicLib::Utf8ToU(item.keys[1].strKeyString).c_str());
+        if (item.keys[1].nValue > 0) edit_key->CControlUI::SetText(PublicLib::Utf8ToU(item.keys[1].strKeyString).c_str());
     }
 
     edit_key = handle_ctrl->edit_key_3();
     if (edit_key) {
         edit_key->SetTag(item.keys[2].nValue);
         edit_key->SetKeyValue(item.keys[2].nValue);
-        edit_key->CControlUI::SetText(PublicLib::Utf8ToU(item.keys[2].strKeyString).c_str());
+        if (item.keys[2].nValue > 0) edit_key->CControlUI::SetText(PublicLib::Utf8ToU(item.keys[2].strKeyString).c_str());
     }
 
     edit_key = handle_ctrl->edit_key_4();
     if (edit_key) {
         edit_key->SetTag(item.keys[3].nValue);
         edit_key->SetKeyValue(item.keys[3].nValue);
-        edit_key->CControlUI::SetText(PublicLib::Utf8ToU(item.keys[3].strKeyString).c_str());
+        if (item.keys[3].nValue > 0) edit_key->CControlUI::SetText(PublicLib::Utf8ToU(item.keys[3].strKeyString).c_str());
     }
 }
 
@@ -1373,4 +1367,43 @@ bool CKeyWnd::OnComboxKeyboard(void* param) {
     UpdateCtrls();
 
     return true;
+}
+
+CControlUI* CKeyWnd::FindKeyUI(int key_value) {
+    if (!key_body_) return nullptr;
+
+    auto IsKeyEdit = [&](CKeyEditUI* edit_key_x) -> bool {
+        if (!edit_key_x) return false;
+
+        if (edit_key_x->GetKeyValue() == key_value) return true;
+
+        return false;
+    };
+
+    for (int i = 0; i < key_body_->GetCount(); i++) {
+        auto normal_ctrl = key_body_->GetItemAt(i);
+        if (!normal_ctrl) continue;
+
+        auto key = dynamic_cast<Ikey*>(normal_ctrl);
+
+        if (key && key->KeyType() == emulator::HANDLE_KEY) {
+            auto handle_ctrl = (CRemoteHandleUI*)normal_ctrl;
+            if (!handle_ctrl) continue;
+
+            auto edit_key_1 = handle_ctrl->edit_key_1();
+            auto edit_key_2 = handle_ctrl->edit_key_2();
+            auto edit_key_3 = handle_ctrl->edit_key_3();
+            auto edit_key_4 = handle_ctrl->edit_key_4();
+
+            if (IsKeyEdit(edit_key_1)) return handle_ctrl;
+            if (IsKeyEdit(edit_key_2)) return handle_ctrl;
+            if (IsKeyEdit(edit_key_3)) return handle_ctrl;
+            if (IsKeyEdit(edit_key_4)) return handle_ctrl;
+        }
+        else {
+            if (key_value == normal_ctrl->GetTag()) return normal_ctrl;
+        }
+    }
+
+    return nullptr;
 }

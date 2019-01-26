@@ -132,6 +132,8 @@ private:
 
     void UpdateCtrls();
 
+    CControlUI* FindKeyUI(int key_value);
+
 private:
     CButtonUI* btn_tool_handle_;
     CButtonUI* btn_tool_normal_;
