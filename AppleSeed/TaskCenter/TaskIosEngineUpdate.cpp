@@ -70,7 +70,7 @@ namespace TaskCenter{
 
             ::PostMessage(m_msg.hwnd, m_msg.message, 0, 0);
 
-            if (down_count > 2) {
+            if (down_count > 8) {
                 do {
                     strJson = http.Request(URL_CHECK_IOS_ENGINE_ALL_UPDATE, PublicLib::Post, strData.c_str(), strData.size());
 
