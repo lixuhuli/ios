@@ -216,25 +216,25 @@ LRESULT CWndMain::OnSize(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 
     if (client_iphone_ && client_layout_left_ && btn_install_home_) {
         auto client_left_width = (int)((float)rc.GetWidth() * 506.0 / 1334.0 + 0.5);
-        auto phone_width = (int)((float)rc.GetWidth() * 321.0 / 1334.0 + 0.5);
-        auto phone_height = (int)((float)phone_width * 646.0 / 321.0 + 0.5);
+        auto phone_width = (int)((float)rc.GetWidth() * 334.0 / 1334.0 + 0.5);
+        auto phone_height = (int)((float)phone_width * 807.0 / 417.0 + 0.5);
 
         auto dis_height = (rc.GetHeight() - phone_height - 120) / 2;
         if (dis_height < 30) {
             dis_height = 30;
             phone_height = rc.GetHeight() - 120 - dis_height * 2;
-            phone_width = (int)((float)phone_height * 321.0 / 646.0 + 0.5);
+            phone_width = (int)((float)phone_height * 417.0 / 807.0 + 0.5);
         }
 
-        client_layout_left_->SetFixedWidth((int)((float)rc.GetWidth() * 506.0 / 1334.0));
+        client_layout_left_->SetFixedWidth(client_left_width);
         client_iphone_->SetFixedWidth(phone_width);
         client_iphone_->SetFixedHeight(phone_height);
         client_iphone_->SetPadding(QRect(0, dis_height, 0, 0));
 
-        QRect inset(int((float)phone_width * 22.0 / 321.0), int((float)phone_height * 75.0 / 646.0), int((float)phone_width * 17.0 / 321.0), int((float)phone_height * 74.0 / 646.0));
+        QRect inset(int((float)phone_width * 21.0 / 417.0), int((float)phone_height * 70.0 / 807.0), int((float)phone_width * 21.0 / 417.0), int((float)phone_height * 70.0 / 807.0));
         client_iphone_->SetInset(inset);
 
-        QRect rc_home(int((float)phone_width * 138.0 / 321.0), int((float)phone_height * 587.0 / 646.0), int((float)phone_width * 183.0 / 321.0), int((float)phone_height * 632.0 / 646.0));
+        QRect rc_home(int((float)phone_width * 183.0 / 417.0), int((float)phone_height * 747.0 / 807.0), int((float)phone_width * 235.0 / 417.0), int((float)phone_height * 799.0 / 807.0));
 
         SIZE szXY = {rc_home.left >= 0 ? rc_home.left : rc_home.right, rc_home.top >= 0 ? rc_home.top : rc_home.bottom};
         btn_install_home_->SetFixedXY(szXY);
