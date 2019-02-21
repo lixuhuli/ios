@@ -130,7 +130,7 @@
 	        
 	        <Control width="8" />
 	        
-	        <Edit name="edit_active_code" height="25" font="3" textcolor="#FF333333" wndoffset="3,-3" deftextcolor="#FFB1B1B1" deftext="" maxchar="10" nativebkcolor="#FFFFFFFF" />
+	        <Edit name="edit_active_code" height="25" font="3" textcolor="#FF333333" wndoffset="3,-3" deftextcolor="#FFB1B1B1" deftext="" maxchar="12" nativebkcolor="#FFFFFFFF" />
 	      </HorizontalLayout>
 	      
 	      <Control height="10" />
