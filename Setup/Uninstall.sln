@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Uninstall", "Uninstall\Uninstall.vcxproj", "{1D6CC708-B124-4968-B1CE-11189B05AE7C}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Update", "Update\Update.vcxproj", "{A0F3EA3C-12D3-48F0-AFDE-72EF550001C2}"
 EndProject
 Global
@@ -11,10 +9,6 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1D6CC708-B124-4968-B1CE-11189B05AE7C}.Debug|Win32.ActiveCfg = Debug|Win32
-		{1D6CC708-B124-4968-B1CE-11189B05AE7C}.Debug|Win32.Build.0 = Debug|Win32
-		{1D6CC708-B124-4968-B1CE-11189B05AE7C}.Release|Win32.ActiveCfg = Release|Win32
-		{1D6CC708-B124-4968-B1CE-11189B05AE7C}.Release|Win32.Build.0 = Release|Win32
 		{A0F3EA3C-12D3-48F0-AFDE-72EF550001C2}.Debug|Win32.ActiveCfg = Debug|Win32
 		{A0F3EA3C-12D3-48F0-AFDE-72EF550001C2}.Debug|Win32.Build.0 = Debug|Win32
 		{A0F3EA3C-12D3-48F0-AFDE-72EF550001C2}.Release|Win32.ActiveCfg = Release|Win32

@@ -139,7 +139,7 @@ bool CWndUninstall::OnNotifyBtnReinstall(void* lpParam)
 	if (pNotify->sType == DUI_MSGTYPE_CLICK)
 	{
 		//Ìø×ªÍøÒ³
-		ShellExecute(NULL, L"open", PC_URL, NULL, NULL, SW_SHOW);
+		//ShellExecute(NULL, L"open", PC_URL, NULL, NULL, SW_SHOW);
 		Close();
 	}
 	return true;

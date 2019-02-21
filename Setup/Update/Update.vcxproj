@@ -42,12 +42,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)..\bin\$(Configuration)\</OutDir>
-    <TargetName>5fun$(ProjectName)</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\bin\$(Configuration)\</OutDir>
-    <TargetName>5fun$(ProjectName)</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -56,7 +56,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>UILIB_STATIC;APP_UPDATE;WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include\</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -76,7 +76,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>UILIB_STATIC;APP_UPDATE;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include\</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -127,7 +127,6 @@
     <Image Include="Update.ico" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Skin.zip" />
     <None Include="Update.zip" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

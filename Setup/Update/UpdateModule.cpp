@@ -297,7 +297,7 @@ bool CUpdateModule::UpdateRegedit(wstring& strError)
 	info.strVersion = m_strUpdateVersion;
 	info.strPublisher = REG_COMPANY;
 	info.strUninstPath = m_strInstallPath + EXE_UNINSTALL;
-	info.strUrl = REG_URL;
+	//info.strUrl = REG_URL;
 	info.strChannel	= CGlobalData::Instance()->GetChannel();
 	info.dwAutoRun = 1;
 	bool bRet = RegWriteUninstInfo(info);

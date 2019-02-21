@@ -110,7 +110,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Skin.zip" />
     <None Include="Update.zip" />
   </ItemGroup>
 </Project>
