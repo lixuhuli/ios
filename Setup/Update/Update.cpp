@@ -34,6 +34,7 @@ bool RunTempUpdate(const wstring& strTempPath)
 	Json::Value vOther, vParam;
 	vParam["quiet"] = "true";
 	vParam["selfupdate"] = "true";
+    vParam["oldinstallpath"] = PublicLib::UToA(CGlobalData::Instance()->GetOldInstallPath());
 	HANDLE hProcess = GetCurrentProcess();
 	char szPid[20] = {0};
 	sprintf_s(szPid, "%u", GetProcessId(hProcess));
@@ -47,7 +48,9 @@ bool RunTempUpdate(const wstring& strTempPath)
 	Json::FastWriter wr;
 	string strParam = wr.write(vParam);
 	wstring strCmd = PublicLib::AToU(strParam);
-	PublicLib::ShellExecuteRunas(strTemp.c_str(), strCmd.c_str(), NULL);
+    CGlobalData::Instance()->SetNeedReboot(true);
+    CGlobalData::Instance()->SetRebootCmdLine(strCmd);
+    CGlobalData::Instance()->SetRebootDestExe(strTemp);
 	OUTPUT_XYLOG(LEVEL_INFO, L"运行临时更新文件，系统错误码：%u", GetLastError());
 	return true;
 }
@@ -90,13 +93,10 @@ bool RunNewUpdate(const Json::Value& vPid, const Json::Value& vCmd, const Json::
 		return false;
 	}
 	OUTPUT_XYLOG(LEVEL_INFO, L"替换更新文件完成，开始运行！");
-	//修改更新文件的版本号
-	wstring strNewVersion = PublicLib::AToU(strVersion);
-	RegWriteUpdateexeVersion(REG_ROOT_NAME, strNewVersion);
+
 	//替换完成后，运行
 	wstring strShellCmd = PublicLib::AToU(strCmd);
-// 	if (strShellCmd.empty())
-// 		strShellCmd = L"/update";
+
 	PublicLib::ShellExecuteRunas(strDesExe.c_str(), strShellCmd.c_str(), NULL);
 	OUTPUT_XYLOG(LEVEL_INFO, L"运行新的更新文件，系统错误码：%u", GetLastError());
 	return true;
@@ -105,12 +105,6 @@ bool RunNewUpdate(const Json::Value& vPid, const Json::Value& vCmd, const Json::
 UpdateStatus CheckUpdate(wstring& strError)
 {
 	wstring strChannelName = CGlobalData::Instance()->GetChannel();
-	if (strChannelName.empty())
-	{
-		strChannelName = L"5funGameHall";
-		//写入默认渠道
-		RegWriteDefChannel(REG_ROOT_NAME, strChannelName);
-	}
 	if (!GetUpdateRootPath(strChannelName))
 	{
 		OUTPUT_XYLOG(LEVEL_ERROR, L"调用接口获取更新目录地址失败！");
@@ -156,23 +150,17 @@ UpdateStatus CheckUpdate(wstring& strError)
 
 bool GetUpdateRootPath(const wstring& strChannelName)
 {
-	Json::Value vParam, vMsg;
-	PublicLib::CVersionHelper ver(CGlobalData::Instance()->GetOldVersion());
-	char szVersion[64] = {0};
-	sprintf_s(szVersion, "%d_%d.%d.%d", ver.m_nBuildNumber, ver.m_nMajorNumber, ver.m_nMinorNumber, ver.m_nRevisionNumber);
-	vParam["version"] = szVersion;
-	string strGuid = PublicLib::UToA(CGlobalData::Instance()->GetGuid());
-	vParam["deviceid"] = strGuid;
-	string strSign = strGuid + "gzRN53VWRF9BYUXomg2014";
-	PublicLib::MD5 md5(strSign);
-	vParam["sign"] = md5.md5();
-	vMsg["args"]["type"] = 2;
-	vMsg["args"]["plugin"] = 1;
-	vMsg["args"]["tag_id"] = 0;
-	vParam["messages"] = vMsg;
-	Json::FastWriter fw;
-	string strPost = fw.write(vParam);
-	PublicLib::CHttpClient http;
+    PublicLib::CHttpClient http;
+    http.AddHttpHeader(L"version", L"1_1.0");
+    http.AddHttpHeader(L"Device-Id", L"356261050135555");
+    http.AddHttpHeader(L"Unique-Code", L"1AEE004A-73D0-4427-B1C4-B771A5CA1732");
+    http.AddHttpHeader(L"Access-Token", L"A2838C35DAAAE9058E521930B8D27F9A0538C7F8D7CD248A263820E6A6B27FB12058141FDA3CEF5D98BDC24C53F07B2B");
+    http.AddHttpHeader(L"Guoren-App-Interal-Tags", L"Salem501200");
+	
+    string strPost;
+    strPost.append("version=");
+    strPost += PublicLib::UToUtf8(CGlobalData::Instance()->GetOldVersion());
+
 	string strJson = http.Request(URL_UPDATE, PublicLib::Post, strPost.c_str());
 	wstring str = PublicLib::Utf8ToU(strJson);
 #ifdef _DEBUG

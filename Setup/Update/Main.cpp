@@ -27,28 +27,37 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 		if (!CheckSingleMutex())
 			return 0;
 	}
-	CGlobalData::Instance()->Init();
-// 	wstring strError;
-// 	CheckUpdate(strError);
-	if (!CGlobalData::Instance()->HasInstall())
-	{
-		OUTPUT_XYLOG(LEVEL_ERROR, L"没有找到安装信息");
-		MessageBox(NULL, L"没有找到安装信息", L"出错了：", MB_OK | MB_ICONERROR);
-		return 0;
-	}
+
 	if (!InitDuilibRes(hInstance))
 	{
 		OUTPUT_XYLOG(LEVEL_ERROR, L"初始化界面库资源失败");
 		MessageBox(NULL, L"初始化界面库资源失败", L"出错了：", MB_OK | MB_ICONERROR);
 		return 0;
 	}
+
+    auto InitApp = [&](const wstring& strOldInstallPath) -> bool {
+        CGlobalData::Instance()->Init(strOldInstallPath);
+
+        if (!CGlobalData::Instance()->HasInstall()) {
+            OUTPUT_XYLOG(LEVEL_ERROR, L"没有找到安装信息");
+            MessageBox(NULL, L"没有找到安装信息", L"出错了：", MB_OK | MB_ICONERROR);
+            return false;
+        }
+
+        return true;
+    };
+
 	if (wcslen(lpCmdLine) == 0 || wcscmp(lpCmdLine, L"/update") == 0)//手动升级
 	{
+        if (!InitApp(L"")) return 0;
+
 		OUTPUT_XYLOG(LEVEL_INFO, L"进入手动升级模式");
 		CreateUpdateWnd(true);
 	}
 	else if (wcscmp(lpCmdLine, L"/autoupdate") == 0)//自动升级
 	{
+        if (!InitApp(L"")) return 0;
+
 		OUTPUT_XYLOG(LEVEL_INFO, L"进入自动升级模式");
 		wstring strError;
 		UpdateStatus status = CheckUpdate(strError);
@@ -73,6 +82,11 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 				const Json::Value& vPid = vOther["pid"];
 				const Json::Value& vCmd = vOther["cmd"];
 				const Json::Value& vVersion = vOther["updateversion"];
+
+                wstring strOldInstallPath = PublicLib::Utf8ToU(vRoot["oldinstallpath"].asString());
+
+                if (!InitApp(strOldInstallPath)) return 0;
+
 				if (vPid.isString() && vCmd.isString() && vVersion.isString())
 				{
 					return RunNewUpdate(vPid, vCmd, vVersion);
@@ -84,7 +98,15 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 		}
 	}
+
 	CoUninitialize();
+
+    if (CGlobalData::Instance()->NeedReboot()) {
+        auto strExe = CGlobalData::Instance()->GetRebootDestExe();
+        auto strCmd = CGlobalData::Instance()->GetRebootCmdLine();
+        PublicLib::ShellExecuteRunas(strExe.c_str(), strCmd.c_str(), NULL);
+    }
+
 	return 0;
 }
 

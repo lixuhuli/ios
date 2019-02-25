@@ -141,34 +141,36 @@ inline wstring GetProgramFilePath(bool bIs64Bit)
 	return szPath;//CSIDL_PROGRAM_FILESX86
 }
 
-inline wstring GetApplicationVersion()
-{
-	std::wstring Version;
-	wchar_t FileName[MAX_PATH] = { 0 };
-	if (GetModuleFileName(NULL, FileName, MAX_PATH))
-	{
-		DWORD dwHandle;
-		DWORD VerInfoSize = GetFileVersionInfoSize(FileName, &dwHandle);
-		if (VerInfoSize)
-		{
-			wchar_t* VerInfo = new wchar_t[VerInfoSize / sizeof(wchar_t)];
-			if (GetFileVersionInfo(FileName, NULL, VerInfoSize, VerInfo))
-			{
-				VS_FIXEDFILEINFO* pFileInfo;
-				UINT FileInfoLength;
-				if (VerQueryValue(VerInfo, L"\\", (LPVOID*)&pFileInfo, &FileInfoLength))
-				{
-					wchar_t szVersion[100] = { 0 };
-					swprintf_s(szVersion, L"%d.%d.%d.%d", HIWORD(pFileInfo->dwProductVersionMS),
-						LOWORD(pFileInfo->dwProductVersionMS),
-						HIWORD(pFileInfo->dwProductVersionLS),
-						LOWORD(pFileInfo->dwProductVersionLS));
-					Version = szVersion;
-				}
-			}
-			delete[] VerInfo;
-		}
-	}
+inline wstring GetApplicationVersion(const wstring& strFileName = L"") {
+    wchar_t FileName[MAX_PATH] = { 0 };
+    if (strFileName.empty()) {
+        if (GetModuleFileNameW(NULL, FileName, MAX_PATH) <= 0) return L"";
+    }
+    else wsprintf(FileName, L"%s", strFileName.c_str());
+
+    std::wstring Version;
+    DWORD dwHandle;
+    DWORD VerInfoSize = GetFileVersionInfoSize(FileName, &dwHandle);
+    if (VerInfoSize)
+    {
+        wchar_t* VerInfo = new wchar_t[VerInfoSize / sizeof(wchar_t)];
+        if (GetFileVersionInfo(FileName, NULL, VerInfoSize, VerInfo))
+        {
+            VS_FIXEDFILEINFO* pFileInfo;
+            UINT FileInfoLength;
+            if (VerQueryValue(VerInfo, L"\\", (LPVOID*)&pFileInfo, &FileInfoLength))
+            {
+                wchar_t szVersion[100] = { 0 };
+                swprintf_s(szVersion, L"%d.%d.%d.%d", HIWORD(pFileInfo->dwProductVersionMS),
+                    LOWORD(pFileInfo->dwProductVersionMS),
+                    HIWORD(pFileInfo->dwProductVersionLS),
+                    LOWORD(pFileInfo->dwProductVersionLS));
+                Version = szVersion;
+            }
+        }
+        delete[] VerInfo;
+    }
+
 	return Version;
 }
 
