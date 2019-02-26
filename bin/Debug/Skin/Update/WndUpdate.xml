@@ -1,72 +1,70 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Window size="599,422" caption="0,0,0,270" roundcorner="4,4">
+<Window size="321,646" caption="0,0,0,75" bktrans="true">
 	<Font name="微软雅黑" size="12" />
-	<Font name="宋体" size="14" />
-	<Font name="微软雅黑" size="18" />
+	<Font name="微软雅黑" size="14" />
+	<Font name="微软雅黑" size="16" />
 	<Font name="微软雅黑" size="22" bold="true"/>
-	<Font name="微软雅黑" size="16"/>
-	
-	<Default name="VScrollBar" value="showbutton1=&quot;false&quot; showbutton2=&quot;false&quot; thumbnormalimage=&quot;file=&apos;scroll_bk.png&apos; corner=&apos;1,1,1,1&apos;&quot;  railnormalimage=&quot;file=&apos;scroll_bk.png&apos; corner=&apos;1,1,1,1&apos;&quot; bknormalimage=&quot;file=&apos;scroll_fore.png&apos; corner=&apos;1,1,1,1&apos;&quot; width=&quot;4&quot; "/>
 	
 	<VerticalLayout	bkimage="bk.png">
+	  <HorizontalLayout height="75">
+		  <Control />
+		  
+			<Button name="btn_close" tooltip="关闭" visible="false" padding="0,24,0,0" showcursor="true" width="32" height="32" normalimage="file='btn_close_nor.png'" hotimage="file='btn_close_hot.png'" pushedimage="file='btn_close_nor.png'"/>
+			
+			<Control width="20" />
+		</HorizontalLayout>
+		
+		<Control height="180" />
+		
+		<Control width="50" height="62" padding="135,0,0,0" bkimage="file='logo.png'" />
+		
+		<Control height="20" />
+		
+		<VerticalLayout height="36" name="slogan" visible="false" >
+		  <Control width="140" height="36" padding="90,0,0,0" bkimage="file='slogan.png'" />
+		</VerticalLayout>
+		
+		<Control height="40" />
+		
 		<HorizontalLayout>
-			<Button name="btn_min" tooltip="最小化" showcursor="true" float="true" pos="539,0,0,0" width="30" height="30" normalimage="file='btn_min_nor.png' dest='10,14,19,16'" hotimage="file='btn_min_hot.png' dest='10,14,19,16'" pushedimage="file='btn_min_hot.png' dest='10,14,19,16'" />
-			<Button name="btn_close" tooltip="关闭" showcursor="true" float="true" pos="569,0,0,0" width="30" height="30" normalimage="file='btn_close_nor.png' dest='10,10,19,19'" hotimage="file='btn_close_hot.png' dest='10,10,19,19'" pushedimage="file='btn_close_hot.png' dest='10,10,19,19'"/>
-		</HorizontalLayout>
-		<HorizontalLayout height="150">
-		<TabLayout name="tab_main">
-			<VerticalLayout><!--检测更新中-->
-				<Control />
-				<HorizontalLayout height="20">
+		  <TabLayout name="tab_main">
+		    <VerticalLayout>
+					<Control height="50" />
+					
+					<HorizontalLayout height="42" padding="5,0,0,0">
+					  <Control />
+					  
+					  <VerticalLayout width="160">
+						  <Progress name="progress" width="160" height="5" padding="0,7,0,0" bkimage="progress_bk.png" foreimage="progress.png" min="0" max="100" value="0" isstretchfore="false"/>
+						  
+						  <Control height="12" />
+						  
+						  <Label name="lbl_status" width="160" text="正在检测更新……" height="18" font="0" textcolor="#FF000000" valign="center"/>
+						</VerticalLayout>
+						    
+						<Button name="btn_update_restart" visible="false" width="20" height="20" padding="10,0,0,18" showcursor="true" normalimage="btn_install_restart_nor.png" />
+						    
+						<Button name="btn_update_close" visible="false" width="20" height="20" padding="5,0,0,18" showcursor="true" normalimage="btn_install_close_nor.png"/>
+						
+						<Control />
+					</HorizontalLayout>
+					
 					<Control />
-					<ButtonGif width="16" height="16" padding="0,2,0,0" GifFile="updating.gif"/>
-					<Control width="4"/>
-					<Label width="160" text="正在检测更新……" font="2" textcolor="#FF000000" align="left" valign="center"/>
+				</VerticalLayout>
+				
+				<VerticalLayout>
 					<Control />
-				</HorizontalLayout>
-				<Control height="77"/>
-			</VerticalLayout>
-			<VerticalLayout><!--无需更新-->
-				<Control />
-				<Label height="20" text="恭喜，您目前安装的悟饭游戏厅为最新版本" bkimage="file='ok.png' dest='114,1,131,18'" textpadding="20,0,0,0" font="2" textcolor="#FF000000" align="center" valign="center"/>
-				<Control height="77"/>
-			</VerticalLayout>
-			<VerticalLayout><!--更新失败-->
-				<Control />
-				<Label name="lbl_error_info" height="20" text="检测更新失败，请稍后重试..." bkimage="file='fail.png' dest='172,1,189,18'" textpadding="20,0,0,0" font="2" textcolor="#FF000000" align="center" valign="center"/>
-				<Control height="77"/>
-			</VerticalLayout>
-			<VerticalLayout><!--有更新-->
-				<Control />
-				<HorizontalLayout height="101">
-					<Control width="30"/>
-					<RichEdit name="richedit" bkcolor="FFEEEEEE" textcolor="#FF7D7D7D" vscrollbar="true" multiline="true" inset="5,4,5,4" readonly="true" font="0"/>
-					<Control width="43"/>
-					<VerticalLayout width="260">
-						<Button name="btn_ignore" height="48" showcursor="true" normalimage="btn_gray_nor.png" hotimage="btn_gray_hot.png" pushedimage="btn_gray_nor.png" text="下次再说" font="3" textcolor="#FFEEEEEE"/>
-						<Control height="5"/>
-						<Button name="btn_update" height="48" showcursor="true" normalimage="btn_update_nor.png" hotimage="btn_update_hot.png" pushedimage="btn_update_nor.png" />
-					</VerticalLayout>
-					<Control width="30"/>
-				</HorizontalLayout>
-				<Label height="45" />
-			</VerticalLayout>
-			<VerticalLayout><!--更新中-->
-				<Control />
-				<Label name="lbl_status" text="正在更新……" height="20" font="2" textcolor="#FF000000" align="center" valign="center"/>
-				<Control height="20" />
-				<HorizontalLayout width="541" height="23" padding="30,0,0,0" bkimage="progress_bk.png" >
-					<Progress name="progress" float="true" pos="1,1,0,0" width="539" height="21" foreimage="progress.png" min="0" max="100" value="0" isstretchfore="false"/>
-					<Label name="lbl_progress" float="true" pos="0,0,0,0" width="541" height="23" font="4" textcolor="#FF000000" align="center" valign="center"/>
-				</HorizontalLayout>
-				<Control height="50" />
-			</VerticalLayout>
-			<VerticalLayout><!--更新完成-->
-				<Control />
-				<Button name="btn_finish" showcursor="true" width="260" height="48" normalimage="btn_run_nor.png" hotimage="btn_run_hot.png" pushedimage="btn_run_nor.png" padding="170,0,0,0" />
-				<Control height="62"/>
-			</VerticalLayout>	
-		</TabLayout>
+					<Button name="btn_run" width="159" height="30" padding="81,0,0,0" showcursor="true" normalimage="btn_run_nor.png" hotimage="btn_run_hot.png" pushedimage="btn_run_nor.png"/>
+					
+					<Control height="10" />
+					
+					<Button name="btn_exit" width="159" height="30" padding="81,0,0,0" showcursor="true" normalimage="file='btn_exit_nor.png'" hotimage="btn_exit_nor.png" pushedimage="btn_exit_nor.png"/>
+					
+					<Control height="50"/>
+				</VerticalLayout>
+		  </TabLayout>
 		</HorizontalLayout>
+		
+		<Control height="75"/>
 	</VerticalLayout>
 </Window>
