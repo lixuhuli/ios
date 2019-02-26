@@ -73,10 +73,6 @@ LPCWSTR CWndMain::GetXmlPath() const {
     return L"WndMain.xml";
 }
 
-LPCTSTR CWndMain::GetWindowClassName() const {
-    return L"AppleSeedWnd";
-}
-
 void CWndMain::InitWindow() {
     __super::InitWindow();
 
@@ -114,6 +110,8 @@ void CWndMain::InitWindow() {
     if (client_iphone_emulator_) client_iphone_emulator_->OnSize += MakeDelegate(this, &CWndMain::OnIphoneEmulatorSize);
 
     if (btn_ios_volume_) btn_ios_volume_->SetEnabled(false);
+
+    ::SetTimer(m_hWnd, TIMER_ID_CHECK_UPDATE, 1 * 1000, NULL);//1秒后检查更新
 
     RegisterHotKey(m_hWnd, ID_HOTKEY_BOS, MOD_ALT + MOD_CONTROL, 'N');
 }
@@ -761,6 +759,18 @@ LRESULT CWndMain::OnTimer(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
         UpdateLoadingIcon();
         break;
     }
+    case TIMER_ID_CHECK_UPDATE:
+        {
+            ::KillTimer(m_hWnd, TIMER_ID_CHECK_UPDATE);
+            wstring strUpdatePath = CGlobalData::Instance()->GetRunPath() + EXE_UPDATE;
+            if (!PathFileExists(strUpdatePath.c_str()))
+            {
+                OUTPUT_XYLOG(LEVEL_ERROR, L"没有找到升级程序！");
+                break;
+            }
+            PublicLib::ShellExecuteRunas(strUpdatePath.c_str(), L"/autoupdate", NULL);
+        }
+        break;
     default:
         break;
     }

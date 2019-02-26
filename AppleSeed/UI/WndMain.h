@@ -33,7 +33,6 @@ public:
 protected:
     virtual LPCWSTR GetWndName() const override { return L"¹ûÈÊÄ£ÄâÆ÷"; }
     virtual LPCWSTR GetXmlPath() const override;
-    virtual LPCTSTR GetWindowClassName() const override;
     virtual CControlUI* CreateControl(LPCTSTR pstrClass);
     virtual void InitWindow();
     virtual void OnFinalMessage(HWND hWnd);
