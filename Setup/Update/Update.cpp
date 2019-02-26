@@ -158,7 +158,7 @@ bool GetUpdateRootPath(const wstring& strChannelName)
     http.AddHttpHeader(L"Guoren-App-Interal-Tags", L"Salem501200");
 	
     string strPost;
-    strPost.append("version=");
+    strPost.append("app_version=");
     strPost += PublicLib::UToUtf8(CGlobalData::Instance()->GetOldVersion());
 
 	string strJson = http.Request(URL_UPDATE, PublicLib::Post, strPost.c_str());
@@ -186,8 +186,9 @@ bool GetUpdateRootPath(const wstring& strChannelName)
 			OUTPUT_XYLOG(LEVEL_ERROR, L"接口访问失败");
 			return false;
 		}
-		Json::Value& vData = vRoot["messages"]["data"];
-		string strUrl = vData["down_url"].asString();
+
+		Json::Value& vData = vRoot["data_info"];
+		string strUrl = vData["downUrl"].asString();
 		if (strUrl.empty())
 		{
 			OUTPUT_XYLOG(LEVEL_ERROR, L"返回更新目录为空");
@@ -201,8 +202,8 @@ bool GetUpdateRootPath(const wstring& strChannelName)
 		//strUrl = "http://192.168.70.59/5FunGameHall/1.0.0.385/32/";
 		OUTPUT_XYLOG(LEVEL_INFO, L"获取到根目录路径：%s", PublicLib::Utf8ToU(strUrl).c_str());
 		string strDesc = vData["info"].asString();//升级说明
-		string strStatus = vData["upgrade_status"].asString();//更新状态（1强制 2可选 0或者3不更新）
-		string strDate = vData["upgrade_time"].asString();
+		string strStatus = vData["upgradeStatus"].asString();//更新状态（1强制 2可选 0或者3不更新）
+		string strDate = vData["upgradeTime"].asString();
 		string strVersion = vData["ver"].asString();
 		int nStatus = atoi(strStatus.c_str());
 		//强升

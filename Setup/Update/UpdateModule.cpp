@@ -129,13 +129,6 @@ bool CUpdateModule::Update(wstring& strError)
 	}
 	if (s_bExit)
 		return true;
-	if (!UpdateRegedit(strError))
-	{
-		if (m_hMsgWnd)
-			::PostMessage(m_hMsgWnd, m_uMsg, Step_Regedit, -1);
-		OUTPUT_XYLOG(LEVEL_ERROR, L"更新注册表失败，错误信息：%s，系统错误码：%u", strError.c_str(), GetLastError());
-		return false;
-	}
 	if (m_hMsgWnd)
 		::PostMessage(m_hMsgWnd, m_uMsg, Step_Finish, 0);
 	return true;

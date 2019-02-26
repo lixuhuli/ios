@@ -2,7 +2,7 @@
 #include "WndUpdate.h"
 #include "UpdateModule.h"
 #include "Config.h"
-
+#include <Tlhelp32.h>
 
 enum {
 	WM_MSG_BASE = WM_USER + 611,
@@ -13,6 +13,9 @@ CWndUpdate::CWndUpdate(bool bNeedCheck)
 : m_pTabMain(NULL)
 , m_pLblStatus(NULL)
 , m_pProgress(NULL)
+, slogan_(nullptr)
+, btn_update_restart_(nullptr)
+, btn_update_close_(nullptr)
 , m_bNeedCheck(bNeedCheck)
 {
 	m_bShowShadow = false;
@@ -38,33 +41,25 @@ void CWndUpdate::InitWindow()
 	{
 		OUTPUT_XYLOG(LEVEL_INFO, L"检测是否需要升级");
 		CUpdateModule::Instance()->StartCheckUpdate();
-		m_pTabMain->SelectItem(0);
 	}
-	else
-	{
-		OUTPUT_XYLOG(LEVEL_INFO, L"切换到升级页面");
-		SwitchToUpdate();
-	}
+    else
+    {
+        OUTPUT_XYLOG(LEVEL_INFO, L"切换到升级页面");
+        SwitchToUpdate();
+    }
 }
 
-void CWndUpdate::SwitchToUpdate()
-{
-	const wstring &strDesc = CUpdateModule::Instance()->GetUpdateDesc();
-	wstring str = StrReplaceW(strDesc, L"\n", L"");
-	str = StrReplaceW(str, L"<br/>", L"\n");
-	if (!str.empty() && str[str.size()-1] == '\n')
-		str.erase(str.end()-1);
-	CDuiString strText;
-	strText.Format(L"发现新版本\n%sV%s更新内容：\n%s", SOFT_NAME, CUpdateModule::Instance()->GetUpdateVersion().c_str(), str.c_str());
-	m_pRichEdit->SetText(strText);
-	m_pTabMain->SelectItem(3);
-	//m_nUpdateStatus 更新状态（1强制 2可选 0或者3不更新）
-	if (CUpdateModule::Instance()->GetUpdateStatus() == 1)
-	{
-		OUTPUT_XYLOG(LEVEL_INFO, L"进入强制升级流程");
-		m_pTabMain->SelectItem(4);
-		CUpdateModule::Instance()->StartUpdate();
-	}
+void CWndUpdate::SwitchToUpdate() {
+    if (CUpdateModule::Instance()->GetUpdateStatus() == 1) {
+        OUTPUT_XYLOG(LEVEL_INFO, L"进入强制升级流程");
+
+        m_pLblStatus->SetText(L"更新中 %0");
+        btn_update_restart_->SetVisible(false);
+        btn_update_close_->SetVisible(false);
+        m_pProgress->SetValue(0);
+
+        CUpdateModule::Instance()->StartUpdate();
+    }
 }
 
 LRESULT CWndUpdate::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -74,27 +69,38 @@ LRESULT CWndUpdate::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return CWndBase::HandleMessage(uMsg, wParam, lParam);
 }
 
-LRESULT CWndUpdate::OnMsgUpdate(WPARAM wParam, LPARAM lParam)
-{
+LRESULT CWndUpdate::OnMsgUpdate(WPARAM wParam, LPARAM lParam) {
+    if (!m_pLblStatus || !m_pTabMain || !btn_update_restart_ || !btn_update_close_ || !m_pProgress) return 0;
+
 	switch (wParam)
 	{
 	case Step_Check://检测更新
 		{
-			int nIndex = 0;
-			switch (lParam)
-			{
-			case 0: nIndex = 2; break;	//更新失败
-			case 1: Close(); break;		//自更新
-			case 2: nIndex = 1; break;	//当前已是最新版本
-			case 3: SwitchToUpdate(); nIndex = 3; break; //可更新
-			default: break;
-			}
-			m_pTabMain->SelectItem(nIndex);
+			m_pTabMain->SelectItem(0);
+
+            switch (lParam) {
+            case 0: {
+                m_pLblStatus->SetText(L"更新失败请重试...");
+                btn_update_restart_->SetVisible(true);
+                btn_update_close_->SetVisible(true);
+            }
+            break;
+            case 1: Close(); break;
+            case 2: {
+                m_pLblStatus->SetText(L"恭喜，您当前为最新版本！");
+                btn_update_restart_->SetVisible(false);
+                btn_update_close_->SetVisible(true);
+                m_pProgress->SetValue(100);
+            }
+            break;
+            case 3: SwitchToUpdate(); break;  
+            default: break;
+            }
 		}
 		break;
 	case Step_Init://初始化中
 		{
-			m_pTabMain->SelectItem(4);
+			m_pTabMain->SelectItem(0);
 			HWND hWnd = FindWindow(GUI_CLASS_NAME, L"悟饭游戏厅");
 			if (IsWindow(hWnd))
 				::PostMessage(hWnd, WM_CLOSE, 0, 0);
@@ -103,16 +109,19 @@ LRESULT CWndUpdate::OnMsgUpdate(WPARAM wParam, LPARAM lParam)
 	case Step_Load://下载中
 		{
 			int nPercent = (int)lParam;
-			if (nPercent == -1)
-			{
-				m_pLblStatus->SetText(L"下载更新文件失败...");
+			if (nPercent == -1) {
+				m_pLblStatus->SetText(L"更新失败请重试...");
+                btn_update_restart_->SetVisible(true);
+                btn_update_close_->SetVisible(true);
 				break;
 			}
-			m_pLblStatus->SetText(L"正在下载更新");
+
+            nPercent = (int)((float)nPercent / (float)2.0 + 0.5);
+
+            CStdString str_progress;
+            str_progress.Format(L"更新中 %d%s", nPercent, "%");
+			m_pLblStatus->SetText(str_progress.GetData());
 			m_pProgress->SetValue(nPercent);
-			CDuiString str;
-			str.Format(L"%d%%", nPercent);
-			m_pLblProgress->SetText(str);
 		}
 		break;
 	case Step_Install://安装中
@@ -120,36 +129,36 @@ LRESULT CWndUpdate::OnMsgUpdate(WPARAM wParam, LPARAM lParam)
 			int nPercent = (int)lParam;
 			if (nPercent == -1)
 			{
-				m_pLblStatus->SetText(L"安装更新文件失败，即将执行回滚...");
+				m_pLblStatus->SetText(L"更新文件失败，执行回滚...");
 				break;
 			}
-			m_pLblStatus->SetText(L"正在安装更新");
-			m_pProgress->SetValue(nPercent);
-			CDuiString str;
-			str.Format(L"%d%%", nPercent);
-			m_pLblProgress->SetText(str);
+
+            nPercent = (int)((float)nPercent / (float)2.0 + 0.5) + 50;
+            if (nPercent > 100) nPercent = 100;
+
+            CStdString str_progress;
+            str_progress.Format(nPercent == 100 ? L"更新成功 %d%s" : L"更新中 %d%s", nPercent, "%");
+            m_pLblStatus->SetText(str_progress.GetData());
+            m_pProgress->SetValue(nPercent);
 		}
 		break;
 	case Step_Rollback://回滚中
 		{
 			int nPercent = (int)lParam;
-			m_pLblStatus->SetText(L"正在回滚");
+			m_pLblStatus->SetText(L"正在回滚...");
 			m_pProgress->SetValue(nPercent);
-			CDuiString str;
-			str.Format(L"%d%%", nPercent);
-			m_pLblProgress->SetText(str);
-			if (nPercent<=0)
-			{
-				m_pLblErrorInfo->SetText(L"更新失败，请稍后关闭悟饭游戏厅后重试");
-				m_pTabMain->SelectItem(2);
+
+			if (nPercent <= 0) {
+                m_pLblStatus->SetText(L"更新失败请重试...");
+                btn_update_restart_->SetVisible(true);
+                btn_update_close_->SetVisible(true);
 			}
 		}
 		break;
 	case Step_Regedit://更新注册表
 		break;
 	case Step_Finish://更新完成
-		m_pTabMain->SelectItem(5);
-        SetShowUpdateWnd(true);
+		m_pTabMain->SelectItem(1);
 		break;
 	default:
 		break;
@@ -177,37 +186,53 @@ bool CWndUpdate::OnNotifyBtnMin(void* lpParam)
 	return true;
 }
 
-bool CWndUpdate::OnNotifyBtnIgnore(void* lpParam)
+bool CWndUpdate::OnNotifyBtnRun(void* lpParam)
 {
 	TNotifyUI* pNotify = (TNotifyUI*)lpParam;
-	if (pNotify->sType == DUI_MSGTYPE_CLICK)
-	{
+	if (pNotify->sType == DUI_MSGTYPE_CLICK) {
+        wstring strExe = CUpdateModule::Instance()->GetInstallPath() + EXE_MAIN;
+        CreateProcessByUser(strExe);
 		Close();
 	}
 	return true;
 }
 
-bool CWndUpdate::OnNotifyBtnUpdate(void* lpParam)
-{
-	TNotifyUI* pNotify = (TNotifyUI*)lpParam;
-	if (pNotify->sType == DUI_MSGTYPE_CLICK)
-	{
-		m_pTabMain->SelectItem(4);
-		CUpdateModule::Instance()->StartUpdate();
-	}
-	return true;
+bool CWndUpdate::OnNotifyBtnExit(void* lpParam) {
+    TNotifyUI* pNotify = (TNotifyUI*)lpParam;
+    if (pNotify && pNotify->sType == DUI_MSGTYPE_CLICK){
+        Close();
+    }
+    return true;
 }
 
-bool CWndUpdate::OnNotifyBtnFinish(void* lpParam)
-{
-	TNotifyUI* pNotify = (TNotifyUI*)lpParam;
-	if (pNotify->sType == DUI_MSGTYPE_CLICK)
-	{
-		wstring strExe = CUpdateModule::Instance()->GetInstallPath() + EXE_MAIN;
-		PublicLib::ShellExecuteRunas(strExe.c_str(), NULL, NULL);
-		Close();
-	}
-	return true;
+bool CWndUpdate::OnClickUpdateRestart(void* param) {
+    TNotifyUI* pNotify = (TNotifyUI*)param;
+    if (pNotify && pNotify->sType == DUI_MSGTYPE_CLICK) {
+        if (m_pLblStatus) m_pLblStatus->SetText(L"正在检测更新……");
+        if (btn_update_restart_) btn_update_restart_->SetVisible(false);
+        if (btn_update_close_) btn_update_close_->SetVisible(false);
+        if (m_pProgress) m_pProgress->SetValue(0);
+        
+        if (m_bNeedCheck) {
+            OUTPUT_XYLOG(LEVEL_INFO, L"检测是否需要升级");
+            CUpdateModule::Instance()->StartCheckUpdate();
+        }
+        else
+        {
+            OUTPUT_XYLOG(LEVEL_INFO, L"切换到升级页面");
+            SwitchToUpdate();
+        }
+    }
+    return true;
+}
+
+bool CWndUpdate::OnClickUpdateClose(void* param) {
+    TNotifyUI* pNotify = (TNotifyUI*)param;
+    if (pNotify && pNotify->sType == DUI_MSGTYPE_CLICK) {
+        Close();
+    }
+
+    return true;
 }
 
 
@@ -232,4 +257,184 @@ wstring StrReplaceW(const wstring& strContent, const wstring& strTag, const wstr
 		}
 	}
 	return strRet;
+}
+
+LPCTSTR CWndUpdate::CreateProcessByUser(const std::wstring& appCmd) {
+    PWSTR lpApplicationName = nullptr;
+
+    std::wstring s = appCmd;
+
+    PWSTR lpCommandLine = (PWSTR)s.c_str();
+
+    wchar_t errStr[MAX_PATH] ;
+
+    HANDLE hToken;
+
+    ULONG err = NOERROR;
+
+    if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken)) {
+        union {
+            TOKEN_ELEVATION_TYPE tet;
+            TOKEN_LINKED_TOKEN tlt;
+        };
+
+        ULONG rcb;
+
+        if (GetTokenInformation(hToken, TokenElevationType, &tet, sizeof(tet), &rcb))
+        {
+            if (tet == TokenElevationTypeFull)
+            {
+                if (GetTokenInformation(hToken, TokenLinkedToken, &tlt, sizeof(tlt), &rcb))
+                {
+                    TOKEN_STATISTICS ts;
+
+                    BOOL fOk = GetTokenInformation(tlt.LinkedToken, TokenStatistics, &ts, sizeof(ts), &rcb);
+
+                    CloseHandle(tlt.LinkedToken);
+
+                    if (fOk)
+                    {
+                        err = CreateProcessEx2(ts.AuthenticationId,
+                            lpApplicationName,
+                            lpCommandLine);
+                    }
+                    else
+                    {
+                        err = GetLastError();
+                    }
+                }
+                else
+                {
+                    err = GetLastError();
+                }
+            }
+            else
+            {
+                err = ERROR_ALREADY_ASSIGNED;
+                PublicLib::ShellExecuteRunas(lpCommandLine, nullptr, nullptr);
+            }
+        }
+        else
+        {
+            err = GetLastError();
+        }
+
+        CloseHandle(hToken);
+    }
+    else
+    {
+        err = GetLastError();
+    }
+
+    wsprintf(errStr, L"%lld", err);
+    std::wstring errCode(errStr);
+    return errCode.c_str();
+}
+
+ULONG CWndUpdate::CreateProcessEx2(LUID AuthenticationId, PCWSTR lpApplicationName, PWSTR lpCommandLine) {
+    ULONG err = ERROR_NOT_FOUND;
+
+    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+
+    if (hSnapshot != INVALID_HANDLE_VALUE)
+    {
+        PROCESSENTRY32W pe = { sizeof(pe) };
+
+        ULONG rcb;
+
+        if (Process32First(hSnapshot, &pe))
+        {
+            err = ERROR_NOT_FOUND;
+            BOOL found = FALSE;
+
+            do
+            {
+                if (pe.th32ProcessID && pe.th32ParentProcessID)
+                {
+                    if (HANDLE hProcess = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_CREATE_PROCESS, FALSE, pe.th32ProcessID))
+                    {
+                        HANDLE hToken;
+
+                        if (OpenProcessToken(hProcess, TOKEN_QUERY, &hToken))
+                        {
+                            TOKEN_STATISTICS ts;
+
+                            if (GetTokenInformation(hToken, TokenStatistics, &ts, sizeof(ts), &rcb))
+                            {
+                                if (ts.AuthenticationId.LowPart == AuthenticationId.LowPart &&
+                                    ts.AuthenticationId.HighPart == AuthenticationId.HighPart)
+                                {
+                                    found = TRUE;
+
+                                    err = CreateProcessEx1(hProcess,
+                                        lpApplicationName,
+                                        lpCommandLine);
+                                }
+                            }
+                            CloseHandle(hToken);
+                        }
+
+                        CloseHandle(hProcess);
+                    }
+                }
+
+            } while (!found && Process32Next(hSnapshot, &pe));
+        }
+        else
+        {
+            err = GetLastError();
+        }
+
+        CloseHandle(hSnapshot);
+    }
+    else
+    {
+        err = GetLastError();
+    }
+
+    return err;
+}
+
+ULONG CWndUpdate::CreateProcessEx1(HANDLE hProcess, PCWSTR lpApplicationName, PWSTR lpCommandLine) {
+    SIZE_T Size = 0;
+
+    STARTUPINFOEX si = { sizeof(si) };
+    PROCESS_INFORMATION pi;
+
+    InitializeProcThreadAttributeList(0, 1, 0, &Size);
+
+    ULONG err = GetLastError();
+
+    if (err = ERROR_INSUFFICIENT_BUFFER)
+    {
+        si.lpAttributeList = (PPROC_THREAD_ATTRIBUTE_LIST)alloca(Size);
+
+        if (InitializeProcThreadAttributeList(si.lpAttributeList, 1, 0, &Size))
+        {
+            if (UpdateProcThreadAttribute(si.lpAttributeList, 0,
+                PROC_THREAD_ATTRIBUTE_PARENT_PROCESS, &hProcess, sizeof(hProcess), 0, 0) &&
+                CreateProcessW(lpApplicationName, lpCommandLine, 0, 0, 0,
+                EXTENDED_STARTUPINFO_PRESENT, 0, 0, &si.StartupInfo, &pi))
+            {
+                CloseHandle(pi.hThread);
+                CloseHandle(pi.hProcess);
+            }
+            else
+            {
+                err = GetLastError();
+            }
+
+            DeleteProcThreadAttributeList(si.lpAttributeList);
+        }
+        else
+        {
+            err = GetLastError();
+        }
+    }
+    else
+    {
+        err = GetLastError();
+    }
+
+    return err;
 }
