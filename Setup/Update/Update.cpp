@@ -87,11 +87,21 @@ bool RunNewUpdate(const Json::Value& vPid, const Json::Value& vCmd, const Json::
 	wstring strDesExe = CGlobalData::Instance()->GetOldInstallPath() + L"\\" + EXE_UPDATE;
 	wchar_t szPath[MAX_PATH];
 	GetModuleFileName(NULL, szPath, MAX_PATH);
-	if (!CopyFile(szPath, strDesExe.c_str(), FALSE))
-	{
-		OUTPUT_XYLOG(LEVEL_ERROR, L"复制文件从：%s 到：%s 失败，系统错误码：%u", szPath, strDesExe.c_str(), GetLastError());
-		return false;
-	}
+    
+    int nCount = 0;
+    while (nCount < 10) {
+        if (CopyFile(szPath, strDesExe.c_str(), FALSE)) break;
+
+        Sleep(300);
+        nCount++;
+    }
+
+    if (nCount >= 10) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"复制文件从：%s 到：%s 失败，系统错误码：%u", szPath, strDesExe.c_str(), GetLastError());
+        return false;
+    }
+
+	
 	OUTPUT_XYLOG(LEVEL_INFO, L"替换更新文件完成，开始运行！");
 
 	//替换完成后，运行
