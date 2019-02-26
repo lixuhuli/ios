@@ -101,7 +101,7 @@ LRESULT CWndUpdate::OnMsgUpdate(WPARAM wParam, LPARAM lParam) {
 	case Step_Init://初始化中
 		{
 			m_pTabMain->SelectItem(0);
-			HWND hWnd = FindWindow(GUI_CLASS_NAME, L"悟饭游戏厅");
+			HWND hWnd = FindWindow(GUI_CLASS_NAME, L"果仁模拟器");
 			if (IsWindow(hWnd))
 				::PostMessage(hWnd, WM_CLOSE, 0, 0);
 		}

@@ -113,7 +113,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 
 bool CheckSingleMutex()
 {
-	HANDLE hSingleMutex = CreateMutex(NULL, FALSE, L"PapaGameHallUpdate_Mutex");
+	HANDLE hSingleMutex = CreateMutex(NULL, FALSE, L"AppleSeedUpdate_Mutex");
 	if (hSingleMutex)
 	{
 		if (GetLastError() == ERROR_ALREADY_EXISTS)
