@@ -20,7 +20,7 @@
 		
 		<Control height="20" />
 		
-		<VerticalLayout height="36" name="slogan" visible="false" >
+		<VerticalLayout height="36" name="slogan">
 		  <Control width="140" height="36" padding="90,0,0,0" bkimage="file='slogan.png'" />
 		</VerticalLayout>
 		
