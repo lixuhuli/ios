@@ -44,14 +44,13 @@ LRESULT CWndMain::OnCopyDataStartGame(COPYDATASTRUCT* pCopyData) {
 
             ITask* pTask = CDatabaseMgr::Instance()->GetGameInfo(nGameID);
 
-            //if (pTask && strNewVer != pTask->strVersion) {
-            //    OUTPUT_XYLOG(LEVEL_INFO, L"游戏当前版本：%s，服务器版本：%s。开始更新插件", pTask->strVersion.c_str(), strNewVer.c_str());
-            //    CDownloadMgr::Instance()->AddTask(Tht_Url, nGameID, strName, nLoadWay);
-            //    return 0;
-            //}
+            if (pTask && strNewVer != pTask->strVersion) {
+                OUTPUT_XYLOG(LEVEL_INFO, L"游戏当前版本：%s，服务器版本：%s。开始更新插件", pTask->strVersion.c_str(), strNewVer.c_str());
+                CDownloadMgr::Instance()->AddTask(Tht_Url, nGameID, strName, nLoadWay);
+                return 0;
+            }
 
             CDownloadMgr::Instance()->AddTask(Tht_Url, nGameID, strName, nLoadWay);
-            //RunEmulatorLocal(nGameID, strName, nLoadWay);
         }
     }
     catch (...)  {

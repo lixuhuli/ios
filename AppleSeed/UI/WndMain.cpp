@@ -16,6 +16,8 @@
 #include "UserData.h"
 #include "DataPost.h"
 #include "WndUserCenter.h"
+#include "Database/DatabaseMgr.h"
+#include "Download/DownloadMgr.h"
 
 #define URL_PACKAGE_NAME_INTEL   "MotherDisc_Intel_1230.7z"
 #define URL_PACKAGE_NAME_AMD     "MotherDisc_AMD_1230.7z"
@@ -125,6 +127,21 @@ void CWndMain::InitTasks() {
         msg.message = WM_MAINWND_MSG_USERINFO;
         TaskCenter::CTaskCenter::Instance()->CreateUserInfoTask(msg, CUserData::Instance()->GetFileUserID(), CUserData::Instance()->GetFileUserToken());
     }
+
+    msg.message = WM_MAINWND_MSG_CHECK_UPDATE_GAME;
+    std::map<string, string> gameMap;
+
+    const list<ITask*>& gameList = CDownloadMgr::Instance()->GetFinishList();
+    if (!gameList.empty())
+    {
+        for (auto itor = gameList.begin(); itor != gameList.end(); ++itor)
+        {
+            char szGameID[20] = { 0 };
+            sprintf_s(szGameID, "%I64d", (*itor)->nGameID);
+            gameMap[szGameID] = PublicLib::UToUtf8((*itor)->strVersion);
+        }
+        TaskCenter::CTaskCenter::Instance()->CreateCheckGameUpdateTask(msg, gameMap);
+    }
 }
 
 LRESULT CWndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -147,6 +164,7 @@ LRESULT CWndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
         case WM_MAINWND_MSG_UPDATE_IOSWND_POS: OnMsgUpdateIosWndPos(wParam, lParam, bHandled); break;
         case WM_MAINWND_MSG_GET_KEYBOARD: OnMsgGetKeyboardConfig(wParam, lParam, bHandled); break;
         case WM_MAINWND_MSG_IOSENGINE_APPLIACTION: OnMsgIosEngineApplication(wParam, lParam, bHandled); break;
+        case WM_MAINWND_MSG_CHECK_UPDATE_GAME: OnMsgGameCheckUpdateGame(wParam, lParam); break;
         default: bHandled = FALSE; break;
         }
 
@@ -180,6 +198,8 @@ LRESULT CWndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
         }
         break;
     }
+    case WM_RBUTTONDOWN: page_download_ ? page_download_->ShowUninstallBtnStatus(false) : 0; bHandled = FALSE; break;
+    case WM_NCRBUTTONDOWN : page_download_ ? page_download_->ShowUninstallBtnStatus(false) : 0; bHandled = FALSE; break;
     case WM_CLOSE: OnWndClose(wParam, lParam, bHandled); break;
     default: bHandled = FALSE; break;
     }
@@ -1255,4 +1275,55 @@ LRESULT CWndMain::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
     }
 
     return lRes;
+}
+
+LRESULT CWndMain::OnMsgGameCheckUpdateGame(WPARAM wParam, LPARAM lParam) {
+    /*{"error":0,"data":[{"game_id":"105674098","is_low_version":false,"version_code":"1.1.2"},{"game_id":"122078927","is_low_version":false,"version_code":"1.1"}, */
+    if (!page_download_) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"房间指针pLocalPage为空");
+        return -1;
+    }
+
+    UINT_PTR nTaskID = (UINT_PTR)lParam;
+    string strJson;
+    if (!TaskCenter::CTaskCenter::Instance()->GetTaskResult(nTaskID, strJson))
+    {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"错误的任务ID");
+        return -1;
+    }
+    Json::Value vRoot;
+    Json::Reader rd;
+    if (!rd.parse(strJson, vRoot))
+    {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"json解析失败");
+        return -1;
+    }
+    try
+    {
+        Json::Value& vData = vRoot["data"];
+        if (vData.size() < 1)
+        {
+            OUTPUT_XYLOG(LEVEL_INFO, L"没有查询到游戏更新信息");
+            return 0;
+        }
+
+        for (size_t i = 0; i < vData.size(); ++i)
+        {
+            auto strGameID = vData[i]["game_id"].asString();
+            __int64 nGameID = _atoi64(strGameID.c_str());
+
+            // 判断是否需要更新  和安卓保持同步
+            // 1.room必须更新
+            auto ver = vData[i]["ver"].asString();
+            auto source_ver = vData[i]["source_ver"].asString();
+            auto config_ver = vData[i]["cfg_ver"].asString();
+
+            //page_game_->UpdateGame(PublicLib::Utf8ToU(strGameID), PublicLib::Utf8ToU(ver), PublicLib::Utf8ToU(source_ver), PublicLib::Utf8ToU(config_ver));
+        }
+    }
+    catch (...)
+    {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"json解析失败");
+    }
+    return 0;
 }

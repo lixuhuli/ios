@@ -62,6 +62,8 @@ protected:
     virtual LRESULT OnMsgIosEngineApplication(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnMsgHotkey(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
+    virtual LRESULT OnMsgGameCheckUpdateGame(WPARAM wParam, LPARAM lParam);
+
     LRESULT OnMsgCopyData(WPARAM wParam, LPARAM lParam);
     LRESULT OnCopyDataStartGame(COPYDATASTRUCT* pCopyData);
     LRESULT OnCopyDataGameStatus(COPYDATASTRUCT* pCopyData);

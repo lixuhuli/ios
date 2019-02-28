@@ -30,8 +30,11 @@ public:
 
     void UpdateLoadLayout();
 
-protected:
+    void ShowUninstallBtnStatus(bool show);
 
+protected:
+    void OnTimer(int nTimerID, CButtonUI* btn_pause);
+    enum { TIMER_ID_BUTTON_LONGDOWN = 17 };
 
     BEGIN_INIT_CTRL()
     END_INIT_CTRL()
@@ -44,6 +47,10 @@ protected:
     // 回调处理
     virtual void UpdateGameIcon(const __int64& nGameID, const wstring& strName, const wstring& strVersion) override;
     virtual void ApplicationRemoved(const __int64& nGameID) override;
+
+    bool OnClickItemBtnUpdate(void* param, void* param_item);
+    bool OnClickItemBtnDelete(void* param, void* param_item);
+    bool OnItemBtnPauseEvent(void* param);
 
 private:
     void LoadDownloadData(const CDownloadItemUI::Type& type);
@@ -58,6 +65,8 @@ private:
     CVerticalLayoutUI* root_;
     CTabLayoutUI* layout_page_;
     CPageLayoutUI* layout_page_game_;
+
+    bool shwo_del_button_;
 };
 
 #endif // __PAGE_GAME_H__

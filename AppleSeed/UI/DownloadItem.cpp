@@ -12,6 +12,8 @@ CDownloadItemUI::CDownloadItemUI()
  , label_game_icon_(nullptr) 
  , progress_percent_(nullptr)
  , btn_pause_(nullptr)
+ , btn_update_(nullptr)
+ , btn_delete_(nullptr)
  , label_game_discribe_(nullptr) {
 }
 
@@ -61,6 +63,7 @@ bool CDownloadItemUI::AddDownloadItem(const ITask *task) {
     else CDownloadMgr::Instance()->DownloadIcon(task->nGameID, task->strName);
 
     if (type_ == loading && progress_percent_) progress_percent_->SetVisible(true);
+    if (type_ == history && btn_update_) btn_update_->SetVisible(true);
 
     if (label_game_discribe_) {
         label_game_discribe_->SetText(task->strName.c_str());
@@ -121,12 +124,14 @@ void CDownloadItemUI::ChangeItemLoadState(UINT_PTR nTask, TaskState state, __int
     }
 
     label_game_discribe_->SetText(strStateText);
+    label_game_discribe_->SetTextColor(state == Ts_Loading ? 0xFFF57519 : 0xFF404040);
 }
 
 void CDownloadItemUI::OnItemInstall(UINT_PTR nTask) {
     if (!m_pManager) return;
 
     if (btn_pause_) btn_pause_->SetEnabled(false);
+    if (btn_delete_) btn_delete_->SetVisible(false);
     m_pManager->SetTimer(this, TIMER_ID_INSTALLING, 100);
     install_frame_ = 228;
 
@@ -135,12 +140,18 @@ void CDownloadItemUI::OnItemInstall(UINT_PTR nTask) {
     strPercent.Format(L"%s file='download/loading/228.png'", progress_percent_->GetUserData().GetData());
     progress_percent_->SetBkImage(strPercent.GetData());
     label_game_discribe_->SetText(strStateText);
+    label_game_discribe_->SetTextColor(0xFF404040);
 }
 
 void CDownloadItemUI::OnItemFinish(UINT_PTR nTask) {
     if (!m_pManager) return;
 
     m_pManager->KillTimer(this, TIMER_ID_INSTALLING);
+}
+
+void CDownloadItemUI::UpdateUninstallBtnStatus(bool show) {
+    if (btn_pause_ && !btn_pause_->IsEnabled()) show = false;
+    if (btn_delete_) btn_delete_->SetVisible(show);
 }
 
 void CDownloadItemUI::UpdateGameIcon(const wstring& strName, const wstring& strVersion) {
@@ -163,6 +174,8 @@ void CDownloadItemUI::OnTimer(int nTimerID) {
 bool CDownloadItemUI::OnClickBtnPause(void* param) {
     if (!btn_pause_) return true;
 
+    if (btn_delete_ && btn_delete_->IsVisible()) return true;
+
     if (btn_pause_->GetTag() == 1) {
         CDownloadMgr::Instance()->ReloadTask(GetTag());
         btn_pause_->SetTag(0);
@@ -180,6 +193,7 @@ void CDownloadItemUI::OnInstallingIpa() {
     strPercent.Format(L"%s file='download/loading/%.3d.png'", progress_percent_->GetUserData().GetData(), install_frame_);
     progress_percent_->SetBkImage(strPercent.GetData());
     label_game_discribe_->SetText(strStateText);
+    label_game_discribe_->SetTextColor(0xFF404040);
 
     if (install_frame_ >= (int)progress_percent_->GetTag()) {
         m_pManager->KillTimer(this, TIMER_ID_INSTALLING);

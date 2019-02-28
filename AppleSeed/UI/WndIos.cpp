@@ -4,6 +4,7 @@
 #include "GlobalData.h"
 #include "Ios/IosMgr.h"
 #include "CommonWnd.h"
+#include "MsgDefine.h"
 
 #define EVENT_OP_MOUSE_DOWN     10
 #define EVENT_OP_MOUSE_UP       11

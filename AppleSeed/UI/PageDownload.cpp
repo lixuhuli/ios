@@ -5,11 +5,13 @@
 #include "Download/DownloadMgr.h"
 #include "CallBack/callback_mgr.h"
 #include "Ios/IosMgr.h"
+#include "CommonWnd.h"
 
 CPageDownloadUI::CPageDownloadUI(CControlUI* root)
  : root_(dynamic_cast<CVerticalLayoutUI*>(root))
  , layout_page_(nullptr)
- , layout_page_game_(nullptr) {
+ , layout_page_game_(nullptr)
+ , shwo_del_button_(false) {
      CCallBackMgr::Instance()->AddObserver(AppleSeedCallback::BasePtr());
 }
 
@@ -219,6 +221,18 @@ CDownloadItemUI* CPageDownloadUI::CreateDownloadItem(ITask* task, const CDownloa
     item->InitItemState(task);
     item->SetTag((UINT_PTR)task);
     item->SetName(name.GetData());
+    item->UpdateUninstallBtnStatus(shwo_del_button_);
+
+    if (type == CDownloadItemUI::history) {
+        auto button = item->btn_update();
+        if (button) button->Subscribe(DUI_MSGTYPE_CLICK, MakeDelegate(this, &CPageDownloadUI::OnClickItemBtnUpdate, (void*)item));
+    }
+
+    auto button = item->btn_delete();
+    if (button) button->Subscribe(DUI_MSGTYPE_CLICK, MakeDelegate(this, &CPageDownloadUI::OnClickItemBtnDelete, (void*)item));
+
+    button = item->btn_pause();
+    if (button) button->OnEvent += MakeDelegate(this, &CPageDownloadUI::OnItemBtnPauseEvent);
 
     layout_page_game_->AddAt(item, index);
 
@@ -309,4 +323,115 @@ void CPageDownloadUI::UpdateLoadLayout() {
     }
 
     UpdateLayoutPage();
+}
+
+bool CPageDownloadUI::OnClickItemBtnUpdate(void* param, void* param_item) {
+    TNotifyUI* notify = (TNotifyUI*)param;
+    if (notify == nullptr || notify->pSender == nullptr) return true;
+
+    auto btn_update = dynamic_cast<CButtonUI*>(notify->pSender);
+    auto item = static_cast<CDownloadItemUI*>(param_item);
+
+    if (!btn_update || !item) return true;
+
+    UINT_PTR nTask = item->GetTag();
+    RemoveLoadLayout(item, CDownloadItemUI::history);
+
+    CDownloadMgr::Instance()->ReInstallFinishTask(nTask);
+
+    UpdateLayoutPage();
+
+    return true;
+}
+
+bool CPageDownloadUI::OnClickItemBtnDelete(void* param, void* param_item) {
+    TNotifyUI* notify = (TNotifyUI*)param;
+    if (notify == nullptr || notify->pSender == nullptr) return true;
+
+    auto btn_delete = dynamic_cast<CButtonUI*>(notify->pSender);
+    auto item = static_cast<CDownloadItemUI*>(param_item);
+
+    if (!btn_delete || !item) return true;
+
+    CStdString str;
+    UINT_PTR nTask = item->GetTag();
+    ITask* task = (ITask*)nTask;
+    if (!task) str = L"确定删除当前项吗？";
+    else str.Format(L"确定删除%s吗？", task->strName.c_str());
+
+    if (IDOK != ShowMsg(root_->GetManager()->GetPaintWindow(), L"删除", str.GetData(), MB_OKCANCEL)) return true;
+
+    auto type = item->GetType();
+
+    RemoveLoadLayout(item, type);
+
+    if (type == CDownloadItemUI::history) {
+        CDownloadMgr::Instance()->DeleteFinishTask(nTask, TRUE);
+        UpdateLayoutPage();
+    }
+    else if (type == CDownloadItemUI::loading) {
+        CDownloadMgr::Instance()->DeleteLoadTask(nTask, TRUE, TRUE);
+        UpdateLayoutPage();
+    }
+
+    return true;
+}
+
+bool CPageDownloadUI::OnItemBtnPauseEvent(void* param) {
+    TEventUI* event = (TEventUI*)param;
+    if (!event || !event->pSender) return true;
+
+    auto btn_pause = dynamic_cast<CButtonUI*>(event->pSender);
+    if (!btn_pause) return true;
+
+    auto pManager = root_->GetManager();
+    if (!pManager) return true;
+
+    switch (event->Type) {
+    case UIEVENT_TIMER:
+        OnTimer(event->wParam, btn_pause);
+        break;
+    case UIEVENT_BUTTONDOWN:
+        if (btn_pause->IsEnabled() && !shwo_del_button_) {
+            pManager->SetTimer(btn_pause, TIMER_ID_BUTTON_LONGDOWN, 1000);
+        }
+        break;
+    case UIEVENT_BUTTONUP:
+        pManager->KillTimer(btn_pause, TIMER_ID_BUTTON_LONGDOWN);
+        break;
+    case UIEVENT_MOUSELEAVE: {
+            pManager->KillTimer(btn_pause, TIMER_ID_BUTTON_LONGDOWN);
+        }
+        break;
+    default:
+        break;
+    }
+
+    return true;
+}
+
+void CPageDownloadUI::OnTimer(int nTimerID, CButtonUI* btn_pause) {
+    if (!btn_pause) return;
+
+    auto pManager = btn_pause->GetManager();
+    if (!pManager) return;
+
+    if (nTimerID == TIMER_ID_BUTTON_LONGDOWN) {
+        pManager->KillTimer(btn_pause, TIMER_ID_BUTTON_LONGDOWN);
+        ShowUninstallBtnStatus(true);
+    }
+}
+
+void CPageDownloadUI::ShowUninstallBtnStatus(bool show) {
+    if (!layout_page_game_) return;
+
+    if (shwo_del_button_ == show) return;
+
+    shwo_del_button_ = show;
+
+    for (int i = 0; i < layout_page_game_->GetCount(); i++) {
+        auto item = (CDownloadItemUI*)layout_page_game_->GetItemAt(i);
+        if (!item) continue;
+        item->UpdateUninstallBtnStatus(show);
+    }
 }

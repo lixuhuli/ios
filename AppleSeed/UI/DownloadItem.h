@@ -34,11 +34,17 @@ public:
     void ChangeItemLoadState(UINT_PTR nTask, TaskState state, __int64 nTotalSize, __int64 nLoadSize, int nSpeed, UINT_PTR nData); // 更改下载任务状态
     void OnItemInstall(UINT_PTR nTask); // 更改安装任务状态
     void OnItemFinish(UINT_PTR nTask);  // 更改安装任务状态
+    void UpdateUninstallBtnStatus(bool show);
+
     virtual bool AddDownloadItem(const ITask *task);
     virtual void UpdateGameIcon(const wstring& strName, const wstring& strVersion);
 
     void SetType(const Type& type) { type_ = type; }
     const Type& GetType() { return type_; }
+
+    CButtonUI* btn_update() { return btn_update_; };
+    CButtonUI* btn_pause() { return btn_pause_; };
+    CButtonUI* btn_delete() { return btn_delete_; };
 
 protected:
     enum { TIMER_ID_INSTALLING = 16 };
@@ -49,6 +55,8 @@ protected:
         DECLARE_CTRL_TYPE_PAGE(label_game_discribe_, CLabelUI, this, L"label_discribe")
         DECLARE_CTRL_TYPE_PAGE(progress_percent_, CControlUI, this, L"progress_percent")
         DECLARE_CTRL_TYPE_PAGE(btn_pause_, CButtonUI, this, L"btn_pause")
+        DECLARE_CTRL_TYPE_PAGE(btn_update_, CButtonUI, this, L"btn_update")
+        DECLARE_CTRL_TYPE_PAGE(btn_delete_, CButtonUI, this, L"btn_delete")
     END_INIT_CTRL()
 
     BEGIN_BIND_CTRL()
@@ -66,6 +74,8 @@ private:
     CControlUI* progress_percent_;
 
     CButtonUI* btn_pause_;
+    CButtonUI* btn_update_;
+    CButtonUI* btn_delete_;
 
     Type type_;
     int install_frame_;

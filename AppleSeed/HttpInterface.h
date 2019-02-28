@@ -36,7 +36,7 @@
 
 #else
 //请求游戏详情
-#define URL_REQUEST_GAME	L"http://testguoren.abcs8.com/v1/gameinfo/index"
+#define URL_REQUEST_GAME	L"http://guorenapi.5fun.com/v1/gameinfo/index"
 
 // 安卓游戏请求 目前只支持测试环境
 #define URL_REQUEST_ANDROID_GAME_TEST	L"http://testpcv1.ctapi.papa91.com/pc/game/gameinfov4"
