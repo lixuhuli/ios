@@ -341,6 +341,8 @@ bool CPageDownloadUI::OnClickItemBtnUpdate(void* param, void* param_item) {
 
     UpdateLayoutPage();
 
+    PostNeedUpdateGameCount();
+
     return true;
 }
 
@@ -368,6 +370,7 @@ bool CPageDownloadUI::OnClickItemBtnDelete(void* param, void* param_item) {
     if (type == CDownloadItemUI::history) {
         CDownloadMgr::Instance()->DeleteFinishTask(nTask, TRUE);
         UpdateLayoutPage();
+        PostNeedUpdateGameCount();
     }
     else if (type == CDownloadItemUI::loading) {
         CDownloadMgr::Instance()->DeleteLoadTask(nTask, TRUE, TRUE);
@@ -434,4 +437,31 @@ void CPageDownloadUI::ShowUninstallBtnStatus(bool show) {
         if (!item) continue;
         item->UpdateUninstallBtnStatus(show);
     }
+}
+
+void CPageDownloadUI::PostNeedUpdateGameCount() {
+    int need_update_count = 0;
+
+    for (int i = 0; i < layout_page_game_->GetCount(); i++) {
+        auto item = (CDownloadItemUI*)layout_page_game_->GetItemAt(i);
+        if (!item) continue;
+
+        if (item->GetType() == CDownloadItemUI::loading) continue;
+
+        if (item->need_update()) need_update_count++;
+    }
+
+    ::PostMessage(CGlobalData::Instance()->GetMainWnd(), WM_MAINWND_MSG_COMMON, WpCommonUpdateLoadCount, need_update_count);
+}
+
+void CPageDownloadUI::UpdateGameStatus(const wstring& strGameID, const wstring& strVer) {
+    if (!layout_page_game_) return;
+
+    auto item = (CDownloadItemUI*)layout_page_game_->FindSubControl(strGameID.c_str());
+    if (!item) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"没有找到对应的节点");
+        return;
+    }
+
+    item->UpdateUpdateBtnStatus(strVer);
 }

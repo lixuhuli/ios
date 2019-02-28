@@ -32,6 +32,10 @@ public:
 
     void ShowUninstallBtnStatus(bool show);
 
+    void UpdateGameStatus(const wstring& strGameID, const wstring& strVer);
+
+    void PostNeedUpdateGameCount();
+
 protected:
     void OnTimer(int nTimerID, CButtonUI* btn_pause);
     enum { TIMER_ID_BUTTON_LONGDOWN = 17 };

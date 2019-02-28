@@ -14,6 +14,7 @@ CDownloadItemUI::CDownloadItemUI()
  , btn_pause_(nullptr)
  , btn_update_(nullptr)
  , btn_delete_(nullptr)
+ , need_update_(false)
  , label_game_discribe_(nullptr) {
 }
 
@@ -63,7 +64,6 @@ bool CDownloadItemUI::AddDownloadItem(const ITask *task) {
     else CDownloadMgr::Instance()->DownloadIcon(task->nGameID, task->strName);
 
     if (type_ == loading && progress_percent_) progress_percent_->SetVisible(true);
-    if (type_ == history && btn_update_) btn_update_->SetVisible(true);
 
     if (label_game_discribe_) {
         label_game_discribe_->SetText(task->strName.c_str());
@@ -154,6 +154,14 @@ void CDownloadItemUI::UpdateUninstallBtnStatus(bool show) {
     if (btn_delete_) btn_delete_->SetVisible(show);
 }
 
+void CDownloadItemUI::UpdateUpdateBtnStatus(const wstring& strVer) {
+    ITask* task = (ITask*)GetTag();
+    if (!task) return;
+
+    need_update_ = (strVer != task->strVersion && type_ == history);
+    if (btn_update_) btn_update_->SetVisible(need_update_ == true);
+}
+
 void CDownloadItemUI::UpdateGameIcon(const wstring& strName, const wstring& strVersion) {
     if (!label_game_icon_) return;
 
@@ -163,6 +171,10 @@ void CDownloadItemUI::UpdateGameIcon(const wstring& strName, const wstring& strV
         icon_file.Format(L"file='%s'", icon_file_name.c_str());
         label_game_icon_->SetBkImage(icon_file_name.c_str());
     }
+}
+
+bool CDownloadItemUI::need_update() {
+    return need_update_;
 }
 
 void CDownloadItemUI::OnTimer(int nTimerID) {

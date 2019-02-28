@@ -101,6 +101,7 @@ protected:
         DECLARE_CTRL_TYPE(progress_update_, CProgressUI, L"progress_update")
         DECLARE_CTRL_TYPE(lbl_update_status_, CLabelUI, L"lbl_update_status")
         DECLARE_CTRL_TYPE(btn_install_home_, CButtonUI, L"btn_install_home")
+        DECLARE_CTRL_TYPE(label_load_count_, CLabelUI, L"lbl_load_count")
     END_INIT_CTRL()
 
     BEGIN_BIND_CTRL()
@@ -209,6 +210,7 @@ private:
     COptionUI* opt_home_market_;
     COptionUI* opt_home_bbs_;
     COptionUI* opt_home_download_;
+    CLabelUI* label_load_count_;
 
     CWebCtrlUI* web_home_page_;
 

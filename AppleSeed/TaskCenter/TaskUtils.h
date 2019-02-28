@@ -378,6 +378,12 @@ private:
 		virtual void Run()
 		{
 			PublicLib::CHttpClient http(PublicLib::ContentJson);
+            http.AddHttpHeader(L"version", L"1_1.0");
+            http.AddHttpHeader(L"Device-Id", L"356261050135555");
+            http.AddHttpHeader(L"Unique-Code", L"1AEE004A-73D0-4427-B1C4-B771A5CA1732");
+            http.AddHttpHeader(L"Access-Token", L"A2838C35DAAAE9058E521930B8D27F9A0538C7F8D7CD248A263820E6A6B27FB12058141FDA3CEF5D98BDC24C53F07B2B");
+            http.AddHttpHeader(L"Guoren-App-Interal-Tags", L"Salem501200");
+
 			Json::Value vRoot;
 			Json::Value vArray(Json::arrayValue);
 			for (auto itor = m_gameList.begin(); itor != m_gameList.end(); ++itor)

@@ -63,6 +63,7 @@ CWndMain::CWndMain()
  , lbl_update_status_(nullptr)
  , client_iphone_(nullptr)
  , btn_install_home_(nullptr)
+ , label_load_count_(nullptr)
  , client_iphone_emulator_(nullptr) {
     m_dwStyle = UI_WNDSTYLE_FRAME | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
     m_bShowShadow = true;
@@ -1095,6 +1096,23 @@ LRESULT CWndMain::OnMsgCommon(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
         TaskCenter::CTaskCenter::Instance()->CreateUserInfoTask(msg, nUid, strToken);
         break;
     }
+    case WpCommonUpdateLoadCount: {
+        if (!label_load_count_) break;
+
+        int nCount = (int)lParam;
+
+        CDuiString str;
+        if (nCount <= 0) str = L"";
+        else if (nCount < 100) str.Format(L"%d", nCount);
+        else str = L"...";
+
+        bool show = (nCount > 0);
+
+        label_load_count_->SetText(str.GetData());
+        label_load_count_->SetVisible(show);
+
+        break;
+    }
     default:
         break;
     }
@@ -1291,6 +1309,7 @@ LRESULT CWndMain::OnMsgGameCheckUpdateGame(WPARAM wParam, LPARAM lParam) {
         OUTPUT_XYLOG(LEVEL_ERROR, L"错误的任务ID");
         return -1;
     }
+
     Json::Value vRoot;
     Json::Reader rd;
     if (!rd.parse(strJson, vRoot))
@@ -1300,30 +1319,31 @@ LRESULT CWndMain::OnMsgGameCheckUpdateGame(WPARAM wParam, LPARAM lParam) {
     }
     try
     {
-        Json::Value& vData = vRoot["data"];
+        string strCode = vRoot["code"].asString();
+        if (strCode.compare("600") != 0) {
+            OUTPUT_XYLOG(LEVEL_ERROR, L"接口返回失败，code = %s", PublicLib::Utf8ToU(strCode).c_str());
+            return 0;
+        }
+
+        Json::Value& vData = vRoot["data_info"];
         if (vData.size() < 1)
         {
             OUTPUT_XYLOG(LEVEL_INFO, L"没有查询到游戏更新信息");
             return 0;
         }
 
-        for (size_t i = 0; i < vData.size(); ++i)
-        {
+        for (size_t i = 0; i < vData.size(); ++i) {
             auto strGameID = vData[i]["game_id"].asString();
-            __int64 nGameID = _atoi64(strGameID.c_str());
-
-            // 判断是否需要更新  和安卓保持同步
-            // 1.room必须更新
-            auto ver = vData[i]["ver"].asString();
-            auto source_ver = vData[i]["source_ver"].asString();
-            auto config_ver = vData[i]["cfg_ver"].asString();
-
-            //page_game_->UpdateGame(PublicLib::Utf8ToU(strGameID), PublicLib::Utf8ToU(ver), PublicLib::Utf8ToU(source_ver), PublicLib::Utf8ToU(config_ver));
+            auto version = vData[i]["game_ver"].asString();
+            page_download_->UpdateGameStatus(PublicLib::Utf8ToU(strGameID), PublicLib::Utf8ToU(version));
         }
     }
     catch (...)
     {
         OUTPUT_XYLOG(LEVEL_ERROR, L"json解析失败");
     }
+
+    page_download_->PostNeedUpdateGameCount();
+
     return 0;
 }

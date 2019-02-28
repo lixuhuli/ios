@@ -103,7 +103,7 @@
 
 
 //查询游戏更新接口
-#define URL_CHECK_GAME_UPDATE			L"http://anv3btapi.papa91.com/battle_pc/check_version/index"
+#define URL_CHECK_GAME_UPDATE			L"http://guorenapi.5fun.com/v1/gameupgrade/index"
 
 
 //游戏库左侧导航配置接口

@@ -35,6 +35,7 @@ public:
     void OnItemInstall(UINT_PTR nTask); // 更改安装任务状态
     void OnItemFinish(UINT_PTR nTask);  // 更改安装任务状态
     void UpdateUninstallBtnStatus(bool show);
+    void UpdateUpdateBtnStatus(const wstring& strVer);
 
     virtual bool AddDownloadItem(const ITask *task);
     virtual void UpdateGameIcon(const wstring& strName, const wstring& strVersion);
@@ -45,6 +46,8 @@ public:
     CButtonUI* btn_update() { return btn_update_; };
     CButtonUI* btn_pause() { return btn_pause_; };
     CButtonUI* btn_delete() { return btn_delete_; };
+
+    bool need_update();
 
 protected:
     enum { TIMER_ID_INSTALLING = 16 };
@@ -79,6 +82,8 @@ private:
 
     Type type_;
     int install_frame_;
+
+    bool need_update_;
 };
 
 #endif  // !#define (_GAME_ITEM_INCLUDE_H_)  
