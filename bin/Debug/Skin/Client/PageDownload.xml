@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Window>
   <TabLayout inset="20,60,20,0">
-    <PageLayout name="layout_page_game" item_width="130" item_height="173" dis_ver="10" align_edge="true" autocalcheight="false" />
+    <PageLayout name="layout_page_game" item_width="137" item_height="182" dis_ver="10" align_edge="true" autocalcheight="false" />
     
     <VerticalLayout>
 			<Control />

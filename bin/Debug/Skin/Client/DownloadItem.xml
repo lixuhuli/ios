@@ -1,13 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Window>
-  <DownloadItem width="130" height="173" >
-    <Control name="label_icon" width="130" height="130" />
-    <Control name="progress_percent" width="130" height="130" tag="372" bkimage="file='download/bk.png'" userdata="file='download/loading/bk.png'" float="true" pos="0,0,130,130" visible="false"/>
+  <DownloadItem width="137" height="182" >
+    <VerticalLayout	padding="7,9,0,0">
+      <Control name="label_icon" width="130" height="130" />
+      
+      <Control name="progress_percent" width="130" height="130" tag="372" bkimage="file='download/bk.png'" userdata="file='download/loading/bk.png'" float="true" pos="0,0,130,130" visible="false"/>
 
-    <Button name="btn_pause" tag="0" width="130" height="130" float="true" pos="0,0,130,130" />
+      <Button name="btn_pause" tag="0" width="130" height="130" float="true" pos="0,0,130,130" />
     
-    <Control height="6" />
+      <Control height="6" />
     
-    <Label name="label_discribe" height="20" tag="35" font="0" align="left" valign="top" singleline="false" textcolor="#FF404040" endellipsis="true" />
+      <HorizontalLayout height="20">
+        <Label name="label_discribe" height="20" tag="35" font="0" align="left" valign="top" singleline="false" textcolor="#FF404040" endellipsis="true" />
+        
+        <Control width="2" />
+        
+        <Button name="btn_update" tooltip="更新" width="43" height="18" font="0" padding="0,1,0,1" visible="false" normalimage="file='download/btn_update_nor.png'" hotimage="file='download/btn_update_hot.png'" pushedimage="file='download/btn_update_nor.png'" showcursor="true" />
+      </HorizontalLayout>
+    </VerticalLayout>
+    
+    <Button name="btn_delete" tooltip="删除" width="25" height="25" float="true" pos="0,0,25,25" visible="false" normalimage="file='download/btn_del_normal.png'" hotimage="file='download/btn_del_hot.png'" pushedimage="file='download/btn_del_normal.png'" showcursor="true" />
   </DownloadItem>
 </Window>
