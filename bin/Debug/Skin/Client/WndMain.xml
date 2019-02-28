@@ -41,7 +41,7 @@
 			<VerticalLayout padding="0,5,0,0" width="38" height="50">
 			  <Option name="opt_home_download" text="下载" tag="2" width="32" height="47" padding="0,3,6,0" textpadding="0,35,0,0," align="center" valign="center" font="0" normalimage="file='top/btn_download_nor.png' dest='0,0,32,32'" hotimage="file='top/btn_download_hot.png' dest='0,0,32,32'" selectedimage="file='top/btn_download_hot.png' dest='0,0,32,32'" group="page_home" showcursor="true"  animation="false"/>
 			  
-			  <Label name="lbl_load_count" tag="0" textcolor="#FF000000" text="89" font="5" float="true" pos="22,0,38,16" width="16" height="16" textpadding="0,0,0,1" bkimage="file='top/label_down_count.png' dest='1,1,15,15'" align="center" valign="center" visible="true" mouse="false" />
+			  <Label name="lbl_load_count" tag="0" textcolor="#FF000000" text="1" font="5" float="true" pos="22,0,38,16" width="16" height="16" textpadding="0,0,0,1" bkimage="file='top/label_down_count.png' dest='1,1,15,15'" align="center" valign="center" visible="false" mouse="false" />
 			</VerticalLayout>
 			
 			<Control width="70"/>
