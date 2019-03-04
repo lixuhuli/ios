@@ -24,6 +24,10 @@
 		  
 		  <Control width="115" height="24" padding="0,8,0,0" bkimage="file='top/logo.png'" />
 		  
+		  <Control width="9"/>
+		  
+		  <Button name="btn_per_opitimiz" text="ios 10" width="65" height="17" padding="0,12,0,0" textcolor="0xFF6C6C6C" align="left" valign="center" font="1" normalimage="file='top/btn_per_optimiz_warnning.png' dest='48,2,63,15'" userdata="file='top/btn_per_optimiz_warnning.png' dest='49,2,64,15'" showcursor="true" />
+		  
 		  <Control />
 			
 			<Option name="opt_home_market" text="商店" tag="1" width="32" height="47" padding="0,8,0,0" textpadding="0,35,0,0," align="center" valign="center" font="0" normalimage="file='top/btn_shopping_nor.png' dest='0,0,32,32'" hotimage="file='top/btn_shopping_hot.png' dest='0,0,32,32'" selectedimage="file='top/btn_shopping_hot.png' dest='0,0,32,32'" group="page_home" selected="true" showcursor="true"  animation="false"/>

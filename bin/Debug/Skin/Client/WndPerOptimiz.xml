@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="674,441" caption="0,0,0,63" bktrans="true">
+  <Font name="微软雅黑" size="12" />
+  <Font name="微软雅黑" size="14" />
+  <Font name="微软雅黑" size="16" />
+  
+  <VerticalLayout bkimage="file='update/bk_image.png'" inset="32,32,32,32">
+    <HorizontalLayout height="31">
+      <Control  />
+      
+      <Button name="btn_close" tooltip="关闭" width="16" height="15" showcursor="true" padding="0,8,0,0" normalimage="file='update/btn_close_nor.png'" hotimage="file='update/btn_close_hot.png'" pushedimage="file='update/btn_close_nor.png'" animation="false"/>
+      
+      <Control width="10" />
+    </HorizontalLayout>
+    
+    <VerticalLayout>
+      <Control height="10" />
+      
+      <Label width="281" height="31" font="2" padding="30,0,0,0" bkimage="file='update/per_optimiz_prefix.png'" align="left" textcolor="#FF3B3B3B" endellipsis="true" />
+      
+      <Control height="30" />
+      
+      <HorizontalLayout height="165">
+        <Control width="90" />
+        
+        <Control name="cpu_vt_logo" width="165" bkimage="file='update/cpu_vt_closed.png'" />
+        
+        <Control width="100" />
+        
+        <Control name="360_core_defend" width="165" bkimage="file='update/360_defend_closed.png'" />
+      </HorizontalLayout>
+      
+      <Control height="20"/>
+      
+      <HorizontalLayout height="35">
+        <Control width="103" />
+        
+        <HorizontalLayout width="140" height="35">
+          <Button name="btn_open_vt" tag="0" width="140" height="35" normalimage="file='update/btn_open_vt_nor.png'" hotimage="file='update/btn_open_vt_hot.png'" pushedimage="file='update/btn_open_vt_nor.png'" showcursor="true" />
+        </HorizontalLayout>
+        
+        <Control width="125" />
+        
+        <Button name="btn_set_360" width="140" height="35" normalimage="file='update/btn_set_360_nor.png'" hotimage="file='update/btn_set_360_hot.png'" pushedimage="file='update/btn_set_360_nor.png'" showcursor="true" />
+      </HorizontalLayout>
+      
+      <Control height="20"/>
+      
+      <HorizontalLayout height="15" padding="30,0,0,0"  >
+			  <Option name="check_show_per" width="80" height="13" padding="0,1,0,1" text="不再提示" textpadding="15,1,0,0" font="0" align="left" textcolor="0xF3B3B3B" showcursor="true" normalimage="file='update/check_show_nor.png' dest='0,0,13,13'" selectedimage="file='update/check_show_selected.png' dest='0,0,13,13'" selected="false" />
+			</HorizontalLayout>
+      
+      <Control />
+    </VerticalLayout>
+    
+  </VerticalLayout>
+</Window>
