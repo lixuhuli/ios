@@ -381,6 +381,9 @@
     <ClInclude Include="CPUID.h">
       <Filter>Public</Filter>
     </ClInclude>
+    <ClInclude Include="UI\WndPerOptimiz.h">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -565,6 +568,9 @@
     </ClCompile>
     <ClCompile Include="CPUID.cpp">
       <Filter>Public</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndPerOptimiz.cpp">
+      <Filter>源文件\UI\Wnd</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

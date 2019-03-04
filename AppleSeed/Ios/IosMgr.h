@@ -47,6 +47,8 @@ public:
 
     void UpdateIosWndStatus();
 
+    bool IsCPUVTOpened(bool& support);
+
 public:
     bool IosEngineOn(const string& iso_file);
     bool IosCheckLicense(const char *serial);

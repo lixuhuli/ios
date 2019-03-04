@@ -10,6 +10,12 @@ public:
 
 public:
     string GetBrand();
+    string GetVID();
+    string GetSerialNumber();
+
+    bool IsEST();
+    bool IsMMX();
+    bool IsSupportVT();
 
 private:
     void Executecpuid(DWORD eax); // 用来实现cpuid

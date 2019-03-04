@@ -78,6 +78,34 @@ std::wstring CGlobalData::GetKeyboardStr(int key_code) {
     return L"";
 }
 
+bool CGlobalData::IsCheckShowPerOptimiz() {
+    wstring strRunPath = GetRunPathW();
+    wstring config_path = strRunPath + _T("config.dat");
+    return (GetPrivateProfileInt(L"checkperoptimiz", L"show", 1, config_path.c_str()) == 1);
+}
+
+void CGlobalData::SetCheckShowPerOptimiz(bool show) {
+    wstring strRunPath = GetRunPathW();
+    wstring config_path = strRunPath + _T("config.dat");
+    wchar_t szValue[128] = { 0 };
+    swprintf_s(szValue, L"%d", show ? 1 : 0);
+    WritePrivateProfileString(L"checkperoptimiz", L"show", szValue, config_path.c_str());
+}
+
+bool CGlobalData::IsShowPerOptimizWnd() {
+    wstring strRunPath = GetRunPathW();
+    wstring config_path = strRunPath + _T("config.dat");
+    return (GetPrivateProfileInt(L"startup", L"showperoptimiz", 1, config_path.c_str()) == 1);
+}
+
+void CGlobalData::SetShowPerOptimizWnd(bool show) {
+    wstring strRunPath = GetRunPathW();
+    wstring config_path = strRunPath + _T("config.dat");
+    wchar_t szValue[128] = { 0 };
+    swprintf_s(szValue, L"%d", show ? 1 : 0);
+    WritePrivateProfileString(L"startup", L"showperoptimiz", szValue, config_path.c_str());
+}
+
 void CGlobalData::GetCpuInfo() {
     CPUID cpuid;
     auto info = cpuid.GetBrand();

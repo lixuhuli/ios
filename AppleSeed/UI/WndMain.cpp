@@ -18,6 +18,7 @@
 #include "WndUserCenter.h"
 #include "Database/DatabaseMgr.h"
 #include "Download/DownloadMgr.h"
+#include "WndPerOptimiz.h"
 
 #define URL_PACKAGE_NAME_INTEL   "MotherDisc_Intel_1230.7z"
 #define URL_PACKAGE_NAME_AMD     "MotherDisc_AMD_1230.7z"
@@ -55,6 +56,7 @@ CWndMain::CWndMain()
  , btn_user_icon_(nullptr)
  , user_mask_ico_(nullptr)
  , btn_key_(nullptr) 
+ , btn_per_opitimiz_(nullptr)
  , client_layout_left_(nullptr) 
  , client_layout_right_(nullptr) 
  , need_hide_left_layout_(false)
@@ -117,6 +119,20 @@ void CWndMain::InitWindow() {
     ::SetTimer(m_hWnd, TIMER_ID_CHECK_UPDATE, 1 * 1000, NULL);//1秒后检查更新
 
     RegisterHotKey(m_hWnd, ID_HOTKEY_BOS, MOD_ALT + MOD_CONTROL, 'N');
+
+    if (CGlobalData::Instance()->IsShowPerOptimizWnd()) {
+        ::PostMessage(m_hWnd, WM_MAINWND_MSG_SHOW_PEROPTIMIZATION, 0, 0);
+        CGlobalData::Instance()->SetShowPerOptimizWnd(false);
+    }
+    else {
+        bool support = false;
+        auto IsVTOpened = CIosMgr::Instance()->IsCPUVTOpened(support);
+        bool show_per = CGlobalData::Instance()->IsCheckShowPerOptimiz();
+        if (!show_per && IsVTOpened) {
+            btn_per_opitimiz_->SetNormalImage(L"");
+            btn_per_opitimiz_->SetEnabled(false);
+        }
+    }
 }
 
 void CWndMain::InitTasks() {
@@ -166,6 +182,8 @@ LRESULT CWndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
         case WM_MAINWND_MSG_GET_KEYBOARD: OnMsgGetKeyboardConfig(wParam, lParam, bHandled); break;
         case WM_MAINWND_MSG_IOSENGINE_APPLIACTION: OnMsgIosEngineApplication(wParam, lParam, bHandled); break;
         case WM_MAINWND_MSG_CHECK_UPDATE_GAME: OnMsgGameCheckUpdateGame(wParam, lParam); break;
+        case WM_MAINWND_MSG_SHOW_PEROPTIMIZATION: ShowPerOptimizWnd(); break;
+        case WM_MAINWND_MSG_SHOW_PEROPTIMIZATION_WARNING: OnMsgShowPerOptimizIcon(wParam, lParam, bHandled); break;
         default: bHandled = FALSE; break;
         }
 
@@ -638,6 +656,11 @@ bool CWndMain::OnBtnClickKey(void* param) {
     return true;
 }
 
+bool CWndMain::OnBtnShowPerOpitimiz(void* param) {
+    ShowPerOptimizWnd();
+    return true;
+}
+
 bool CWndMain::LoadIosEngine() {
     string iso_file = PublicLib::UToA(CGlobalData::Instance()->GetIosVmPath()) + "\\"+ GetUrlIsoName();
     PostStartApp(StatusBegin, CUserData::Instance()->GetFileUserID());
@@ -950,6 +973,14 @@ void CWndMain::ShowUserWnd() {
     pWnd->Create(m_hWnd, false);
     pWnd->CenterWindow();
     pWnd->ShowModal();
+}
+
+void CWndMain::ShowPerOptimizWnd() {
+    CWndPerOptimiz* wnd_ptr = new CWndPerOptimiz();
+    if (!wnd_ptr) return;
+
+    HWND hWnd = wnd_ptr->CreateModalWnd(m_hWnd);
+    ShowModalWnd(hWnd);
 }
 
 void CWndMain::SelectedHomePage(COptionUI* opt_select) {
@@ -1269,6 +1300,15 @@ LRESULT CWndMain::OnMsgHotkey(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
         ShowToast(m_hWnd, programme_mode ? L"已关闭编程键" : L"已开启编程键");
     }
 
+    return 0;
+}
+
+LRESULT CWndMain::OnMsgShowPerOptimizIcon(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    if (btn_per_opitimiz_) {
+        bool show = (wParam == 1);
+        btn_per_opitimiz_->SetNormalImage(show ? btn_per_opitimiz_->GetUserData().GetData() : L"");
+        btn_per_opitimiz_->SetEnabled(show);
+    }
     return 0;
 }
 

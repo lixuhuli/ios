@@ -103,6 +103,12 @@ public:
 
     std::wstring GetKeyboardStr(int key_code);
 
+    bool IsCheckShowPerOptimiz();
+    void SetCheckShowPerOptimiz(bool check);
+
+    bool IsShowPerOptimizWnd();
+    void SetShowPerOptimizWnd(bool show);
+
 public:
     void WriteSerialToDocument(const char* serial, size_t size);
 

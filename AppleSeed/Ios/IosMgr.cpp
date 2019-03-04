@@ -663,3 +663,17 @@ bool CIosMgr::SaveEngineReport(const std::wstring& input_file, const std::wstrin
     return (GetEngineReport(PublicLib::UToA(input_file).c_str(), PublicLib::UToA(output_file).c_str()) == 0);
 }
 
+bool CIosMgr::IsCPUVTOpened(bool& support) {
+    auto status = GetCPUVTStatus();
+    if (status == VT_STATUS_NOT_SUPPPORTED) return false;
+    else if (status == VT_STATUS_NEED_TURN_ON) {
+        support = true;
+        return false;
+    }
+    else if (status == VT_STATUS_OK) {
+        support = true;
+        return true;
+    }
+
+    return false;
+}

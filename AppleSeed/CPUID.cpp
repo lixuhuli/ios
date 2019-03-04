@@ -54,3 +54,50 @@ string CPUID::GetBrand() {
     return string(szBrand);  // 以string的形式返回
 }
 
+string CPUID::GetVID() {
+    char cVID[13];             // 申请13字节空间；
+    memset(cVID, 0, 13);       // 初始化
+
+    Executecpuid(0);           // 传入指令1
+
+    memcpy(cVID, &m_ebx, 4);   // 将m_ebx值（一共4字节），复制给VID[0]--VID[3];
+    memcpy(cVID + 4, &m_edx, 4);
+    memcpy(cVID + 8, &m_ecx, 4);
+
+    return string(cVID);
+}
+
+string CPUID::GetSerialNumber() {
+    Executecpuid(1);
+
+    bool isSupport = m_edx & (1<<18);            // edx是否为1代表CPU是否存在序列号
+
+    if (isSupport) {
+        char SerialNumber[12] = {0};
+        memcpy(SerialNumber, &m_eax, 4);         // eax为最高位的两个WORD
+
+        Executecpuid(3);                         // 执行cpuid，参数为eax= 3
+
+        memcpy(SerialNumber + 4, &m_ecx, 8);     // ecx 和edx为低位的4个WORD
+
+        return string(SerialNumber);
+    }
+    else return "";
+
+    return "";
+}
+
+bool CPUID::IsEST() {
+    Executecpuid(1);
+    return m_ecx &(1<<7);
+}
+
+bool CPUID::IsMMX() {
+    Executecpuid(1);
+    return m_edx &(1<<23);
+}
+
+bool CPUID::IsSupportVT() {
+    Executecpuid(1);
+    return m_ecx &(1<<5);
+}

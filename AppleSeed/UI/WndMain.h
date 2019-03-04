@@ -61,6 +61,7 @@ protected:
     virtual LRESULT OnMsgIosEngineUpdate(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnMsgIosEngineApplication(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnMsgHotkey(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    virtual LRESULT OnMsgShowPerOptimizIcon(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
     virtual LRESULT OnMsgGameCheckUpdateGame(WPARAM wParam, LPARAM lParam);
 
@@ -102,6 +103,7 @@ protected:
         DECLARE_CTRL_TYPE(lbl_update_status_, CLabelUI, L"lbl_update_status")
         DECLARE_CTRL_TYPE(btn_install_home_, CButtonUI, L"btn_install_home")
         DECLARE_CTRL_TYPE(label_load_count_, CLabelUI, L"lbl_load_count")
+        DECLARE_CTRL_TYPE(btn_per_opitimiz_, CButtonUI, L"btn_per_opitimiz")
     END_INIT_CTRL()
 
     BEGIN_BIND_CTRL()
@@ -128,6 +130,7 @@ protected:
         BIND_CTRL_CLICK(L"btn_record", &CWndMain::OnBtnClickRecord)
         BIND_CTRL_CLICK(L"btn_key", &CWndMain::OnBtnClickKey)
         BIND_CTRL_CLICK(L"lbl_user_ico", &CWndMain::OnBtnClickUser);
+        BIND_CTRL_CLICK(L"btn_per_opitimiz", &CWndMain::OnBtnShowPerOpitimiz);
         BIND_CTRL_EVENT(L"lbl_user_ico", DUI_MSGTYPE_MOUSEENTER, &CWndMain::OnEnterBtnUser);
         BIND_CTRL_EVENT(L"lbl_user_ico", DUI_MSGTYPE_MOUSELEAVE, &CWndMain::OnLeaveBtnUser);
     END_BIND_CTRL()
@@ -156,6 +159,8 @@ protected:
     bool OnBtnClickSnap(void* param);
     bool OnBtnClickRecord(void* param);
     bool OnBtnClickKey(void* param);
+
+    bool OnBtnShowPerOpitimiz(void* param);
 
     bool OnIphoneEmulatorSize(void* param);
 
@@ -198,6 +203,7 @@ private:
 
     void ShowVolumeWnd();
     void ShowUserWnd();
+    void ShowPerOptimizWnd();
 
     void SelectedHomePage(COptionUI* opt_select);
 
@@ -211,6 +217,7 @@ private:
     COptionUI* opt_home_bbs_;
     COptionUI* opt_home_download_;
     CLabelUI* label_load_count_;
+    CButtonUI* btn_per_opitimiz_;
 
     CWebCtrlUI* web_home_page_;
 

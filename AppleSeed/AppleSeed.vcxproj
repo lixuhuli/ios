@@ -246,6 +246,7 @@
     <ClInclude Include="UI\WndMain.h" />
     <ClInclude Include="UI\WndMsg.h" />
     <ClInclude Include="UI\WndPassword.h" />
+    <ClInclude Include="UI\WndPerOptimiz.h" />
     <ClInclude Include="UI\WndToast.h" />
     <ClInclude Include="UI\WndUser.h" />
     <ClInclude Include="UI\WndUserCenter.h" />
@@ -318,6 +319,7 @@
     <ClCompile Include="UI\WndMain_CopyData.cpp" />
     <ClCompile Include="UI\WndMsg.cpp" />
     <ClCompile Include="UI\WndPassword.cpp" />
+    <ClCompile Include="UI\WndPerOptimiz.cpp" />
     <ClCompile Include="UI\WndToast.cpp" />
     <ClCompile Include="UI\WndUser.cpp" />
     <ClCompile Include="UI\WndUserCenter.cpp" />
