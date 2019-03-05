@@ -85,25 +85,25 @@
           <VerticalLayout name="client_iphone_emulator">
             <Control />
 
-            <HorizontalLayout height="497">
+            <HorizontalLayout height="534">
               <Control />
               
-		          <VerticalLayout width="282" name="install_system" visible="true">
+		          <VerticalLayout width="300" name="install_system" visible="true">
 		            <Control height="181"/>
 		    
-		            <Control width="50" height="62" padding="113,0,0,0" bkimage="file='middle/logo.png'" />
+		            <Control width="50" height="62" padding="125,0,0,0" bkimage="file='middle/logo.png'" />
 		    
 		            <Control height="20" />
 		    
 		            <VerticalLayout height="36" name="slogan" >
-		              <Control width="140" height="36" padding="68,0,0,0" bkimage="file='middle/slogan.png'" />
+		              <Control width="300" height="36" bkimage="file='middle/slogan.png'" />
 		            </VerticalLayout>
 		        
 		            <TabLayout name="layout_install">
 		              <VerticalLayout>
 		                <Control />
 		          
-		                <Button name="btn_install_sys" width="159" height="30" padding="59,0,0,0" showcursor="true" normalimage="middle/btn_install_nor.png" hotimage="middle/btn_install_hot.png" pushedimage="middle/btn_install_nor.png"/>
+		                <Button name="btn_install_sys" width="159" height="30" padding="71,0,0,0" showcursor="true" normalimage="middle/btn_install_nor.png" hotimage="middle/btn_install_hot.png" pushedimage="middle/btn_install_nor.png"/>
 		          
 		                <Control height="80" />
 		              </VerticalLayout>
@@ -111,7 +111,7 @@
 		              <VerticalLayout>
 		                <Control height="50" />
 					
-					          <HorizontalLayout height="20" padding="31,0,0,0"  >
+					          <HorizontalLayout height="20" padding="43,0,0,0"  >
 						          <Progress name="progress_install" width="160" height="5" padding="0,7,0,0" bkimage="middle/progress_bk.png" foreimage="middle/progress.png" min="0" max="100" value="0" isstretchfore="false"/>
 						    
 						          <Control width="10" />
@@ -127,7 +127,7 @@
 					    
 					          <Control height="4" />
 					    
-					          <HorizontalLayout height="20" padding="31,0,0,0">
+					          <HorizontalLayout height="20" padding="43,0,0,0">
 					            <Label name="lbl_install_status" text="" height="20" font="0" width="140" textcolor="#FF262626" />
 					    
 					            <Label name="lbl_install_speed" text="" height="20" font="0" width="75" align="right" textcolor="#FF262626" />
@@ -139,7 +139,7 @@
 		              <VerticalLayout>
 		                <Control />
 		          
-		                <Control name="install_loading" width="40" height="40" padding="118,0,0,0" bkimage="middle/loading_1.png" />
+		                <Control name="install_loading" width="40" height="40" padding="130,0,0,0" bkimage="middle/loading_1.png" />
 		          
 		                <Control height="80" />
 		              </VerticalLayout>
@@ -162,13 +162,13 @@
 		            </TabLayout>
 		          </VerticalLayout>
 		    
-		          <VerticalLayout name="select_folder" width="282" inset="1,0,1,0" visible="false">
+		          <VerticalLayout name="select_folder" width="300" visible="false">
 		            <HorizontalLayout height="42" >
-		              <Option name="opt_user_submit" height="41" width="139" text="用户上传" font="2" textcolor="#FF8A8A8A" bottombordersize="1" bordercolor="0xFFD8D8D8" hottextcolor="#FF262626" selectedtextcolor="#FF262626" group="opt_submit" selected="true" showcursor="false"/>
+		              <Option name="opt_user_submit" height="41" width="149" text="用户上传" font="2" textcolor="#FF8A8A8A" bottombordersize="1" bordercolor="0xFFD8D8D8" hottextcolor="#FF262626" selectedtextcolor="#FF262626" group="opt_submit" selected="true" showcursor="false"/>
 		        
 		              <Control height="42" width="1" bkcolor="0xFFD8D8D8" />
 		        
-		              <Option name="opt_local_submit" height="41" width="140" text="本地上传" font="2" textcolor="#FF8A8A8A" hottextcolor="#FF262626" selectedtextcolor="#FF262626" group="opt_submit" enabled="false" showcursor="false"/>
+		              <Option name="opt_local_submit" height="41" width="150" text="本地上传" font="2" textcolor="#FF8A8A8A" hottextcolor="#FF262626" selectedtextcolor="#FF262626" group="opt_submit" enabled="false" showcursor="false"/>
 		            </HorizontalLayout>
 		      
 		            <Control height="24" />
@@ -257,7 +257,7 @@
 		      
 		            <Control />
 		      
-		            <Button name="btn_install_cancel" width="159" height="30" padding="58,0,0,0" showcursor="true" normalimage="middle/btn_cancel_nor.png" hotimage="middle/btn_cancel_hot.png" pushedimage="middle/btn_cancel_hot.png"/>
+		            <Button name="btn_install_cancel" width="159" height="30" padding="70,0,0,0" showcursor="true" normalimage="middle/btn_cancel_nor.png" hotimage="middle/btn_cancel_hot.png" pushedimage="middle/btn_cancel_hot.png"/>
 		      
 		            <Control height="80" />
 		      
