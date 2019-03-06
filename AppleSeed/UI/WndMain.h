@@ -104,6 +104,7 @@ protected:
         DECLARE_CTRL_TYPE(btn_install_home_, CButtonUI, L"btn_install_home")
         DECLARE_CTRL_TYPE(label_load_count_, CLabelUI, L"lbl_load_count")
         DECLARE_CTRL_TYPE(btn_per_opitimiz_, CButtonUI, L"btn_per_opitimiz")
+        DECLARE_CTRL_TYPE(loading_tip_, CVerticalLayoutUI, L"loading_tip")
     END_INIT_CTRL()
 
     BEGIN_BIND_CTRL()
@@ -209,6 +210,11 @@ private:
 
     void RemoveSpilthVmdk();
 
+    void StartWaiteSentnce();
+    void StopWaiteSentnce();
+    void SetWaitingImage();
+    void StartWaitingAnimation(bool show);
+
 private:
     CCefWebkitUI *web_focus_;
 
@@ -262,6 +268,10 @@ private:
     CVerticalLayoutUI* layout_update_;
     CProgressUI* progress_update_;
     CLabelUI* lbl_update_status_;
+
+    CVerticalLayoutUI* loading_tip_;
+    CStoryBoard* animation_linear_;
+    int waiting_frame_;
 };
 
 #endif  // !#define (_WND_MAIN_INCLUDE_H_)  

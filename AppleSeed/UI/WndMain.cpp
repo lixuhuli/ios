@@ -30,6 +30,7 @@
 #define URL_ISO_NAME_AMD         "MotherDisc_AMD_1230_Using.vmdk"
 
 #define DOWNLOAD_PROGRESS_TIME   (int)150
+#define LOADING_WAITING_TIME     (int)1000
 
 CWndMain::CWndMain()
  : web_focus_(nullptr)
@@ -66,6 +67,9 @@ CWndMain::CWndMain()
  , client_iphone_(nullptr)
  , btn_install_home_(nullptr)
  , label_load_count_(nullptr)
+ , loading_tip_(nullptr)
+ , animation_linear_(nullptr)
+ , waiting_frame_(0)
  , client_iphone_emulator_(nullptr) {
     m_dwStyle = UI_WNDSTYLE_FRAME | WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
     m_bShowShadow = true;
@@ -83,6 +87,39 @@ void CWndMain::InitWindow() {
 
     CGlobalData::Instance()->SetMainWnd(m_hWnd);
     CGlobalData::Instance()->SetMainWndPtr(this);
+
+    if (loading_tip_) animation_linear_ = loading_tip_->AddStoryBoard(L"linear_show");
+
+    if (animation_linear_ && loading_tip_) {
+        animation_linear_->Subscribe(EventStoryboardStarted, MakeDelegate([this]()->bool {
+            if (loading_tip_) loading_tip_->SetVisible(true);
+            return true;
+        }));
+
+        animation_linear_->Subscribe(EventStoryboardEnd, MakeDelegate([this]()->bool {
+            if (!loading_tip_) return true;
+            if (loading_tip_->GetTag() == 3) return true;
+
+            if (loading_tip_->GetTag() == 0) {
+                loading_tip_->SetTag(1);
+                animation_linear_->RemoveAnimator(1);
+
+                ::SetTimer(m_hWnd, TIMER_ID_LOADING_WAITING, LOADING_WAITING_TIME, nullptr);
+            }
+            else {
+                loading_tip_->SetTag(0);
+                animation_linear_->RemoveAnimator(1);
+
+                waiting_frame_++;
+                if (waiting_frame_ >= 3) waiting_frame_ = 0;
+
+                SetWaitingImage();
+                ::PostMessage(m_hWnd, WM_MAINWND_MSG_START_WAITING_ANIMATION, 1, 0);
+            }
+
+            return true;
+        }));
+    }
 
     // 暂时注销  后续扩展
     //AddNotifyIcon();
@@ -108,6 +145,7 @@ void CWndMain::InitWindow() {
         if (layout_install_) layout_install_->SelectItem(2);
         loading_frame_ = 0;
         UpdateLoadingIcon();
+        StartWaiteSentnce();
         ::SetTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS, DOWNLOAD_PROGRESS_TIME, nullptr);
     }
     else RemoveSpilthVmdk();
@@ -183,6 +221,7 @@ LRESULT CWndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
         case WM_MAINWND_MSG_IOSENGINE_APPLIACTION: OnMsgIosEngineApplication(wParam, lParam, bHandled); break;
         case WM_MAINWND_MSG_CHECK_UPDATE_GAME: OnMsgGameCheckUpdateGame(wParam, lParam); break;
         case WM_MAINWND_MSG_SHOW_PEROPTIMIZATION: ShowPerOptimizWnd(); break;
+        case WM_MAINWND_MSG_START_WAITING_ANIMATION: StartWaitingAnimation(wParam == 1);
         case WM_MAINWND_MSG_SHOW_PEROPTIMIZATION_WARNING: OnMsgShowPerOptimizIcon(wParam, lParam, bHandled); break;
         default: bHandled = FALSE; break;
         }
@@ -724,6 +763,7 @@ LRESULT CWndMain::OnDownloadMirrorSystem(WPARAM wParam, LPARAM lParam, BOOL& bHa
         if (layout_install_) layout_install_->SelectItem(2);
         loading_frame_ = 0;
         UpdateLoadingIcon();
+        StartWaiteSentnce();
         ::SetTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS, DOWNLOAD_PROGRESS_TIME, nullptr);
     }
     break;
@@ -741,6 +781,7 @@ LRESULT CWndMain::OnMsgFileUnziping(WPARAM wParam, LPARAM lParam, BOOL& bHandled
 LRESULT CWndMain::OnMsgFileUnzip(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     if (wParam == 1) {
         KillTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS);
+        StopWaiteSentnce();
         if (layout_install_) layout_install_->SelectItem(0);
         if (install_system_) install_system_->SetVisible(false);
         if (select_folder_) select_folder_->SetVisible(true);
@@ -752,6 +793,7 @@ LRESULT CWndMain::OnMsgFileUnzip(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 
     if (!MoveFileA(iso_init_file.c_str(), iso_file.c_str())) {
         KillTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS);
+        StopWaiteSentnce();
         if (layout_install_) layout_install_->SelectItem(0);
         if (install_system_) install_system_->SetVisible(false);
         if (select_folder_) select_folder_->SetVisible(true);
@@ -773,6 +815,7 @@ LRESULT CWndMain::OnMsgFileUnzip(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 LRESULT CWndMain::OnMsgEmulatorAlready(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     if (layout_install_) layout_install_->SelectItem(3);
     KillTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS);
+    StopWaiteSentnce();
     return 0;
 }
 
@@ -786,6 +829,7 @@ LRESULT CWndMain::OnMsgLoadIosEngine(WPARAM wParam, LPARAM lParam, BOOL& bHandle
     if (layout_install_) layout_install_->SelectItem(2);
     loading_frame_ = 0;
     UpdateLoadingIcon();
+    StartWaiteSentnce();
     ::SetTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS, DOWNLOAD_PROGRESS_TIME, nullptr);
     return 0;
 }
@@ -815,6 +859,11 @@ LRESULT CWndMain::OnTimer(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
             PublicLib::ShellExecuteRunas(strUpdatePath.c_str(), L"/autoupdate", NULL);
         }
         break;
+    case TIMER_ID_LOADING_WAITING: {
+            ::KillTimer(m_hWnd, TIMER_ID_LOADING_WAITING);
+            ::PostMessage(m_hWnd, WM_MAINWND_MSG_START_WAITING_ANIMATION, 0, 0);
+        }
+        break;
     default:
         break;
     }
@@ -833,6 +882,7 @@ void CWndMain::DownloadMirrorSystem() {
         if (layout_install_) layout_install_->SelectItem(2);
         loading_frame_ = 0;
         UpdateLoadingIcon();
+        StartWaiteSentnce();
         ::SetTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS, DOWNLOAD_PROGRESS_TIME, nullptr);
         return;
     }
@@ -993,6 +1043,47 @@ void CWndMain::SelectedHomePage(COptionUI* opt_select) {
 void CWndMain::RemoveSpilthVmdk() {
     wstring iso_path = CGlobalData::Instance()->GetIosVmPath();
     PublicLib::RemoveDir(iso_path.c_str());
+}
+
+void CWndMain::SetWaitingImage() {
+    if (!loading_tip_) return;
+
+    CStdString image;
+    image.Format(L"middle/loading_tip_%d.png", waiting_frame_);
+    loading_tip_->SetBkImage(image.GetData());
+}
+
+void CWndMain::StartWaitingAnimation(bool show) {
+    if (!animation_linear_ || !loading_tip_) return;
+
+    CFadeAnimator* fade_show = new CFadeAnimator(loading_tip_, CTween::LINEAR, 2000, show ? 0 : 255, show ? 255 : 0, false);
+    if (!fade_show) return;
+
+    animation_linear_->AddAnimator(1, fade_show, 0);
+    animation_linear_->Start();
+}
+
+void CWndMain::StartWaiteSentnce() {
+    if (!animation_linear_ || !loading_tip_) return;
+    waiting_frame_ = 0;
+
+    SetWaitingImage();
+
+    ::PostMessage(m_hWnd, WM_MAINWND_MSG_START_WAITING_ANIMATION, 1, 0);
+}
+
+void CWndMain::StopWaiteSentnce() {
+    if (!loading_tip_ || !animation_linear_) return;
+
+    loading_tip_->SetTag(3);
+
+    animation_linear_->Stop();
+
+    KillTimer(m_hWnd, TIMER_ID_LOADING_WAITING);
+
+    waiting_frame_ = 0;
+    loading_tip_->SetVisible(false);
+    loading_tip_->SetTag(0);
 }
 
 string CWndMain::GetUrlPackageName() {
