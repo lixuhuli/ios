@@ -140,8 +140,12 @@
 		                <Control />
 		          
 		                <Control name="install_loading" width="40" height="40" padding="130,0,0,0" bkimage="middle/loading_1.png" />
+		                
+		                <Control height="40" />
+		                
+		                <VerticalLayout height="36" name="loading_tip" tag="0" bkimage="file='middle/loading_tip_1.png'" visible="false" />
 		          
-		                <Control height="80" />
+		                <Control height="50" />
 		              </VerticalLayout>
 		        
 		              <VerticalLayout>
