@@ -126,8 +126,6 @@ void CGlobalData::SetIosRootPath(const wstring& path) {
 
     if (m_strIosPath != strOldPath) PublicLib::RemoveDir(strOldPath.c_str());
 
-    PublicLib::RemoveDir(L"C:\\Program Files (x86)\\2006");
-
     WritePrivateProfileString(L"emulator", L"iosrootpath", path.c_str(), config_path.c_str());
 }
 
