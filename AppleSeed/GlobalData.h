@@ -109,6 +109,9 @@ public:
     bool IsShowPerOptimizWnd();
     void SetShowPerOptimizWnd(bool show);
 
+    wstring GetIosRootPath();
+    void SetIosRootPath(const wstring& path);
+
 public:
     void WriteSerialToDocument(const char* serial, size_t size);
 

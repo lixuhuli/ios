@@ -623,6 +623,24 @@ bool CWndMain::OnClickGetIsoSys(void* param) {
 
     if (!install_system_ || !select_folder_ || !layout_install_) return true;
 
+    wstring strPath;
+    if (!ShowBrowserFolderDlg(m_pm.GetPaintWindow(), strPath)) return true;
+
+    if (strPath.rfind(L"\\") == strPath.length() - 1)
+        strPath = strPath.substr(0, strPath.length() - 1);
+
+    wstring strDisk = strPath.substr(0, 2);
+    ULARGE_INTEGER uiAvalaible, uiTotal, uiFree;
+    if (GetDiskFreeSpaceEx(strDisk.c_str(), &uiAvalaible, &uiTotal, &uiFree)) { // 小于3G
+        int nGSize = (int)(uiFree.QuadPart >> 30);
+        if (nGSize < 20) {
+            ShowMsg(m_hWnd, L"提示", L"您的磁盘空间不够，请重试！", MB_OK);
+            return false;
+        }
+    }
+
+    CGlobalData::Instance()->SetIosRootPath(strPath);
+
     install_system_->SetVisible(true);
     select_folder_->SetVisible(false);
     layout_install_->SelectItem(1);
