@@ -384,6 +384,9 @@
     <ClInclude Include="UI\WndPerOptimiz.h">
       <Filter>源文件\UI\Wnd</Filter>
     </ClInclude>
+    <ClInclude Include="UI\WndUpdateLog.h">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -570,6 +573,9 @@
       <Filter>Public</Filter>
     </ClCompile>
     <ClCompile Include="UI\WndPerOptimiz.cpp">
+      <Filter>源文件\UI\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WndUpdateLog.cpp">
       <Filter>源文件\UI\Wnd</Filter>
     </ClCompile>
   </ItemGroup>

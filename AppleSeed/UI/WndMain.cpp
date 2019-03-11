@@ -19,6 +19,7 @@
 #include "Database/DatabaseMgr.h"
 #include "Download/DownloadMgr.h"
 #include "WndPerOptimiz.h"
+#include "WndUpdateLog.h"
 
 #define URL_PACKAGE_NAME_INTEL   "MotherDisc_Intel_1230.7z"
 #define URL_PACKAGE_NAME_AMD     "MotherDisc_AMD_1230.7z"
@@ -171,6 +172,11 @@ void CWndMain::InitWindow() {
             btn_per_opitimiz_->SetEnabled(false);
         }
     }
+
+    if (IsShowUpdateWnd()) {
+        ::PostMessage(m_hWnd, WM_MAINWND_MSG_MENU, 0, 8);
+        SetShowUpdateWnd(false);
+    }
 }
 
 void CWndMain::InitTasks() {
@@ -221,8 +227,9 @@ LRESULT CWndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
         case WM_MAINWND_MSG_IOSENGINE_APPLIACTION: OnMsgIosEngineApplication(wParam, lParam, bHandled); break;
         case WM_MAINWND_MSG_CHECK_UPDATE_GAME: OnMsgGameCheckUpdateGame(wParam, lParam); break;
         case WM_MAINWND_MSG_SHOW_PEROPTIMIZATION: ShowPerOptimizWnd(); break;
-        case WM_MAINWND_MSG_START_WAITING_ANIMATION: StartWaitingAnimation(wParam == 1);
+        case WM_MAINWND_MSG_START_WAITING_ANIMATION: StartWaitingAnimation(wParam == 1); break;
         case WM_MAINWND_MSG_SHOW_PEROPTIMIZATION_WARNING: OnMsgShowPerOptimizIcon(wParam, lParam, bHandled); break;
+        case WM_MAINWND_MSG_MENU: return OnMsgMenu(wParam, lParam);
         default: bHandled = FALSE; break;
         }
 
@@ -494,6 +501,8 @@ void CWndMain::Exit() {
 
     CIosMgr::Instance()->CloseKeyWnd();
 
+    StopWaiteSentnce();
+
     Close();
 }
 
@@ -633,7 +642,7 @@ bool CWndMain::OnClickGetIsoSys(void* param) {
     ULARGE_INTEGER uiAvalaible, uiTotal, uiFree;
     if (GetDiskFreeSpaceEx(strDisk.c_str(), &uiAvalaible, &uiTotal, &uiFree)) { // 小于3G
         int nGSize = (int)(uiFree.QuadPart >> 30);
-        if (nGSize < 20) {
+        if (nGSize < 5) {
             ShowMsg(m_hWnd, L"提示", L"您的磁盘空间不够，请重试！", MB_OK);
             return false;
         }
@@ -1421,6 +1430,26 @@ LRESULT CWndMain::OnMsgShowPerOptimizIcon(WPARAM wParam, LPARAM lParam, BOOL& bH
     return 0;
 }
 
+LRESULT CWndMain::OnMsgMenu(WPARAM wParam, LPARAM lParam) {
+    switch (lParam) {
+    case 1: {
+        // 检查更新
+        wstring strUpdatePath = CGlobalData::Instance()->GetRunPath() + EXE_UPDATE;
+        PublicLib::ShellExecuteRunas(strUpdatePath.c_str(), L"/update", nullptr);
+        ShellExecute(NULL, L"open", strUpdatePath.c_str(), L"/update", NULL, SW_SHOW);
+        break;
+    }
+    case 4: Exit(); break;
+    case 5: ExitAccount(); break;
+    case 6: ActiveWnd(m_hWnd); break;
+    case 8: OnShowUpdateLog(); break;
+    default:
+        break;
+    }
+
+    return 0;
+}
+
 LRESULT CWndMain::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     if (wParam == SC_CLOSE && QuitOnSysClose())
         return 0;
@@ -1442,6 +1471,14 @@ LRESULT CWndMain::OnSysCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bH
     }
 
     return lRes;
+}
+
+void CWndMain::OnShowUpdateLog() {
+    CWndUpdateLog* wnd_ptr = new CWndUpdateLog();
+    if (!wnd_ptr) return;
+
+    HWND hWnd = wnd_ptr->CreateModalWnd(m_hWnd);
+    ShowModalWnd(hWnd);
 }
 
 LRESULT CWndMain::OnMsgGameCheckUpdateGame(WPARAM wParam, LPARAM lParam) {

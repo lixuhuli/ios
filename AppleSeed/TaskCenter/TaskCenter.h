@@ -52,7 +52,7 @@ namespace TaskCenter{
 		UINT_PTR CreateGameRecommandIcoTask(const MSG& msg, const wstring& strIcoUrl, const wstring& strSavePath);
 		UINT_PTR CreateDownloadFileTask(const MSG& msg, const string& strUrl, const wstring& strSavePath);
 		UINT_PTR CreateUrlTask(const MSG& msg, const wstring& strUrl);
-        UINT_PTR CreateGetUpdateLogTask(const MSG& msg);
+        UINT_PTR CreateGetUpdateLogTask(const MSG& msg, const wstring& ver);
 		UINT_PTR CreateCheckGameUpdateTask(const MSG& msg, const std::map<string, string>& gameList);
 		//UINT_PTR CreateUploadAvatarTask(const MSG& msg, int nUid, const string& strToken, const wstring& strImgPath);
 		bool GetDownloadFileTaskPath(UINT_PTR nTaskID, OUT wstring& strPath);

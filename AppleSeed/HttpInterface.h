@@ -133,6 +133,6 @@
 //获取更新日志 后续强更操作
 //#define URL_GET_UPDATE_LOG		L"http://pcv1.ctapi.papa91.com/pc/ver/pc_chk_app_ver"
 
-#define URL_GET_UPDATE_LOG		L"http://apipc.5fun.com/ver/version/index"
+#define URL_GET_UPDATE_LOG		L"http://guorenapi.5fun.com/v1/upgrade/upgradeText"
 
 #define URL_GET_KEYBOARD		L"http://guorenres.5fun.com/keyMap/"

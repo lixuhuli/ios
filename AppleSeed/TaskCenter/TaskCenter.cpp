@@ -651,18 +651,18 @@ namespace TaskCenter{
 		return (UINT_PTR)pTask;
 	}
 
-    UINT_PTR CTaskCenter::CreateGetUpdateLogTask(const MSG& msg) {
+    UINT_PTR CTaskCenter::CreateGetUpdateLogTask(const MSG& msg, const wstring& ver) {
         ITask* pTask = GetFreeTaskByType(m_taskList, TaskGetUpdateLog);
         if (NULL == pTask)
         {
-            CTaskGetUpdateLog *pUrlTask = new CTaskGetUpdateLog(msg);
+            CTaskGetUpdateLog *pUrlTask = new CTaskGetUpdateLog(msg, ver);
             pTask = pUrlTask;
             m_taskList.push_back((UINT_PTR)pTask);
         }
         else
         {
             pTask->Clear();
-            ((CTaskGetUpdateLog*)pTask)->Init(msg);
+            ((CTaskGetUpdateLog*)pTask)->Init(msg, ver);
         }
         HANDLE hThread = (HANDLE)_beginthreadex(NULL, 0, Thread, pTask, 0, NULL);
         pTask->SetThread(hThread);

@@ -248,6 +248,7 @@
     <ClInclude Include="UI\WndPassword.h" />
     <ClInclude Include="UI\WndPerOptimiz.h" />
     <ClInclude Include="UI\WndToast.h" />
+    <ClInclude Include="UI\WndUpdateLog.h" />
     <ClInclude Include="UI\WndUser.h" />
     <ClInclude Include="UI\WndUserCenter.h" />
     <ClInclude Include="UI\WndUserItem.h" />
@@ -321,6 +322,7 @@
     <ClCompile Include="UI\WndPassword.cpp" />
     <ClCompile Include="UI\WndPerOptimiz.cpp" />
     <ClCompile Include="UI\WndToast.cpp" />
+    <ClCompile Include="UI\WndUpdateLog.cpp" />
     <ClCompile Include="UI\WndUser.cpp" />
     <ClCompile Include="UI\WndUserCenter.cpp" />
     <ClCompile Include="UI\WndUserItem.cpp" />

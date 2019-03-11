@@ -63,6 +63,7 @@ protected:
     virtual LRESULT OnMsgHotkey(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnMsgShowPerOptimizIcon(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
+    virtual LRESULT OnMsgMenu(WPARAM wParam, LPARAM lParam);
     virtual LRESULT OnMsgGameCheckUpdateGame(WPARAM wParam, LPARAM lParam);
 
     LRESULT OnMsgCopyData(WPARAM wParam, LPARAM lParam);
@@ -189,6 +190,8 @@ protected:
 
     void UpdateUserUI(bool bClear = false);
     void UpdateUserIco();
+
+    void OnShowUpdateLog();
 
 private:
     static void LoadMirrorSystemCallback(PublicLib::EnumDownloadState state, double dltotal, double dlnow, void * Userdata);
