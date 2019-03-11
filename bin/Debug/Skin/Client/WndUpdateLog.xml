@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="448,474" caption="0,0,0,58" bktrans="true" bkdisplay="false">
+  <Font name="微软雅黑" size="12" />
+  <Font name="微软雅黑" size="14" />
+  <Font name="微软雅黑" size="16" />
+  
+  <VerticalLayout bkimage="file='update/bk_image.png'" inset="28,28,28,28">
+    <HorizontalLayout height="30">
+    	
+      <Control width="16"/>
+			
+			<Label text="更新日志" textcolor="#FF3B3B3B" font="2" width="100" align="left" valign="center" />
+      
+      <Control />
+      
+      <Button name="btn_close" tooltip="关闭" width="16" height="15" showcursor="true" padding="0,8,0,0" normalimage="file='update/btn_close_nor.png'" hotimage="file='update/btn_close_hot.png'" pushedimage="file='update/btn_close_nor.png'" animation="false"/>
+      
+      <Control width="10" />
+    </HorizontalLayout>
+    
+    <VerticalLayout bkcolor="#FFFFFFFF">
+      <Control name="label_icon" height="144" visible="false" />
+      
+      <Control height="22"/>
+      
+      <RichEdit name="label_prifix" padding="20,0,1,0" font="1" multiline="true" align="left" textcolor="#FF000001" vscrollbar="true" readonly="true" vscrollbar="true" vscrolltoside="1" vscrollbarstyle="width=&quot;10&quot; thumbnormalimage=&quot;file=&apos;update/slider_bk.png&apos; corner=&apos;4,4,4,4&apos;&quot; showbutton1=&quot;false&quot; showbutton2=&quot;false&quot;"/>
+      
+      <Control height="8"/>
+      
+      <Label name="label_version" height="16" font="0" align="center" textcolor="#FF666666" endellipsis="true" />
+      
+      <Control height="8"/>
+    </VerticalLayout>
+    
+  </VerticalLayout>
+</Window>
