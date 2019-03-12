@@ -21,6 +21,14 @@
       <Label textcolor="#FF262626" text="键盘操控" padding="0,2,0,0" width="80" height="18" font="0" endellipsis="true"/>
 
       <Control />
+      
+      <Button name="btn_local_file" width="14" height="11" padding="0,5,0,0" normalimage="KeyMap/tools/btn_local_file.png"  showcursor="true" />
+      
+      <Control width="8" />
+      
+      <Button name="bnt_help" width="12" height="11" padding="0,5,0,0" normalimage="KeyMap/tools/bnt_help.png"  showcursor="true" />
+      
+      <Control width="8" />
 
       <Button name="btn_close" width="12" height="11" padding="0,5,0,0" normalimage="KeyMap/tools/btn_close.png"  showcursor="true" />
 
