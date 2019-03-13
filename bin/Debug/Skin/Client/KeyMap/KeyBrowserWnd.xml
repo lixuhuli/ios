@@ -22,7 +22,7 @@
 
       <Control />
       
-      <Button name="btn_local_file" width="14" height="11" padding="0,5,0,0" normalimage="KeyMap/tools/btn_local_file.png"  showcursor="true" />
+      <Button name="btn_local" width="14" height="11" padding="0,5,0,0" normalimage="KeyMap/tools/btn_local_file.png"  showcursor="true" />
       
       <Control width="8" />
       
