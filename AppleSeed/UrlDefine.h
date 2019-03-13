@@ -23,4 +23,7 @@
 // 用户隐私政策
 #define URL_USER_PRIVATE_ITEM	    L"http://testguoren.abcs8.com/static/v1/privacy.html"
 
+// 【新手指导】键盘操控使用方法
+#define URL_KEYMAP_USING_METHOD	    L"http://grbbs.5fun.com/forum.php?mod=viewthread&tid=539"
+
 #endif // __URL_DEFINE_H__

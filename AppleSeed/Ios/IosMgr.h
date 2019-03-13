@@ -49,6 +49,8 @@ public:
 
     bool IsCPUVTOpened(bool& support);
 
+    void WriteBaseKeyBoard(const string& app_id);
+
 public:
     bool IosEngineOn(const string& iso_file);
     bool IosCheckLicense(const char *serial);
@@ -99,9 +101,7 @@ private:
 
     void CheckEngineUpdate();
 
-    bool HasKeyMapFile();
-
-    void WriteBaseKeyBoard(const string& app_id);
+    bool HasKeyMapFile();  
 
 private:
     CWndIos* ios_wnd_;

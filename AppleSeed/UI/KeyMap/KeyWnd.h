@@ -11,6 +11,8 @@ namespace emulator{
     struct tagItemInfo;
 }
 
+#define USER_DEFINED_KEYMAP_COUNT    int(5)
+
 class CMDLDropSource : public CDropSource {
 public:
     CMDLDropSource() {}
@@ -54,7 +56,10 @@ protected:
 
     virtual void OnFinalMessage(HWND hWnd);
 
+    bool OnClickBtnLocal(void* lpParam);
+    bool OnClickBtnHelp(void* lpParam);
     bool OnClickBtnClose(void* lpParam);
+
     bool OnBtnToolHandle(void* param);
     bool OnBtnToolNormal(void* param);
     bool OnBtnToolRightRun(void* param);
@@ -90,6 +95,8 @@ protected:
     END_INIT_CTRL()
 
     BEGIN_BIND_CTRL()
+        BIND_CTRL_CLICK_PAGE(L"btn_local", panel_tools_, &CKeyWnd::OnClickBtnLocal)
+        BIND_CTRL_CLICK_PAGE(L"bnt_help", panel_tools_, &CKeyWnd::OnClickBtnHelp)
         BIND_CTRL_CLICK_PAGE(L"btn_close", panel_tools_, &CKeyWnd::OnClickBtnClose)
         BIND_CTRL_CLICK_PAGE(L"btn_tool_handle", panel_tools_, &CKeyWnd::OnBtnToolHandle)
         BIND_CTRL_CLICK_PAGE(L"btn_tool_normal", panel_tools_, &CKeyWnd::OnBtnToolNormal)
@@ -133,6 +140,14 @@ private:
     void UpdateCtrls();
 
     CControlUI* FindKeyUI(int key_value);
+
+    CListLabelElementUI* CreateKeyElem(const wstring& key_name, const wstring& key_file, const wstring& key_default, int index = 0);
+
+    bool AddDefinedKeyBoard(const string& app_id, int nNum);
+
+    int GetUserDefinedNum();
+
+    int GetUserDefinedIndex(const wstring& defineds);
 
 private:
     CButtonUI* btn_tool_handle_;

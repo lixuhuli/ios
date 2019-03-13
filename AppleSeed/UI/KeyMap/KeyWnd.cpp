@@ -11,6 +11,7 @@
 #include "IntelligentUI.h"
 #include "MsgDefine.h"
 #include "KeyBrowserWnd.h"
+#include "UrlDefine.h"
 
 CKeyWnd::CKeyWnd(const string& key_id)
  : btn_tool_handle_(nullptr)
@@ -129,54 +130,67 @@ void CKeyWnd::ReadCloudKeyboardToCombox() {
 
     combox_keyboard_->RemoveAll();
 
+    CListLabelElementUI* key_elem = new CListLabelElementUI;
+    if (!key_elem) return;
+    key_elem->SetFixedHeight(35);
+    key_elem->SetText(L"             新建");
+    key_elem->SetBkImage(L"file='KeyMap/tools/combobox_create.png' dest='81,11,89,19'");
+    combox_keyboard_->Add(key_elem);
+
     auto config = CIosMgr::Instance()->GetKeyMapDir() + L"\\conf.ini";
 
     wchar_t szValue[1024] = { 0 };
     DWORD dwLen = GetPrivateProfileString(L"setting", L"record", L"", szValue, 1024, config.c_str());
     if (dwLen <= 0) return;
 
-    wstring records = szValue;
+    auto UpdateKeyboardCombox = [&](const std::vector<std::wstring>& _records) -> void {
+        auto it = _records.begin();
+        for (; it != _records.end(); it++) {
+            auto record = *it;
 
+            memset(szValue, 0, sizeof(szValue));
+            dwLen = GetPrivateProfileString(record.c_str(), L"name", L"", szValue, 1024, config.c_str());
+            if (dwLen <= 0) continue;
+
+            wstring key_name = szValue;
+
+            memset(szValue, 0, sizeof(szValue));
+            dwLen = GetPrivateProfileString(record.c_str(), L"file", L"", szValue, 1024, config.c_str());
+            if (dwLen <= 0) continue;
+
+            wstring key_file = szValue;
+            key_file =  CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_file;
+
+            memset(szValue, 0, sizeof(szValue));
+            dwLen = GetPrivateProfileString(record.c_str(), L"default", L"", szValue, 1024, config.c_str());
+
+            wstring key_default = szValue;
+            if (key_default.empty()) key_default = PublicLib::Utf8ToU(key_id_) + L"_default";
+            key_default =  CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_default;
+
+            int index = GetPrivateProfileInt(record.c_str(), L"index", 0, config.c_str());
+
+            CListLabelElementUI* key_elem = CreateKeyElem(key_name, key_file, key_default, index);
+            if (!key_elem) continue;
+
+            combox_keyboard_->Add(key_elem);
+        }
+    };
+
+    wstring records = szValue;
     std::vector<std::wstring> vec_records; 
     PublicLib::SplitStringW(records, L",", vec_records);
+    UpdateKeyboardCombox(vec_records);
 
-    auto it = vec_records.begin();
-    for (; it != vec_records.end(); it++) {
-        auto record = *it;
+    if (combox_keyboard_->GetCount() < 2) combox_keyboard_->RemoveAll();
+    else combox_keyboard_->SelectItemV2(1);
 
-        memset(szValue, 0, sizeof(szValue));
-        dwLen = GetPrivateProfileString(record.c_str(), L"name", L"", szValue, 1024, config.c_str());
-        if (dwLen <= 0) continue;
+    dwLen = GetPrivateProfileString(L"setting", L"defined", L"", szValue, 1024, config.c_str());
+    wstring defineds = szValue;
 
-        wstring key_name = szValue;
-
-        memset(szValue, 0, sizeof(szValue));
-        dwLen = GetPrivateProfileString(record.c_str(), L"file", L"", szValue, 1024, config.c_str());
-        if (dwLen <= 0) continue;
-
-        wstring key_file = szValue;
-        key_file =  CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_file;
-
-        memset(szValue, 0, sizeof(szValue));
-        dwLen = GetPrivateProfileString(record.c_str(), L"default", L"", szValue, 1024, config.c_str());
-
-        wstring key_default = szValue;
-        if (key_default.empty()) key_default = PublicLib::Utf8ToU(key_id_) + L"_default";
-        key_default =  CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_default;
-
-        CListLabelElementUI* key_elem = new CListLabelElementUI;
-        if (!key_elem) continue;
-
-        key_elem->SetFixedHeight(35);
-        key_elem->SetName(key_name.c_str());
-        key_elem->SetUserData(key_file.c_str());
-        key_elem->SetInheritableUserData(key_default.c_str());
-        key_elem->SetText(key_name.c_str());
-
-        combox_keyboard_->Add(key_elem);
-    }
-    
-    if (combox_keyboard_->GetCount() > 0) combox_keyboard_->SelectItemV2(0);
+    std::vector<std::wstring> vec_defineds; 
+    PublicLib::SplitStringW(defineds, L",", vec_defineds);
+    UpdateKeyboardCombox(vec_defineds);
 }
 
 void CKeyWnd::SetBrowserMode(bool browser_mode) {
@@ -217,6 +231,8 @@ void CKeyWnd::UpdateBrowserWnd(const QRect* lprc /*= nullptr*/) {
 
     rc.right = rc.left;
     rc.left -= 280;
+    rc.top -= 60;
+    rc.bottom += 60;
 
     MoveWindow(*browser_wnd_, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top, TRUE);
 }
@@ -241,6 +257,17 @@ LRESULT CKeyWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
         return lRes;
     }
     return __super::HandleMessage(uMsg, wParam, lParam);
+}
+
+bool CKeyWnd::OnClickBtnLocal(void* lpParam) {
+    auto key_dir = CIosMgr::Instance()->GetKeyMapDir();
+    ::ShellExecute(nullptr, L"open", key_dir.c_str(), nullptr, nullptr, SW_SHOWNORMAL);
+    return true;
+}
+
+bool CKeyWnd::OnClickBtnHelp(void* lpParam) {
+    ShellExecute(NULL, L"open", URL_KEYMAP_USING_METHOD, NULL, NULL, SW_SHOW);
+    return true;
 }
 
 bool CKeyWnd::OnClickBtnClose(void* lpParam) {
@@ -1360,6 +1387,25 @@ bool CKeyWnd::OnKeyPosChanged(void* param) {
 }
 
 bool CKeyWnd::OnComboxKeyboard(void* param) {
+    if (!combox_keyboard_ || combox_keyboard_->GetCount() < 2) return true;
+
+    if (combox_keyboard_->GetCurSel() == 0) {
+        int nNum = GetUserDefinedNum();
+        if (nNum < 1) {
+            combox_keyboard_->SelectItem(1);
+            return true;
+        }
+
+        if (!AddDefinedKeyBoard(key_id_, nNum)) {
+            combox_keyboard_->SelectItem(1);
+            return true;
+        }
+
+        combox_keyboard_->SelectItem(combox_keyboard_->GetCount() - 1);
+
+        return true;
+    }
+
     UpdateSceneInfo();
 
     LoadKeyItems();
@@ -1407,3 +1453,121 @@ CControlUI* CKeyWnd::FindKeyUI(int key_value) {
 
     return nullptr;
 }
+
+DuiLib::CListLabelElementUI* CKeyWnd::CreateKeyElem(const wstring& key_name, const wstring& key_file, const wstring& key_default, int index/* = 0*/) {
+    CListLabelElementUI* key_elem = new CListLabelElementUI;
+    if (!key_elem) return nullptr;
+
+    key_elem->SetFixedHeight(35);
+    key_elem->SetName(key_name.c_str());
+    key_elem->SetUserData(key_file.c_str());
+    key_elem->SetInheritableUserData(key_default.c_str());
+    key_elem->SetText(key_name.c_str());
+    key_elem->SetTag(index);
+
+    return key_elem;
+}
+
+bool CKeyWnd::AddDefinedKeyBoard(const string& app_id, int nNum) {
+    if (!combox_keyboard_) return false;
+
+    auto config = CIosMgr::Instance()->GetKeyMapDir() + L"\\conf.ini";
+
+    wchar_t szValue[1024] = { 0 };
+    DWORD dwLen = GetPrivateProfileString(L"setting", L"defined", L"", szValue, 1024, config.c_str());
+
+    wstring defineds = szValue;
+
+    auto index = GetUserDefinedIndex(defineds);
+
+    if (index > USER_DEFINED_KEYMAP_COUNT) return false;
+
+    if (!defineds.empty()) defineds.append(L",");
+
+    char szDefined[MAX_PATH] = { 0 };
+    sprintf(szDefined, "defined_%d", index);
+
+    string strDefined = szDefined;
+
+    defineds.append(PublicLib::AToU(strDefined));
+
+    wstring key_file = PublicLib::Utf8ToU(app_id + "_" + strDefined);
+    wstring key_default = key_file + L"_default";
+
+    WCHAR szIndex[MAX_PATH] = { 0 };
+    wsprintf(szIndex, L"%d", index);
+
+    WCHAR szName[MAX_PATH] = { 0 };
+    wsprintf(szName, index == 1 ? L"我的配置（本地）" : L"我的配置（本地%d）", index);
+
+    wstring key_name = szName;
+
+    CListLabelElementUI* key_elem = CreateKeyElem(key_name, key_file, key_default, index);
+    if (!key_elem) return false;
+
+    combox_keyboard_->Add(key_elem);
+
+    WritePrivateProfileString(L"setting", L"defined", defineds.c_str(), config.c_str());
+    WritePrivateProfileString(PublicLib::AToU(strDefined).c_str(), L"name", key_name.c_str(), config.c_str());
+    WritePrivateProfileString(PublicLib::AToU(strDefined).c_str(), L"file", key_file.c_str(), config.c_str());
+    WritePrivateProfileString(PublicLib::AToU(strDefined).c_str(), L"default", key_default.c_str(), config.c_str());
+    WritePrivateProfileString(PublicLib::AToU(strDefined).c_str(), L"index", szIndex, config.c_str());
+
+    return true;
+}
+
+int CKeyWnd::GetUserDefinedNum() {
+    if (!combox_keyboard_ || combox_keyboard_->GetCount() < 2) return -1;
+
+    std::map<int, int> mapNums;
+    for (int i = 0; i < combox_keyboard_->GetCount(); i++) {
+        CListLabelElementUI* key_elem = (CListLabelElementUI*)combox_keyboard_->GetItemAt(i);
+        if (!key_elem) continue;
+        if (key_elem->GetTag() == 0) continue;
+
+        mapNums[key_elem->GetTag()] = 0;
+    }
+
+    if (mapNums.empty()) return 1;
+
+    int nNum = 1;
+    auto it = mapNums.begin();
+    while (it != mapNums.end()) {
+        if (it->first != nNum) return nNum;
+
+        it++;
+        nNum++;
+    }
+
+    return nNum;
+}
+
+int CKeyWnd::GetUserDefinedIndex(const wstring& defineds) {
+    if (defineds.empty()) return 1;
+
+    std::vector<std::wstring> vec_defineds; 
+    PublicLib::SplitStringW(defineds, L",", vec_defineds);
+
+    std::map<int, int> mapIndexs;
+    for (auto it = vec_defineds.begin(); it != vec_defineds.end(); it++) {
+        wstring defined = *it;
+
+        auto pos = defined.rfind(L"_");
+        if (pos == wstring::npos) continue;
+
+        auto temp_index = _ttoi(defined.substr(pos + 1, defined.length() - pos - 1).c_str());
+
+        mapIndexs[temp_index] = 0;
+    }
+
+    int index = 1;
+    for (auto it = mapIndexs.begin(); it != mapIndexs.end(); ) {
+        if (it->first != index) return index;
+
+        it++;
+        index++;
+    }
+
+    return index;
+}
+

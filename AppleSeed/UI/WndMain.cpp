@@ -103,13 +103,11 @@ void CWndMain::InitWindow() {
 
             if (loading_tip_->GetTag() == 0) {
                 loading_tip_->SetTag(1);
-                animation_linear_->RemoveAnimator(1);
 
                 ::SetTimer(m_hWnd, TIMER_ID_LOADING_WAITING, LOADING_WAITING_TIME, nullptr);
             }
             else {
                 loading_tip_->SetTag(0);
-                animation_linear_->RemoveAnimator(1);
 
                 waiting_frame_++;
                 if (waiting_frame_ >= 3) waiting_frame_ = 0;
@@ -1086,7 +1084,7 @@ void CWndMain::StartWaitingAnimation(bool show) {
     CFadeAnimator* fade_show = new CFadeAnimator(loading_tip_, CTween::LINEAR, 2000, show ? 0 : 255, show ? 255 : 0, false);
     if (!fade_show) return;
 
-    animation_linear_->AddAnimator(1, fade_show, 0);
+    animation_linear_->AddAnimator(fade_show, 0);
     animation_linear_->Start();
 }
 
@@ -1111,6 +1109,8 @@ void CWndMain::StopWaiteSentnce() {
     waiting_frame_ = 0;
     loading_tip_->SetVisible(false);
     loading_tip_->SetTag(0);
+
+    animation_linear_->ClearAllAnimator();
 }
 
 string CWndMain::GetUrlPackageName() {
