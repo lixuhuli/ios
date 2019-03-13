@@ -53,6 +53,7 @@ protected:
 
     virtual LRESULT OnSetCursor(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnRemoveKey(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    virtual LRESULT OnRemoveItem(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
     virtual void OnFinalMessage(HWND hWnd);
 
@@ -81,7 +82,8 @@ protected:
 
     bool OnKeyPosChanged(void* param);
 
-    bool OnComboxKeyboard(void* param);
+    bool OnComboxKeyboardSelected(void* param);
+    bool OnComboxKeyboardClick(void* param);
 
     BEGIN_INIT_CTRL()
         DECLARE_CTRL_TYPE_PAGE(btn_tool_handle_, CButtonUI, panel_tools_, L"btn_tool_handle")
@@ -106,7 +108,7 @@ protected:
         BIND_CTRL_CLICK_PAGE(L"btn_restore", panel_tools_, &CKeyWnd::OnBtnRestore)
         BIND_CTRL_EVENT_PAGE(L"key_slider_trans", panel_tools_, DUI_MSGTYPE_VALUECHANGED, &CKeyWnd::OnSliderKeyTransChanged)
         BIND_CTRL_EVENT_PAGE(L"key_slider_trans", panel_tools_, DUI_MSGTYPE_VALUECHANGING, &CKeyWnd::OnSliderKeyTransChanged)
-        BIND_CTRL_EVENT_PAGE(L"combox_keyboard", panel_tools_, DUI_MSGTYPE_ITEMSELECT, &CKeyWnd::OnComboxKeyboard)
+        BIND_CTRL_EVENT_PAGE(L"combox_keyboard", panel_tools_, DUI_MSGTYPE_ITEMSELECT, &CKeyWnd::OnComboxKeyboardSelected)
     END_BIND_CTRL()
 
 protected:
@@ -141,7 +143,7 @@ private:
 
     CControlUI* FindKeyUI(int key_value);
 
-    CListLabelElementUI* CreateKeyElem(const wstring& key_name, const wstring& key_file, const wstring& key_default, int index = 0);
+    CListLabelElementUI* CreateKeyElem(const wstring& key_name, const wstring& key_file, const wstring& key_default, int tag = 0, int index = 0);
 
     bool AddDefinedKeyBoard(const string& app_id, int nNum);
 

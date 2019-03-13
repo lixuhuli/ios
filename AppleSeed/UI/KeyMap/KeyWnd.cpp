@@ -168,9 +168,10 @@ void CKeyWnd::ReadCloudKeyboardToCombox() {
             if (key_default.empty()) key_default = PublicLib::Utf8ToU(key_id_) + L"_default";
             key_default =  CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_default;
 
+            int tag = GetPrivateProfileInt(record.c_str(), L"tag", 0, config.c_str());
             int index = GetPrivateProfileInt(record.c_str(), L"index", 0, config.c_str());
 
-            CListLabelElementUI* key_elem = CreateKeyElem(key_name, key_file, key_default, index);
+            CListLabelElementUI* key_elem = CreateKeyElem(key_name, key_file, key_default, tag, index);
             if (!key_elem) continue;
 
             combox_keyboard_->Add(key_elem);
@@ -250,6 +251,7 @@ LRESULT CKeyWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
     case WM_SETCURSOR: lRes = OnSetCursor(wParam, lParam, bHandled); break;
     case WM_KEYWND_MSG_REMOVE_KEY: lRes = OnRemoveKey(wParam, lParam, bHandled); break;
+    case WM_KEYWND_MSG_REMOVE_ITEM: lRes = OnRemoveItem(wParam, lParam, bHandled); break;
     default: bHandled = FALSE;
     }
 
@@ -693,6 +695,54 @@ LRESULT CKeyWnd::OnRemoveKey(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     else scene_bak_info_->DeleteKey(control->GetTag());
 
     key_body_->Remove(control);
+
+    return 0;
+}
+
+LRESULT CKeyWnd::OnRemoveItem(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    if (!combox_keyboard_) return 0;
+
+    int index = lParam;
+    if (index < 0) return 0;
+
+    CListLabelElementUI* key_elem = (CListLabelElementUI*)combox_keyboard_->GetItemAt(index);
+    if (!key_elem) return true;
+
+    auto config = CIosMgr::Instance()->GetKeyMapDir() + L"\\conf.ini";
+
+    WCHAR szDefined[MAX_PATH] = { 0 };
+    wsprintf(szDefined, L"defined_%d", key_elem->GetInheritableTag());
+
+    wstring strDefined = szDefined;
+
+    wchar_t szValue[1024] = { 0 };
+    DWORD dwLen = GetPrivateProfileString(L"setting", L"defined", L"", szValue, 1024, config.c_str());
+
+    wstring defineds = szValue;
+
+    auto pos = defineds.find(strDefined.c_str());
+
+    defineds = PublicLib::StrReplaceW(defineds, strDefined, L"");
+
+    if (pos != wstring::npos) {
+        if (pos == 0) {
+            if (defineds.length() > 0) defineds.erase(0, 1);
+        }
+        else {
+            defineds.erase(pos - 1, 1);
+        }
+
+        WritePrivateProfileString(L"setting", L"defined", defineds.c_str(), config.c_str());
+        WritePrivateProfileString(strDefined.c_str(), L"name", L"", config.c_str());
+        WritePrivateProfileString(strDefined.c_str(), L"file", L"", config.c_str());
+        WritePrivateProfileString(strDefined.c_str(), L"default", L"", config.c_str());
+        WritePrivateProfileString(strDefined.c_str(), L"tag", L"", config.c_str());
+        WritePrivateProfileString(strDefined.c_str(), L"index", L"", config.c_str());
+    }
+
+    if (index > 1) combox_keyboard_->SelectItem(index - 1);
+
+    combox_keyboard_->RemoveAt(index);
 
     return 0;
 }
@@ -1386,7 +1436,7 @@ bool CKeyWnd::OnKeyPosChanged(void* param) {
     return true;
 }
 
-bool CKeyWnd::OnComboxKeyboard(void* param) {
+bool CKeyWnd::OnComboxKeyboardSelected(void* param) {
     if (!combox_keyboard_ || combox_keyboard_->GetCount() < 2) return true;
 
     if (combox_keyboard_->GetCurSel() == 0) {
@@ -1411,6 +1461,26 @@ bool CKeyWnd::OnComboxKeyboard(void* param) {
     LoadKeyItems();
 
     UpdateCtrls();
+
+    return true;
+}
+
+bool CKeyWnd::OnComboxKeyboardClick(void* param) {
+    TNotifyUI* notify = (TNotifyUI*)param;
+    if (!notify || !notify->pSender || !combox_keyboard_) return true;
+
+    auto control = notify->pSender;
+    QRect del_pos = control->GetPos();
+
+    del_pos.left += 165;
+    del_pos.top += 8;
+    del_pos.right = del_pos.left + 20;
+    del_pos.bottom = del_pos.top + 20;
+
+    if (::PtInRect(&del_pos, notify->ptMouse)) {
+        int index = combox_keyboard_->GetItemIndex(control);
+        ::PostMessage(m_hWnd, WM_KEYWND_MSG_REMOVE_ITEM, (LPARAM)((CControlUI*)control), (LPARAM)index);
+    }
 
     return true;
 }
@@ -1454,7 +1524,7 @@ CControlUI* CKeyWnd::FindKeyUI(int key_value) {
     return nullptr;
 }
 
-DuiLib::CListLabelElementUI* CKeyWnd::CreateKeyElem(const wstring& key_name, const wstring& key_file, const wstring& key_default, int index/* = 0*/) {
+DuiLib::CListLabelElementUI* CKeyWnd::CreateKeyElem(const wstring& key_name, const wstring& key_file, const wstring& key_default, int tag/* = 0*/, int index/* = 0*/) {
     CListLabelElementUI* key_elem = new CListLabelElementUI;
     if (!key_elem) return nullptr;
 
@@ -1463,13 +1533,22 @@ DuiLib::CListLabelElementUI* CKeyWnd::CreateKeyElem(const wstring& key_name, con
     key_elem->SetUserData(key_file.c_str());
     key_elem->SetInheritableUserData(key_default.c_str());
     key_elem->SetText(key_name.c_str());
-    key_elem->SetTag(index);
+    key_elem->SetTag(tag);
+    key_elem->SetInheritableTag(index);
+
+    if (index > 0 || index == -1) {
+        key_elem->Subscribe(DUI_MSGTYPE_ITEMCLICK, MakeDelegate(this, &CKeyWnd::OnComboxKeyboardClick));
+        key_elem->SetBkImage(L"file='KeyMap/tools/combobox_modify.png' dest='150,13,160,23' file='KeyMap/tools/combobox_close.png' dest='170,13,180,23'");
+    }
 
     return key_elem;
 }
 
 bool CKeyWnd::AddDefinedKeyBoard(const string& app_id, int nNum) {
     if (!combox_keyboard_) return false;
+
+    WCHAR szTag[MAX_PATH] = { 0 };
+    wsprintf(szTag, L"%d", nNum);
 
     auto config = CIosMgr::Instance()->GetKeyMapDir() + L"\\conf.ini";
 
@@ -1502,7 +1581,7 @@ bool CKeyWnd::AddDefinedKeyBoard(const string& app_id, int nNum) {
 
     wstring key_name = szName;
 
-    CListLabelElementUI* key_elem = CreateKeyElem(key_name, key_file, key_default, index);
+    CListLabelElementUI* key_elem = CreateKeyElem(key_name, key_file, key_default, nNum, index);
     if (!key_elem) return false;
 
     combox_keyboard_->Add(key_elem);
@@ -1511,6 +1590,7 @@ bool CKeyWnd::AddDefinedKeyBoard(const string& app_id, int nNum) {
     WritePrivateProfileString(PublicLib::AToU(strDefined).c_str(), L"name", key_name.c_str(), config.c_str());
     WritePrivateProfileString(PublicLib::AToU(strDefined).c_str(), L"file", key_file.c_str(), config.c_str());
     WritePrivateProfileString(PublicLib::AToU(strDefined).c_str(), L"default", key_default.c_str(), config.c_str());
+    WritePrivateProfileString(PublicLib::AToU(strDefined).c_str(), L"tag", szTag, config.c_str());
     WritePrivateProfileString(PublicLib::AToU(strDefined).c_str(), L"index", szIndex, config.c_str());
 
     return true;
