@@ -740,6 +740,9 @@ LRESULT CKeyWnd::OnRemoveItem(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
         WritePrivateProfileString(strDefined.c_str(), L"index", L"", config.c_str());
     }
 
+    ::DeleteFile(key_elem->GetUserData().GetData());
+    ::DeleteFile(key_elem->GetInheritableUserData().GetData());
+
     if (index > 1) combox_keyboard_->SelectItem(index - 1);
 
     combox_keyboard_->RemoveAt(index);
@@ -1581,7 +1584,7 @@ bool CKeyWnd::AddDefinedKeyBoard(const string& app_id, int nNum) {
 
     wstring key_name = szName;
 
-    CListLabelElementUI* key_elem = CreateKeyElem(key_name, key_file, key_default, nNum, index);
+    CListLabelElementUI* key_elem = CreateKeyElem(key_name, CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_file, CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_default, nNum, index);
     if (!key_elem) return false;
 
     combox_keyboard_->Add(key_elem);

@@ -13,6 +13,8 @@
 	<Font name="宋体" size="14" />
 	<Font name="微软雅黑" size="18" bold="true"/>
 	<Font name="微软雅黑" size="16" bold="true"/>
+	
+	<Default name="VScrollBar" value="width=&quot;10&quot; thumbnormalimage=&quot;file=&apos;KeyMap/tools/scroll_bk.png&apos; corner=&apos;4,4,4,4&apos;&quot; showbutton1=&quot;false&quot; showbutton2=&quot;false&quot;"/>
 
   <VerticalLayout name="panel_tools" width="280" bkimage="file='KeyMap/tools/bk_image.png'">
     <HorizontalLayout height="21" bkimage="file='KeyMap/tools/top.png'">

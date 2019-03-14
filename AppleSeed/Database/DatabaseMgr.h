@@ -31,6 +31,12 @@ public:
 	// 获取下载保存路径（已转码）
 	wstring GetLoadPath();
 
+    wstring GetEmulatorPath();
+    void SetEmulatorPath(const string& strPath);
+
+    wstring GetIosPath();
+    wstring GetIosVmPath();
+
 	// 下载表
 	bool GetLoadTasks(OUT vector<ITask*> &loadList);
 	bool InsertLoadTask(ITask* pTask);

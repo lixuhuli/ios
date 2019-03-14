@@ -21,7 +21,6 @@ void CGlobalData::Init(){
     m_strAppVersion = GetApplicationVersion();
     m_strDocPath = GetDocumentPath();
     m_strDataPath = m_strDocPath + L"\\Data.dat";
-    m_strIosPath = GetIosRootPath() + L"\\iosmirro";
     PublicLib::GetOSVersion(m_strOSName, m_strOSVersion);
     m_strOSType = PublicLib::Is64bitSystem() ? L"64" : L"32";
     PublicLib::GetMacAddress(m_strMacAddr);
@@ -49,19 +48,6 @@ const wstring& CGlobalData::GetDocPath() const
         SHCreateDirectory(NULL, m_strDocPath.c_str());
     }
     return m_strDocPath;
-}
-
-const wstring& CGlobalData::GetIosPath() const {
-    if (!PathFileExists(m_strIosPath.c_str()))
-        SHCreateDirectory(NULL, m_strIosPath.c_str());
-    return m_strIosPath;
-}
-
-wstring CGlobalData::GetIosVmPath() {
-    wstring strPath = m_strIosPath + L"\\vm";
-    if (!PathFileExists(strPath.c_str()))
-        SHCreateDirectory(NULL, strPath.c_str());
-    return strPath;
 }
 
 wstring CGlobalData::GetDefLoadPath()
@@ -104,29 +90,6 @@ void CGlobalData::SetShowPerOptimizWnd(bool show) {
     wchar_t szValue[128] = { 0 };
     swprintf_s(szValue, L"%d", show ? 1 : 0);
     WritePrivateProfileString(L"startup", L"showperoptimiz", szValue, config_path.c_str());
-}
-
-wstring CGlobalData::GetIosRootPath() {
-    wstring strRunPath = GetRunPathW();
-    wstring config_path = strRunPath + _T("config.dat");
-
-    wchar_t szValue[256] = { 0 };
-    DWORD dwLen = GetPrivateProfileString(L"emulator", L"iosrootpath", L"", szValue, 256, config_path.c_str());
-    if (dwLen <= 0) return m_strDocPath;
-
-    return wstring(szValue);
-}
-
-void CGlobalData::SetIosRootPath(const wstring& path) {
-    wstring strRunPath = GetRunPathW();
-    wstring config_path = strRunPath + _T("config.dat");
-
-    wstring strOldPath = m_strIosPath;
-    m_strIosPath = path + L"\\iosmirro";
-
-    if (m_strIosPath != strOldPath) PublicLib::RemoveDir(strOldPath.c_str());
-
-    WritePrivateProfileString(L"emulator", L"iosrootpath", path.c_str(), config_path.c_str());
 }
 
 void CGlobalData::GetCpuInfo() {

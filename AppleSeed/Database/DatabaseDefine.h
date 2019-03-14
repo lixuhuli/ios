@@ -12,9 +12,9 @@
 
 
 #define TB_SETTING "tb_setting"
-#define SQL_CREATE_DB_SETTING "create table tb_setting(id INTEGER PRIMARY KEY AUTOINCREMENT, exit INTEGER, max_load_speed INTEGER, load_path text);"
+#define SQL_CREATE_DB_SETTING "create table tb_setting(id INTEGER PRIMARY KEY AUTOINCREMENT, exit INTEGER, max_load_speed INTEGER, load_path text, emulator_path text);"
 #define SQL_READ_DB_SETTING "select * from tb_setting"
-#define SQL_UPDATE_DB_SETTING "update tb_setting set exit = %d, max_load_speed = %d, load_path = '%s';"
+#define SQL_UPDATE_DB_SETTING "update tb_setting set exit = %d, max_load_speed = %d, load_path = '%s', emulator_path = '%s';"
 
 
 #define TB_LOADING "tb_loading"
@@ -46,12 +46,12 @@ values('%I64d', '%s', '%s', %I64d, '%s', '%s', '%s', %d, '%s', '%s', '%s', '', '
 #define SQL_READ_DB_GAMEINFO "select * from tb_game_info"
 #define SQL_DELETE_DB_GAMEINFO  "delete from tb_game_info where game_id = ?;"
 
-
 struct AppSetting
 {
 	int nExit;//退出时，0：隐藏到托盘，1：直接退出
 	int nMaxLoadSpeed;//最大下载速度，0：不限速
 	string strLoadPath;//下载保存路径
+    string strEmulatorPath;//下载保存路径
 };
 
 //重载比较操作符
@@ -63,6 +63,8 @@ inline bool operator == (const AppSetting& l, const AppSetting& r)
 		return false;
 	if (l.strLoadPath != r.strLoadPath)
 		return false;
+    if (l.strEmulatorPath != r.strEmulatorPath)
+        return false;
 	return true;
 }
 

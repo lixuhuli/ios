@@ -4,7 +4,7 @@
 #include <atlstr.h>
 #include <algorithm>
 
-#define DATABASE_VERSION	"1.1"
+#define DATABASE_VERSION	"1.2"
 #define SOFT_VERSION		"1.0"
 
 CDatabaseMgr::CDatabaseMgr() {
@@ -61,6 +61,10 @@ bool CDatabaseMgr::Open(const string& strDbFile)
 
             if (startup_db_version_.compare("1.1") < 0) {
                 AddTableField(TB_LOADED, "pkg_name", "text");
+                AddTableField(TB_SETTING, "emulator_path", "text");
+            }
+            else if (startup_db_version_.compare("1.2") < 0) {
+                AddTableField(TB_SETTING, "emulator_path", "text");
             }
 		}
 
@@ -70,8 +74,8 @@ bool CDatabaseMgr::Open(const string& strDbFile)
 		{
 			m_sqliteDB.execDML(SQL_CREATE_DB_SETTING);
 			CStringA strSql;
-			strSql.Format("insert into %s(exit, max_load_speed, load_path) values('%d','%d', '%s')", TB_SETTING, m_setting.nExit,
-				m_setting.nMaxLoadSpeed, m_setting.strLoadPath.c_str());
+			strSql.Format("insert into %s(exit, max_load_speed, load_path, emulator_path) values('%d','%d', '%s', '%s')", TB_SETTING, m_setting.nExit,
+				m_setting.nMaxLoadSpeed, m_setting.strLoadPath.c_str(), m_setting.strEmulatorPath.c_str());
 			m_sqliteDB.execDML(strSql);
 		}
 		else
@@ -119,6 +123,7 @@ void CDatabaseMgr::GetDefSetting(OUT AppSetting& setting)
 	setting.nExit = 0;
 	setting.nMaxLoadSpeed = 0;
 	setting.strLoadPath = PublicLib::UToUtf8(CGlobalData::Instance()->GetDefLoadPath());
+    setting.strEmulatorPath = PublicLib::UToUtf8(CGlobalData::Instance()->GetDocPath());
 }
 
 void CDatabaseMgr::SetSetting(const AppSetting& setting)
@@ -135,6 +140,39 @@ wstring CDatabaseMgr::GetLoadPath()
 		SHCreateDirectory(NULL, strPath.c_str());
 	}
 	return strPath;
+}
+
+wstring CDatabaseMgr::GetEmulatorPath() {
+    wstring strPath = PublicLib::Utf8ToU(m_setting.strEmulatorPath);
+    if (!PathFileExists(strPath.c_str()))
+    {
+        SHCreateDirectory(NULL, strPath.c_str());
+    }
+    return strPath;
+}
+
+void CDatabaseMgr::SetEmulatorPath(const string& strPath) {
+    if (m_setting.strEmulatorPath == strPath) return;
+
+    PublicLib::RemoveDir(PublicLib::AToU(m_setting.strEmulatorPath + "\\iosmirro").c_str());
+
+    m_setting.strEmulatorPath = strPath;
+
+    UpdateSettingData();
+}
+
+wstring CDatabaseMgr::GetIosPath() {
+    wstring strPath = PublicLib::AToU(m_setting.strEmulatorPath) + L"\\iosmirro";
+    if (!PathFileExists(strPath.c_str()))
+        SHCreateDirectory(NULL, strPath.c_str());
+    return strPath;
+}
+
+wstring CDatabaseMgr::GetIosVmPath() {
+    wstring strPath = PublicLib::AToU(m_setting.strEmulatorPath) + L"\\iosmirro" + L"\\vm";;
+    if (!PathFileExists(strPath.c_str()))
+        SHCreateDirectory(NULL, strPath.c_str());
+    return strPath;
 }
 
 int CDatabaseMgr::AddTableField(const char* table_name, const char* field_name, const char* field_type)
@@ -760,6 +798,7 @@ void CDatabaseMgr::ReadSettingData()
 {
 	int nExit = 0, nMaxLoadSpeed = 0;
 	string strLoadPath;
+    string strEmulatorPath;
 	try
 	{
 		CppSQLite3Query query = m_sqliteDB.execQuery(SQL_READ_DB_SETTING);
@@ -779,6 +818,14 @@ void CDatabaseMgr::ReadSettingData()
 			strLoadPath = PublicLib::UToUtf8(CGlobalData::Instance()->GetDefLoadPath());
 		}
 		SHCreateDirectory(NULL, strPath.c_str());
+
+        strEmulatorPath = query.getStringField("emulator_path");
+        strPath = PublicLib::Utf8ToU(strEmulatorPath);
+        SHCreateDirectory(NULL, strPath.c_str());
+        if (!PathFileExists(strPath.c_str()))
+        {
+            strEmulatorPath = PublicLib::UToUtf8(CGlobalData::Instance()->GetDocPath());
+        }
 	}
 	catch (CppSQLite3Exception& e)
 	{
@@ -791,6 +838,7 @@ void CDatabaseMgr::ReadSettingData()
 	m_setting.nExit = nExit;
 	m_setting.nMaxLoadSpeed = nMaxLoadSpeed;
 	m_setting.strLoadPath = strLoadPath;
+    m_setting.strEmulatorPath = strEmulatorPath;
 }
 
 void CDatabaseMgr::UpdateSettingData()
@@ -798,7 +846,7 @@ void CDatabaseMgr::UpdateSettingData()
 	try
 	{
 		CStringA strSql;
-		strSql.Format(SQL_UPDATE_DB_SETTING, m_setting.nExit, m_setting.nMaxLoadSpeed, m_setting.strLoadPath.c_str());
+		strSql.Format(SQL_UPDATE_DB_SETTING, m_setting.nExit, m_setting.nMaxLoadSpeed, m_setting.strLoadPath.c_str(), m_setting.strEmulatorPath.c_str());
 		m_sqliteDB.execDML(strSql);
 	}
 	catch (CppSQLite3Exception& e)

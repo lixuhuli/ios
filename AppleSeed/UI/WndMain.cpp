@@ -133,7 +133,7 @@ void CWndMain::InitWindow() {
 
     CIosMgr::Instance()->CreateWndIos(m_hWnd);
     
-    string iso_file = PublicLib::UToA(CGlobalData::Instance()->GetIosVmPath()) + "\\"+ GetUrlIsoName();
+    string iso_file = PublicLib::UToA(CDatabaseMgr::Instance()->GetIosVmPath()) + "\\"+ GetUrlIsoName();
     if (PathFileExistsA(iso_file.c_str())) {
         if (!LoadIosEngine()) {
             ShowMsg(m_hWnd, L"提示", L"启动失败，请重启", MB_OK);
@@ -157,24 +157,7 @@ void CWndMain::InitWindow() {
 
     RegisterHotKey(m_hWnd, ID_HOTKEY_BOS, MOD_ALT + MOD_CONTROL, 'N');
 
-    if (CGlobalData::Instance()->IsShowPerOptimizWnd()) {
-        ::PostMessage(m_hWnd, WM_MAINWND_MSG_SHOW_PEROPTIMIZATION, 0, 0);
-        CGlobalData::Instance()->SetShowPerOptimizWnd(false);
-    }
-    else {
-        bool support = false;
-        auto IsVTOpened = CIosMgr::Instance()->IsCPUVTOpened(support);
-        bool show_per = CGlobalData::Instance()->IsCheckShowPerOptimiz();
-        if (!show_per && IsVTOpened) {
-            btn_per_opitimiz_->SetNormalImage(L"");
-            btn_per_opitimiz_->SetEnabled(false);
-        }
-    }
-
-    if (IsShowUpdateWnd()) {
-        ::PostMessage(m_hWnd, WM_MAINWND_MSG_MENU, 0, 8);
-        SetShowUpdateWnd(false);
-    }
+    ::PostMessage(m_hWnd, WM_MAINWND_MSG_SHOW_POPWND, 0, 0);
 }
 
 void CWndMain::InitTasks() {
@@ -224,7 +207,7 @@ LRESULT CWndMain::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
         case WM_MAINWND_MSG_GET_KEYBOARD: OnMsgGetKeyboardConfig(wParam, lParam, bHandled); break;
         case WM_MAINWND_MSG_IOSENGINE_APPLIACTION: OnMsgIosEngineApplication(wParam, lParam, bHandled); break;
         case WM_MAINWND_MSG_CHECK_UPDATE_GAME: OnMsgGameCheckUpdateGame(wParam, lParam); break;
-        case WM_MAINWND_MSG_SHOW_PEROPTIMIZATION: ShowPerOptimizWnd(); break;
+        case WM_MAINWND_MSG_SHOW_POPWND: OnMsgShowPopWnd(wParam, lParam, bHandled); break;
         case WM_MAINWND_MSG_START_WAITING_ANIMATION: StartWaitingAnimation(wParam == 1); break;
         case WM_MAINWND_MSG_SHOW_PEROPTIMIZATION_WARNING: OnMsgShowPerOptimizIcon(wParam, lParam, bHandled); break;
         case WM_MAINWND_MSG_MENU: return OnMsgMenu(wParam, lParam);
@@ -646,7 +629,7 @@ bool CWndMain::OnClickGetIsoSys(void* param) {
         }
     }
 
-    CGlobalData::Instance()->SetIosRootPath(strPath);
+    CDatabaseMgr::Instance()->SetEmulatorPath(PublicLib::UToA(strPath));
 
     install_system_->SetVisible(true);
     select_folder_->SetVisible(false);
@@ -726,7 +709,7 @@ bool CWndMain::OnBtnShowPerOpitimiz(void* param) {
 }
 
 bool CWndMain::LoadIosEngine() {
-    string iso_file = PublicLib::UToA(CGlobalData::Instance()->GetIosVmPath()) + "\\"+ GetUrlIsoName();
+    string iso_file = PublicLib::UToA(CDatabaseMgr::Instance()->GetIosVmPath()) + "\\"+ GetUrlIsoName();
     PostStartApp(StatusBegin, CUserData::Instance()->GetFileUserID());
     auto success = CIosMgr::Instance()->IosEngineOn(iso_file);
     if (!success) PostStartApp(StatusFail, CUserData::Instance()->GetFileUserID());
@@ -747,8 +730,8 @@ void CWndMain::UnzipMirrorSystem() {
     msg.hwnd = m_hWnd;
     msg.message = WM_MAINWND_MSG_FILE_UNZIPING;
 
-    std::wstring strOutDir = CGlobalData::Instance()->GetIosVmPath();
-    std::wstring save_path = CGlobalData::Instance()->GetIosPath() +  L"\\" + PublicLib::Utf8ToU(GetUrlPackageName());
+    std::wstring strOutDir = CDatabaseMgr::Instance()->GetIosVmPath();
+    std::wstring save_path = CDatabaseMgr::Instance()->GetIosPath() +  L"\\" + PublicLib::Utf8ToU(GetUrlPackageName());
 
     TaskCenter::CTaskCenter::Instance()->CreateUnzipFileTask(msg, WM_MAINWND_MSG_FILE_UNZIP, save_path, strOutDir);
 }
@@ -813,8 +796,8 @@ LRESULT CWndMain::OnMsgFileUnzip(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
         return 0;
     } 
 
-    string iso_file = PublicLib::UToA(CGlobalData::Instance()->GetIosVmPath()) + "\\" + GetUrlIsoName();
-    string iso_init_file = PublicLib::UToA(CGlobalData::Instance()->GetIosVmPath()) + "\\" + GetUrlInitIsoName();
+    string iso_file = PublicLib::UToA(CDatabaseMgr::Instance()->GetIosVmPath()) + "\\" + GetUrlIsoName();
+    string iso_init_file = PublicLib::UToA(CDatabaseMgr::Instance()->GetIosVmPath()) + "\\" + GetUrlInitIsoName();
 
     if (!MoveFileA(iso_init_file.c_str(), iso_file.c_str())) {
         KillTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS);
@@ -825,7 +808,7 @@ LRESULT CWndMain::OnMsgFileUnzip(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
         return 0;
     }
 
-    std::wstring save_path = CGlobalData::Instance()->GetIosPath() + L"\\" + PublicLib::Utf8ToU(GetUrlPackageName());
+    std::wstring save_path = CDatabaseMgr::Instance()->GetIosPath() + L"\\" + PublicLib::Utf8ToU(GetUrlPackageName());
     if (PathFileExists(save_path.c_str())) DeleteFile(save_path.c_str());
 
     if (!LoadIosEngine()) {
@@ -897,7 +880,7 @@ LRESULT CWndMain::OnTimer(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 
 void CWndMain::DownloadMirrorSystem() {
     std::string url = "http://guorenres.5fun.com/mirror/" + GetUrlPackageName();
-    std::wstring save_path = CGlobalData::Instance()->GetIosPath() + L"\\";
+    std::wstring save_path = CDatabaseMgr::Instance()->GetIosPath() + L"\\";
     if (!PathFileExists(save_path.c_str())) SHCreateDirectory(nullptr, save_path.c_str());
 
     save_path += PublicLib::Utf8ToU(GetUrlPackageName());
@@ -1066,7 +1049,7 @@ void CWndMain::SelectedHomePage(COptionUI* opt_select) {
 }
 
 void CWndMain::RemoveSpilthVmdk() {
-    wstring iso_path = CGlobalData::Instance()->GetIosVmPath();
+    wstring iso_path = CDatabaseMgr::Instance()->GetIosVmPath();
     PublicLib::RemoveDir(iso_path.c_str());
 }
 
@@ -1427,6 +1410,29 @@ LRESULT CWndMain::OnMsgShowPerOptimizIcon(WPARAM wParam, LPARAM lParam, BOOL& bH
         btn_per_opitimiz_->SetNormalImage(show ? btn_per_opitimiz_->GetUserData().GetData() : L"");
         btn_per_opitimiz_->SetEnabled(show);
     }
+    return 0;
+}
+
+LRESULT CWndMain::OnMsgShowPopWnd(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    if (IsShowUpdateWnd()) {
+        OnShowUpdateLog();
+        SetShowUpdateWnd(false);
+    }
+
+    if (CGlobalData::Instance()->IsShowPerOptimizWnd()) {
+        ShowPerOptimizWnd();
+        CGlobalData::Instance()->SetShowPerOptimizWnd(false);
+    }
+    else {
+        bool support = false;
+        auto IsVTOpened = CIosMgr::Instance()->IsCPUVTOpened(support);
+        bool show_per = CGlobalData::Instance()->IsCheckShowPerOptimiz();
+        if (!show_per && IsVTOpened) {
+            btn_per_opitimiz_->SetNormalImage(L"");
+            btn_per_opitimiz_->SetEnabled(false);
+        }
+    }
+
     return 0;
 }
 

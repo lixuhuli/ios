@@ -62,6 +62,7 @@ protected:
     virtual LRESULT OnMsgIosEngineApplication(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnMsgHotkey(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnMsgShowPerOptimizIcon(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    virtual LRESULT OnMsgShowPopWnd(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
     virtual LRESULT OnMsgMenu(WPARAM wParam, LPARAM lParam);
     virtual LRESULT OnMsgGameCheckUpdateGame(WPARAM wParam, LPARAM lParam);
