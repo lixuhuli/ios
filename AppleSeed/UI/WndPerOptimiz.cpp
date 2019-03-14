@@ -79,7 +79,7 @@ void CWndPerOptimiz::UpdateVTBtnStatus(bool open) {
         btn_open_vt_->SetNormalImage(L"file='peroptimiz/btn_open_prefix_nor.png'");
         btn_open_vt_->SetHotImage(L"file='peroptimiz/btn_open_prefix_hot.png'");
         btn_open_vt_->SetPushedImage(L"file='peroptimiz/btn_open_prefix_nor.png'");
-        cpu_vt_logo_->SetBkImage(L"file='peroptimiz/cpu_vt_opened.png' file='update/check.png'");
+        cpu_vt_logo_->SetBkImage(L"file='peroptimiz/cpu_vt_opened.png' file='peroptimiz/check.png'");
     }
     else {
         btn_open_vt_->SetTag(0);
