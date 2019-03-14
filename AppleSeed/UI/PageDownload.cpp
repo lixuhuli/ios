@@ -276,6 +276,7 @@ void CPageDownloadUI::ApplicationRemoved(const __int64& nGameID) {
 
 void CPageDownloadUI::UpdateLayoutPage() {
     if (layout_page_ && layout_page_game_) layout_page_->SelectItem(layout_page_game_->GetCount() > 0 ? 0 : 1);
+    shwo_del_button_ = layout_page_game_->GetCount() > 0 ? shwo_del_button_ : false;
 }
 
 void CPageDownloadUI::UpdateLoadLayout() {
