@@ -631,6 +631,25 @@ bool CWndMain::OnClickGetIsoSys(void* param) {
 
     CDatabaseMgr::Instance()->SetEmulatorPath(PublicLib::UToA(strPath));
 
+    string iso_file = PublicLib::UToA(CDatabaseMgr::Instance()->GetIosVmPath()) + "\\"+ GetUrlIsoName();
+    if (PathFileExistsA(iso_file.c_str())) {
+        if (!LoadIosEngine()) {
+            ShowMsg(m_hWnd, L"提示", L"启动失败，请重启", MB_OK);
+            CIosMgr::Instance()->CreateEngineOffTask();
+            return true;
+        }
+
+        layout_install_->SelectItem(2);
+        install_system_->SetVisible(true);
+        select_folder_->SetVisible(false);
+
+        loading_frame_ = 0;
+        UpdateLoadingIcon();
+        StartWaiteSentnce();
+        ::SetTimer(m_hWnd, TIMER_ID_DOWNLOAD_PROGRESS, DOWNLOAD_PROGRESS_TIME, nullptr);
+        return true;
+    }
+
     install_system_->SetVisible(true);
     select_folder_->SetVisible(false);
     layout_install_->SelectItem(1);
@@ -1419,9 +1438,9 @@ LRESULT CWndMain::OnMsgShowPopWnd(WPARAM wParam, LPARAM lParam, BOOL& bHandled) 
         SetShowUpdateWnd(false);
     }
 
-    if (CGlobalData::Instance()->IsShowPerOptimizWnd()) {
+    if (IsShowPerOptimizWnd()) {
         ShowPerOptimizWnd();
-        CGlobalData::Instance()->SetShowPerOptimizWnd(false);
+        SetShowPerOptimizWnd(false);
     }
     else {
         bool support = false;

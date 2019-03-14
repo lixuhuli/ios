@@ -160,6 +160,7 @@ LRESULT CWndUpdate::OnMsgUpdate(WPARAM wParam, LPARAM lParam) {
 	case Step_Finish://更新完成
 		m_pTabMain->SelectItem(1);
         SetShowUpdateWnd(true);
+        SetShowPerOptimizWnd(true);
 		break;
 	default:
 		break;

@@ -423,3 +423,17 @@ inline void SetShowUpdateWnd(bool show) {
     swprintf_s(szValue, L"%d", show ? 1 : 0);
     WritePrivateProfileString(L"startup", L"showupdatelog", szValue, config_path.c_str());
 }
+
+inline bool IsShowPerOptimizWnd() {
+    wstring strRunPath = GetRunPathW();
+    wstring config_path = strRunPath + _T("config.dat");
+    return (GetPrivateProfileInt(L"startup", L"showperoptimiz", 1, config_path.c_str()) == 1);
+}
+
+inline void SetShowPerOptimizWnd(bool show) {
+    wstring strRunPath = GetRunPathW();
+    wstring config_path = strRunPath + _T("config.dat");
+    wchar_t szValue[128] = { 0 };
+    swprintf_s(szValue, L"%d", show ? 1 : 0);
+    WritePrivateProfileString(L"startup", L"showperoptimiz", szValue, config_path.c_str());
+}
