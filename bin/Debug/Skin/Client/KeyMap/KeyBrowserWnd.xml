@@ -136,13 +136,15 @@
     <Control height="35" />
 
     <HorizontalLayout height="35" padding="40,0,0,0" >
-      <ComboBox name="combox_keyboard" width="200" height="35" font="1" normalimage="file='KeyMap/tools/combobox_nor.png' file='KeyMap/tools/combobox_btn.png' dest='181,9,191,25'"
+      <Button name="combox_keymap" width="200" height="35" font="8" tag="0" textcolor="0xFF262626" hottextcolor="0xFF262626" textpadding="10,0,30,0" align="left" valign="center" normalimage="file='KeyMap/tools/combobox_nor.png' file='KeyMap/tools/combobox_btn.png' dest='181,9,191,25'" endellipsis="true" showcursor="false"/>
+      
+      <!--ComboBox name="combox_keyboard" width="200" height="35" font="1" normalimage="file='KeyMap/tools/combobox_nor.png' file='KeyMap/tools/combobox_btn.png' dest='181,9,191,25'"
             hotimage="file='KeyMap/tools/combobox_nor.png' file='KeyMap/tools/combobox_btn.png' dest='181,9,191,25'" pushedimage="file='KeyMap/tools/combobox_nor.png' file='KeyMap/tools/combobox_btn.png' dest='181,9,191,25'"
             itembkcolor="0xFFDEDEDE" itemalign="left" itemtextcolor="0xFF262626" itemhottextcolor="0xFF262626" itemselectedtextcolor="0xFF262626" itemtextpadding="10,0,30,0"
             dropboxboardcolor="0xFFCFCFCF">
         <ListLabelElement text="三技能英雄（云端）" height="35" selected="true" />
         <ListLabelElement text="四技能英雄（云端）" height="35" />
-      </ComboBox>
+      </ComboBox!-->
     </HorizontalLayout>
 
     <Control height="20" />
