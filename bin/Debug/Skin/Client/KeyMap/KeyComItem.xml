@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Window>
+  <HorizontalLayout width="200" height="35" >
+    <Control width="10" />
+    
+    <Label name="lbl_name" width="140" align="left" valign="center" textcolor="#FF434343" endellipsis="true" font="1" />
+    
+    <Button name="btn_combox_modify" width="10" height="10" padding="0,13,0,0" normalimage="file='KeyMap/tools/combobox_modify.png'" />
+    
+    <Control width="10" />
+    
+    <Button name="btn_combox_delete" width="10" height="10" padding="0,13,0,0" normalimage="file='KeyMap/tools/combobox_close.png'" />
+    
+    <Control />
+  </HorizontalLayout>
+</Window>

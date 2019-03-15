@@ -12,6 +12,7 @@
 #include "MsgDefine.h"
 #include "KeyBrowserWnd.h"
 #include "UrlDefine.h"
+#include "KeyComWnd.h"
 
 CKeyWnd::CKeyWnd(const string& key_id)
  : btn_tool_handle_(nullptr)
@@ -23,6 +24,7 @@ CKeyWnd::CKeyWnd(const string& key_id)
  , browser_mode_(true)
  , browser_wnd_(nullptr)
  , combox_keyboard_(nullptr)
+ , combox_keymap_(nullptr)
  , m_pMDLDropTarget(nullptr)
  , m_pMDLDragDataSrc(nullptr)
  , key_slider_trans_(nullptr)
@@ -104,16 +106,17 @@ void CKeyWnd::UpdateCtrls() {
 }
 
 void CKeyWnd::UpdateSceneInfo() {
-    if (!combox_keyboard_ || combox_keyboard_->GetCount() < 0) return;
+    if (!combox_keymap_) return;
 
-    auto index = combox_keyboard_->GetCurSel();
-    if (index < 0) return;
+    int selected_index = combox_keymap_->GetTag();
+    if (selected_index < 0) return;
 
-    CListLabelElementUI* key_elem = (CListLabelElementUI*)combox_keyboard_->GetItemAt(index);
-    if (!key_elem) return;
+    if (selected_index < 0 || selected_index >= (int)keymap_info_.size()) return;
+
+    auto key_info = keymap_info_[selected_index];
 
     scene_info_ = new emulator::SceneInfo();
-    wstring file_path = key_elem->GetUserData().GetData();
+    wstring file_path = key_info.file_;
     if (!PathFileExists(file_path.c_str())) scene_info_->set_pack_id(key_id_);
     else {
         scene_info_->loadScene(PublicLib::UToA(file_path).c_str());
@@ -122,20 +125,13 @@ void CKeyWnd::UpdateSceneInfo() {
 
     scene_bak_info_ = scene_info_->cloner();
 
-    CIosMgr::Instance()->UpdateKeyMap(key_elem->GetUserData().GetData());
+    CIosMgr::Instance()->UpdateKeyMap(key_info.file_);
 }
 
 void CKeyWnd::ReadCloudKeyboardToCombox() {
-    if (!combox_keyboard_) return;
+    if (!combox_keymap_) return;
 
-    combox_keyboard_->RemoveAll();
-
-    CListLabelElementUI* key_elem = new CListLabelElementUI;
-    if (!key_elem) return;
-    key_elem->SetFixedHeight(35);
-    key_elem->SetText(L"             新建");
-    key_elem->SetBkImage(L"file='KeyMap/tools/combobox_create.png' dest='81,11,89,19'");
-    combox_keyboard_->Add(key_elem);
+    keymap_info_.clear();
 
     auto config = CIosMgr::Instance()->GetKeyMapDir() + L"\\conf.ini";
 
@@ -168,13 +164,9 @@ void CKeyWnd::ReadCloudKeyboardToCombox() {
             if (key_default.empty()) key_default = PublicLib::Utf8ToU(key_id_) + L"_default";
             key_default =  CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_default;
 
-            int tag = GetPrivateProfileInt(record.c_str(), L"tag", 0, config.c_str());
-            int index = GetPrivateProfileInt(record.c_str(), L"index", 0, config.c_str());
+            KeyMapInfo key_info = CreateKeyInfo(key_name, key_file, key_default);
 
-            CListLabelElementUI* key_elem = CreateKeyElem(key_name, key_file, key_default, tag, index);
-            if (!key_elem) continue;
-
-            combox_keyboard_->Add(key_elem);
+            keymap_info_.push_back(key_info);
         }
     };
 
@@ -182,16 +174,42 @@ void CKeyWnd::ReadCloudKeyboardToCombox() {
     std::vector<std::wstring> vec_records; 
     PublicLib::SplitStringW(records, L",", vec_records);
     UpdateKeyboardCombox(vec_records);
+    SelectKeyItem(keymap_info_.size() > 0 ? 0 : -1);
 
-    if (combox_keyboard_->GetCount() < 2) combox_keyboard_->RemoveAll();
-    else combox_keyboard_->SelectItemV2(1);
 
-    dwLen = GetPrivateProfileString(L"setting", L"defined", L"", szValue, 1024, config.c_str());
-    wstring defineds = szValue;
+    auto defined_config = CIosMgr::Instance()->GetKeyMapDir() + L"\\conf.xml";
 
-    std::vector<std::wstring> vec_defineds; 
-    PublicLib::SplitStringW(defineds, L",", vec_defineds);
-    UpdateKeyboardCombox(vec_defineds);
+    PublicLib::CMarkupEx xml;
+    if (!xml.Load(defined_config.c_str())) return;
+
+    if (xml.FindElem(L"list")) {
+        xml.IntoElem();
+        while (xml.FindElem(L"record")) {
+            wstring key_name = xml.GetAttrib(L"name");
+            wstring key_file = xml.GetAttrib(L"file");
+            wstring key_default = xml.GetAttrib(L"default");
+            int key_tag = _wtoi(xml.GetAttrib(L"tag").c_str());
+            int key_index = _wtoi(xml.GetAttrib(L"index").c_str());
+
+            KeyMapInfo key_info = CreateKeyInfo(key_name, key_file, key_default, key_tag, key_index);
+
+            keymap_info_.push_back(key_info);
+        }
+
+        xml.OutOfElem();
+    }
+}
+
+void CKeyWnd::SelectKeyItem(int index) {
+    if (index < 0 || index >= (int)keymap_info_.size()) {
+        combox_keymap_->SetTag(-1);
+        combox_keymap_->SetText(L"");
+    }
+    else {
+        auto key_info = keymap_info_[index];
+        combox_keymap_->SetTag(index);
+        combox_keymap_->SetText(key_info.name_.c_str());
+    }
 }
 
 void CKeyWnd::SetBrowserMode(bool browser_mode) {
@@ -273,7 +291,7 @@ bool CKeyWnd::OnClickBtnHelp(void* lpParam) {
 }
 
 bool CKeyWnd::OnClickBtnClose(void* lpParam) {
-    scene_bak_info_ = scene_info_->cloner();
+    if (scene_info_) scene_bak_info_ = scene_info_->cloner();
     SetBrowserMode(true);
     return true;
 }
@@ -611,19 +629,18 @@ bool CKeyWnd::OnBtnToolIntelligent(void* param) {
 }
 
 bool CKeyWnd::OnBtnSave(void* param) {
-    if (!scene_info_ || !scene_bak_info_) return true;
+    if (!scene_info_ || !scene_bak_info_ || !combox_keymap_) return true;
 
     scene_info_ = scene_bak_info_->cloner();
 
-    auto index = combox_keyboard_->GetCurSel();
-    if (index < 0) return true;
+    auto index = combox_keymap_->GetTag();
+    if (index < 0 || index >= (int)keymap_info_.size()) return true;
 
-    CListLabelElementUI* key_elem = (CListLabelElementUI*)combox_keyboard_->GetItemAt(index);
-    if (!key_elem) return true;
+    auto key_info = keymap_info_[index];
 
-    scene_info_->saveScene(PublicLib::UToA(key_elem->GetUserData().GetData()).c_str());
+    scene_info_->saveScene(PublicLib::UToA(key_info.file_).c_str());
 
-    CIosMgr::Instance()->UpdateKeyMap(key_elem->GetUserData().GetData());
+    CIosMgr::Instance()->UpdateKeyMap(key_info.file_.c_str());
 
     SetBrowserMode(true);
 
@@ -640,14 +657,16 @@ bool CKeyWnd::OnBtnDelete(void* param) {
 }
 
 bool CKeyWnd::OnBtnRestore(void* param) {
-    auto index = combox_keyboard_->GetCurSel();
-    if (index < 0) return true;
+    if (!combox_keymap_) return true;
 
-    CListLabelElementUI* key_elem = (CListLabelElementUI*)combox_keyboard_->GetItemAt(index);
-    if (!key_elem) return true;
+    int index = combox_keymap_->GetTag();
+
+    if (index < 0 || index >= (int)keymap_info_.size()) return true;
+
+    auto key_info = keymap_info_[index];
 
     scene_info_ = new emulator::SceneInfo();
-    wstring file_path = key_elem->GetInheritableUserData().GetData();
+    wstring file_path = key_info.default_;
     if (!PathFileExists(file_path.c_str())) scene_info_->set_pack_id(key_id_);
     else {
         scene_info_->loadScene(PublicLib::UToA(file_path).c_str());
@@ -656,9 +675,9 @@ bool CKeyWnd::OnBtnRestore(void* param) {
 
     scene_bak_info_ = scene_info_->cloner();
 
-    scene_info_->saveScene(PublicLib::UToA(key_elem->GetUserData().GetData()).c_str());
+    scene_info_->saveScene(PublicLib::UToA(key_info.file_).c_str());
 
-    CIosMgr::Instance()->UpdateKeyMap(key_elem->GetUserData().GetData());
+    CIosMgr::Instance()->UpdateKeyMap(key_info.file_);
 
     LoadKeyItems();
     return true;
@@ -1488,6 +1507,32 @@ bool CKeyWnd::OnComboxKeyboardClick(void* param) {
     return true;
 }
 
+bool CKeyWnd::OnClickBtnComKeyMap(void* param) {
+    if (!combox_keymap_ || !browser_wnd_) return true;
+
+    CKeyComWnd* key_com_wnd = new CKeyComWnd();
+    if (!key_com_wnd) {
+        OUTPUT_XYLOG(LEVEL_ERROR, L"malloc key combox window failed, nullptr!");
+        return true;
+    }
+
+    const RECT& rc = combox_keymap_->GetPos();
+    POINT pt = { rc.left, rc.bottom };
+    ClientToScreen(*browser_wnd_, &pt);
+
+    key_com_wnd->Create(*browser_wnd_, false);
+
+    auto height = (keymap_info_.size() + 1) * 35;
+
+    ::MoveWindow(*key_com_wnd, pt.x, pt.y, 200, height, FALSE);
+
+    key_com_wnd->UpdateKeyCtrls(keymap_info_);
+
+    key_com_wnd->ShowWindow(true);
+
+    return true;
+}
+
 CControlUI* CKeyWnd::FindKeyUI(int key_value) {
     if (!key_body_) return nullptr;
 
@@ -1527,74 +1572,86 @@ CControlUI* CKeyWnd::FindKeyUI(int key_value) {
     return nullptr;
 }
 
-DuiLib::CListLabelElementUI* CKeyWnd::CreateKeyElem(const wstring& key_name, const wstring& key_file, const wstring& key_default, int tag/* = 0*/, int index/* = 0*/) {
-    CListLabelElementUI* key_elem = new CListLabelElementUI;
-    if (!key_elem) return nullptr;
+KeyMapInfo CKeyWnd::CreateKeyInfo(const wstring& key_name, const wstring& key_file, const wstring& key_default, int tag/* = 0*/, int index/* = 0*/) {
+    KeyMapInfo key_info;
+    key_info.name_ = key_name;
+    key_info.file_ = key_file;
+    key_info.default_ = key_default;
+    key_info.tag_ = tag;
+    key_info.index_ = index;
+    return key_info;
+}
 
-    key_elem->SetFixedHeight(35);
-    key_elem->SetName(key_name.c_str());
-    key_elem->SetUserData(key_file.c_str());
-    key_elem->SetInheritableUserData(key_default.c_str());
-    key_elem->SetText(key_name.c_str());
-    key_elem->SetTag(tag);
-    key_elem->SetInheritableTag(index);
-
-    if (index > 0 || index == -1) {
-        key_elem->Subscribe(DUI_MSGTYPE_ITEMCLICK, MakeDelegate(this, &CKeyWnd::OnComboxKeyboardClick));
-        key_elem->SetBkImage(L"file='KeyMap/tools/combobox_modify.png' dest='150,13,160,23' file='KeyMap/tools/combobox_close.png' dest='170,13,180,23'");
-    }
-
-    return key_elem;
+void CKeyWnd::CreateDefinedKeyFile() {
+    PublicLib::CMarkupEx xml;
+    xml.SetDoc(L"<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+    xml.AddElem(L"list");
+    xml.IntoElem();
+    xml.OutOfElem();
+    wstring config = CIosMgr::Instance()->GetKeyMapDir() + L"\\conf.xml";
+    xml.Save(config);
 }
 
 bool CKeyWnd::AddDefinedKeyBoard(const string& app_id, int nNum) {
-    if (!combox_keyboard_) return false;
+    if (!combox_keymap_) return false;
 
-    WCHAR szTag[MAX_PATH] = { 0 };
-    wsprintf(szTag, L"%d", nNum);
+    auto config = CIosMgr::Instance()->GetKeyMapDir() + L"\\conf.xml";
 
-    auto config = CIosMgr::Instance()->GetKeyMapDir() + L"\\conf.ini";
+    if (!::PathFileExists(config.c_str())) CreateDefinedKeyFile();
 
-    wchar_t szValue[1024] = { 0 };
-    DWORD dwLen = GetPrivateProfileString(L"setting", L"defined", L"", szValue, 1024, config.c_str());
+    PublicLib::CMarkupEx xml;
+    if (!xml.Load(config.c_str())) {
+        OUTPUT_XYLOG(LEVEL_INFO, L"打开自定义键盘映射配置文件失败");
+        return false;
+    }
 
-    wstring defineds = szValue;
+    if (!xml.FindElem(L"list")) return false;
 
-    auto index = GetUserDefinedIndex(defineds);
+    xml.IntoElem();
+    std::map<int, int> mapIndexs;
+    while (xml.FindElem(L"record")) {
+        int temp_index = _wtoi(xml.GetAttrib(L"index").c_str());
+        mapIndexs[temp_index] = 0;
+    }
 
-    if (index > USER_DEFINED_KEYMAP_COUNT) return false;
+    int index = 1;
+    for (auto it = mapIndexs.begin(); it != mapIndexs.end(); ) {
+        if (it->first != index) break;
 
-    if (!defineds.empty()) defineds.append(L",");
+        it++;
+        index++;
+    }
+
+    if (index > USER_DEFINED_KEYMAP_COUNT) {
+        xml.OutOfElem();
+        return false;
+    }
 
     char szDefined[MAX_PATH] = { 0 };
     sprintf(szDefined, "defined_%d", index);
 
     string strDefined = szDefined;
 
-    defineds.append(PublicLib::AToU(strDefined));
-
     wstring key_file = PublicLib::Utf8ToU(app_id + "_" + strDefined);
     wstring key_default = key_file + L"_default";
-
-    WCHAR szIndex[MAX_PATH] = { 0 };
-    wsprintf(szIndex, L"%d", index);
 
     WCHAR szName[MAX_PATH] = { 0 };
     wsprintf(szName, index == 1 ? L"我的配置（本地）" : L"我的配置（本地%d）", index);
 
     wstring key_name = szName;
 
-    CListLabelElementUI* key_elem = CreateKeyElem(key_name, CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_file, CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_default, nNum, index);
-    if (!key_elem) return false;
+    KeyMapInfo key_info = CreateKeyInfo(key_name, CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_file, CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_default, nNum, index);
 
-    combox_keyboard_->Add(key_elem);
+    keymap_info_.push_back(key_info);
 
-    WritePrivateProfileString(L"setting", L"defined", defineds.c_str(), config.c_str());
-    WritePrivateProfileString(PublicLib::AToU(strDefined).c_str(), L"name", key_name.c_str(), config.c_str());
-    WritePrivateProfileString(PublicLib::AToU(strDefined).c_str(), L"file", key_file.c_str(), config.c_str());
-    WritePrivateProfileString(PublicLib::AToU(strDefined).c_str(), L"default", key_default.c_str(), config.c_str());
-    WritePrivateProfileString(PublicLib::AToU(strDefined).c_str(), L"tag", szTag, config.c_str());
-    WritePrivateProfileString(PublicLib::AToU(strDefined).c_str(), L"index", szIndex, config.c_str());
+    xml.AddElem(L"record");
+    xml.SetAttrib(L"name", key_name);
+    xml.SetAttrib(L"file_", key_file);
+    xml.SetAttrib(L"default", key_default);
+    xml.SetAttrib(L"tag", nNum);
+    xml.SetAttrib(L"index", index);
+
+    xml.OutOfElem();
 
     return true;
 }

@@ -387,6 +387,12 @@
     <ClInclude Include="UI\WndUpdateLog.h">
       <Filter>源文件\UI\Wnd</Filter>
     </ClInclude>
+    <ClInclude Include="UI\KeyMap\KeyComWnd.h">
+      <Filter>源文件\UI\KeyMap\Wnd</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\KeyMap\KeyComItem.h">
+      <Filter>源文件\UI\KeyMap\Wnd</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -577,6 +583,12 @@
     </ClCompile>
     <ClCompile Include="UI\WndUpdateLog.cpp">
       <Filter>源文件\UI\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\KeyMap\KeyComWnd.cpp">
+      <Filter>源文件\UI\KeyMap\Wnd</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\KeyMap\KeyComItem.cpp">
+      <Filter>源文件\UI\KeyMap\Wnd</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

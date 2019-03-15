@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<Window size="200,35" bktrans="true">
+	<Font name="微软雅黑" size="12" bold="false" italic="false" default="true" />
+	<Font name="宋体" size="12" />
+	
+	<VerticalLayout width="200" bkimage="file='KeyMap/tools/combobox_nor.png' corner='3,3,3,3'">
+	  <Button name="btn_combox_create" width="200" height="35" normalimage="file='KeyMap/tools/combobox_create.png' dest='81,11,89,19'" font="1" textcolor="#FF262626" textpadding="90,0,0,0" text="新建" align="left" valign="center" />
+	   
+	   <List name="list_combox_keymap" header="hidden"/>
+	</VerticalLayout>
+</Window>

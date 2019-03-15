@@ -11,6 +11,16 @@ namespace emulator{
     struct tagItemInfo;
 }
 
+struct KeyMapInfo {
+    wstring name_;
+    wstring file_;
+    wstring default_;
+    int tag_;
+    int index_;
+
+    KeyMapInfo(): tag_(0), index_(0) {}
+};
+
 #define USER_DEFINED_KEYMAP_COUNT    int(5)
 
 class CMDLDropSource : public CDropSource {
@@ -85,6 +95,8 @@ protected:
     bool OnComboxKeyboardSelected(void* param);
     bool OnComboxKeyboardClick(void* param);
 
+    bool OnClickBtnComKeyMap(void* param);
+
     BEGIN_INIT_CTRL()
         DECLARE_CTRL_TYPE_PAGE(btn_tool_handle_, CButtonUI, panel_tools_, L"btn_tool_handle")
         DECLARE_CTRL_TYPE_PAGE(btn_tool_normal_, CButtonUI, panel_tools_, L"btn_tool_normal")
@@ -93,7 +105,7 @@ protected:
         DECLARE_CTRL_TYPE_PAGE(opt_right_run_, COptionUI, panel_tools_, L"opt_right_run")
         DECLARE_CTRL_TYPE_PAGE(key_slider_trans_, CSliderUI, panel_tools_, L"key_slider_trans")
         DECLARE_CTRL_TYPE_PAGE(lbl_trans_percent_, CLabelUI, panel_tools_, L"lbl_trans_percent")
-        DECLARE_CTRL_TYPE_PAGE(combox_keyboard_, CComboBoxUI, panel_tools_, L"combox_keyboard")
+        DECLARE_CTRL_TYPE_PAGE(combox_keymap_, CButtonUI, panel_tools_, L"combox_keymap")
     END_INIT_CTRL()
 
     BEGIN_BIND_CTRL()
@@ -108,7 +120,7 @@ protected:
         BIND_CTRL_CLICK_PAGE(L"btn_restore", panel_tools_, &CKeyWnd::OnBtnRestore)
         BIND_CTRL_EVENT_PAGE(L"key_slider_trans", panel_tools_, DUI_MSGTYPE_VALUECHANGED, &CKeyWnd::OnSliderKeyTransChanged)
         BIND_CTRL_EVENT_PAGE(L"key_slider_trans", panel_tools_, DUI_MSGTYPE_VALUECHANGING, &CKeyWnd::OnSliderKeyTransChanged)
-        BIND_CTRL_EVENT_PAGE(L"combox_keyboard", panel_tools_, DUI_MSGTYPE_ITEMSELECT, &CKeyWnd::OnComboxKeyboardSelected)
+        BIND_CTRL_CLICK_PAGE(L"combox_keymap", panel_tools_, &CKeyWnd::OnClickBtnComKeyMap)
     END_BIND_CTRL()
 
 protected:
@@ -143,9 +155,13 @@ private:
 
     CControlUI* FindKeyUI(int key_value);
 
-    CListLabelElementUI* CreateKeyElem(const wstring& key_name, const wstring& key_file, const wstring& key_default, int tag = 0, int index = 0);
+    KeyMapInfo CreateKeyInfo(const wstring& key_name, const wstring& key_file, const wstring& key_default, int tag = 0, int index = 0);
 
     bool AddDefinedKeyBoard(const string& app_id, int nNum);
+
+    void SelectKeyItem(int index);
+
+    void CreateDefinedKeyFile();
 
     int GetUserDefinedNum();
 
@@ -161,8 +177,6 @@ private:
     CSliderUI* key_slider_trans_;
     CLabelUI* lbl_trans_percent_;
 
-    CComboBoxUI* combox_keyboard_;
-
     CMDLDropSource  *m_pMDLDragDataSrc;
     CMDLDropTarget  *m_pMDLDropTarget;
 
@@ -174,6 +188,11 @@ private:
     CKeyBrowserWnd* browser_wnd_;
 
     string key_id_;
+
+    CComboBoxUI* combox_keyboard_;
+
+    CButtonUI* combox_keymap_;
+    std::vector<KeyMapInfo> keymap_info_;  // º¸≈Ã”≥…‰∫œºØ
 };
 
 #endif  // !#define (_KEY_WND_INCLUDE_H_)  

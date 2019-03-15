@@ -230,6 +230,8 @@
     <ClInclude Include="UI\KeyMap\ENUMFETC.H" />
     <ClInclude Include="UI\KeyMap\IKey.h" />
     <ClInclude Include="UI\KeyMap\IntelligentUI.h" />
+    <ClInclude Include="UI\KeyMap\KeyComItem.h" />
+    <ClInclude Include="UI\KeyMap\KeyComWnd.h" />
     <ClInclude Include="UI\KeyMap\KeyEditUI.h" />
     <ClInclude Include="UI\KeyMap\KeyBrowserWnd.h" />
     <ClInclude Include="UI\KeyMap\KeyWnd.h" />
@@ -303,6 +305,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="UI\KeyMap\IntelligentUI.cpp" />
+    <ClCompile Include="UI\KeyMap\KeyComItem.cpp" />
+    <ClCompile Include="UI\KeyMap\KeyComWnd.cpp" />
     <ClCompile Include="UI\KeyMap\KeyEditUI.cpp" />
     <ClCompile Include="UI\KeyMap\KeyBrowserWnd.cpp" />
     <ClCompile Include="UI\KeyMap\KeyWnd.cpp" />
