@@ -3,13 +3,13 @@
   <HorizontalLayout width="200" height="35" >
     <Control width="10" />
     
-    <Label name="lbl_name" width="140" align="left" valign="center" textcolor="#FF434343" endellipsis="true" font="1" />
+    <Edit name="edit_name" width="140" font="1" mouse="false" eidtkillfocus="true"  textcolor="#FF434343" wndoffset="0,-2" nativebkcolor="#FFDEDEDE" visible="true" />
     
-    <Button name="btn_combox_modify" width="10" height="10" padding="0,13,0,0" normalimage="file='KeyMap/tools/combobox_modify.png'" />
+    <Option name="btn_combox_modify" width="10" height="10" padding="0,13,0,0" normalimage="file='KeyMap/tools/combobox_modify.png'" group="keycomboxitem" visible="false" />
     
     <Control width="10" />
     
-    <Button name="btn_combox_delete" width="10" height="10" padding="0,13,0,0" normalimage="file='KeyMap/tools/combobox_close.png'" />
+    <Button name="btn_combox_delete" width="10" height="10" padding="0,13,0,0" normalimage="file='KeyMap/tools/combobox_close.png'" visible="false" />
     
     <Control />
   </HorizontalLayout>

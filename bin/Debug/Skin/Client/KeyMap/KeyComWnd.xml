@@ -3,9 +3,11 @@
 	<Font name="微软雅黑" size="12" bold="false" italic="false" default="true" />
 	<Font name="宋体" size="12" />
 	
+	<Default name="VScrollBar" value="width=&quot;10&quot; thumbnormalimage=&quot;file=&apos;KeyMap/tools/scroll_bk.png&apos; corner=&apos;4,4,4,4&apos;&quot; showbutton1=&quot;false&quot; showbutton2=&quot;false&quot;"/>
+	
 	<VerticalLayout width="200" bkimage="file='KeyMap/tools/combobox_nor.png' corner='3,3,3,3'">
-	  <Button name="btn_combox_create" width="200" height="35" normalimage="file='KeyMap/tools/combobox_create.png' dest='81,11,89,19'" font="1" textcolor="#FF262626" textpadding="90,0,0,0" text="新建" align="left" valign="center" />
+	  <Button name="btn_combox_create" width="200" height="35" bkimage="file='KeyMap/tools/combobox_create.png' dest='81,11,89,19'" font="1" textcolor="#FF262626" textpadding="90,0,0,0" text="新建" align="left" valign="center" />
 	   
-	   <List name="list_combox_keymap" header="hidden"/>
+	  <List name="list_combox_keymap" header="hidden" />
 	</VerticalLayout>
 </Window>
