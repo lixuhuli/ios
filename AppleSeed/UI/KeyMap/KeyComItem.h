@@ -22,29 +22,34 @@ public:
     virtual void DoEvent(TEventUI& event) override;
     virtual void SetPos(RECT rc) override;
 
-    void UpdateCtrls(const KeyMapInfo& info);
+    void UpdateKeyCtrl(const KeyMapInfo& info);
 
 public:
     virtual void InitControl();
     virtual CControlUI* CreateControl(LPCTSTR pstrClass) override;
 
-
 protected:
 
     BEGIN_INIT_CTRL()
-        DECLARE_CTRL_TYPE_PAGE(lbl_name_, CLabelUI, this, L"lbl_name")
-        DECLARE_CTRL_TYPE_PAGE(btn_combox_modify_, CButtonUI, this, L"btn_combox_modify")
+        DECLARE_CTRL_TYPE_PAGE(btn_combox_modify_, COptionUI, this, L"btn_combox_modify")
         DECLARE_CTRL_TYPE_PAGE(btn_combox_delete_, CButtonUI, this, L"btn_combox_delete")
+        DECLARE_CTRL_TYPE_PAGE(edit_name_, CEditUI, this, L"edit_name")
     END_INIT_CTRL()
 
     BEGIN_BIND_CTRL()
+        BIND_CTRL_CLICK_PAGE(L"btn_combox_delete", this, &CKeyComItemUI::OnClickComboxDelete)
+        BIND_CTRL_CLICK_PAGE(L"btn_combox_modify", this, &CKeyComItemUI::OnClickComboxModify)
+        BIND_CTRL_EVENT_PAGE(L"edit_name", this, DUI_MSGTYPE_WND_KILLFOCUS, &CKeyComItemUI::OnEditNameKillfocus)
     END_BIND_CTRL()
 
-private:
+    bool OnClickComboxDelete(void* param);
+    bool OnClickComboxModify(void* param);
+
+    bool OnEditNameKillfocus(void* param);
 
 private:
-    CLabelUI* lbl_name_;
-    CButtonUI* btn_combox_modify_;
+    CEditUI* edit_name_;
+    COptionUI* btn_combox_modify_;
     CButtonUI* btn_combox_delete_;
 };
 

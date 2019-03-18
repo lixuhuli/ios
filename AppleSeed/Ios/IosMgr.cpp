@@ -677,3 +677,7 @@ bool CIosMgr::IsCPUVTOpened(bool& support) {
 
     return false;
 }
+
+CKeyWnd* CIosMgr::GetKeyWndPtr() {
+    return key_wnd_ ? key_wnd_ : nullptr;
+}

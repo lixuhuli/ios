@@ -7,11 +7,8 @@
 class CKeyComWnd 
     : public CWndBase {
 public:
-    CKeyComWnd();
+    CKeyComWnd(const std::vector<KeyMapInfo>& info);
     virtual ~CKeyComWnd();
-
-public:
-    void UpdateKeyCtrls(const std::vector<KeyMapInfo>& keymap_info);
 
 protected:
 	virtual LPCWSTR GetWndName() const override { return L"keycommap"; }
@@ -22,23 +19,27 @@ protected:
     virtual LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) override;
     virtual LRESULT OnKillFocus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
-    bool OnClickSwitchAccount(void* param);
-    bool OnClickPersonalSetting(void* param);
+    bool OnClickBtnCreateKeymap(void* param);
+    bool OnListKeyMapSelected(void* param);
 
     BEGIN_INIT_CTRL()
         DECLARE_CTRL_TYPE(list_combox_keymap_, CListUI, L"list_combox_keymap")
+        DECLARE_CTRL_TYPE(btn_combox_create_, CButtonUI, L"btn_combox_create")
     END_INIT_CTRL()
 
     BEGIN_BIND_CTRL()
-        //BIND_CTRL_CLICK(L"personal_switch_account", &CKeyComWnd::OnClickSwitchAccount)
-        //BIND_CTRL_CLICK(L"personal_setting", &CKeyComWnd::OnClickPersonalSetting)
+        BIND_CTRL_CLICK(L"btn_combox_create", &CKeyComWnd::OnClickBtnCreateKeymap);
+        BIND_CTRL_EVENT(L"list_combox_keymap", DUI_MSGTYPE_ITEMSELECT, &CKeyComWnd::OnListKeyMapSelected)
     END_BIND_CTRL()
 
-protected:
-    
+private:
+    void UpdateKeyCtrls();
 
 private:
     CListUI* list_combox_keymap_;
+    CButtonUI* btn_combox_create_;
+
+    std::vector<KeyMapInfo> keymap_info_;  // º¸≈Ã”≥…‰∫œºØ
 };
 
 #endif  // !#define (_KEY_COM_WND_INCLUDE_H_) 

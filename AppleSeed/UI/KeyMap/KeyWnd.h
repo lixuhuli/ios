@@ -23,6 +23,7 @@ struct KeyMapInfo {
 
 #define USER_DEFINED_KEYMAP_COUNT    int(5)
 
+class CKeyComWnd;
 class CMDLDropSource : public CDropSource {
 public:
     CMDLDropSource() {}
@@ -48,6 +49,7 @@ public:
     void SetBrowserMode(bool browser_mode);
     void UpdateBrowserWnd(const QRect* lprc = nullptr);
     void CloseBrowserWnd();
+    void ChangeKeyMapInfo(int index, int record_index, const wstring& key_name);
 
     // 模拟器状态信息 给外部调用
     base::WeakPtr<emulator::iSceneInfo> scene_info();
@@ -63,6 +65,8 @@ protected:
 
     virtual LRESULT OnSetCursor(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnRemoveKey(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    virtual LRESULT OnCreateItem(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+    virtual LRESULT OnSelectItem(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
     virtual LRESULT OnRemoveItem(WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 
     virtual void OnFinalMessage(HWND hWnd);
@@ -91,9 +95,6 @@ protected:
     bool OnSliderKeyTransChanged(void* param);
 
     bool OnKeyPosChanged(void* param);
-
-    bool OnComboxKeyboardSelected(void* param);
-    bool OnComboxKeyboardClick(void* param);
 
     bool OnClickBtnComKeyMap(void* param);
 
@@ -157,15 +158,13 @@ private:
 
     KeyMapInfo CreateKeyInfo(const wstring& key_name, const wstring& key_file, const wstring& key_default, int tag = 0, int index = 0);
 
-    bool AddDefinedKeyBoard(const string& app_id, int nNum);
+    bool AddDefinedKeyBoard(const string& app_id, int tag, int index);
 
     void SelectKeyItem(int index);
 
     void CreateDefinedKeyFile();
 
-    int GetUserDefinedNum();
-
-    int GetUserDefinedIndex(const wstring& defineds);
+    bool GetUserDefinedTagAndIndex(int& tag, int& index);
 
 private:
     CButtonUI* btn_tool_handle_;
@@ -189,10 +188,9 @@ private:
 
     string key_id_;
 
-    CComboBoxUI* combox_keyboard_;
-
     CButtonUI* combox_keymap_;
     std::vector<KeyMapInfo> keymap_info_;  // 键盘映射合集
+    CKeyComWnd* key_com_wnd_;
 };
 
 #endif  // !#define (_KEY_WND_INCLUDE_H_)  

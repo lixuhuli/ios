@@ -23,7 +23,7 @@ CKeyWnd::CKeyWnd(const string& key_id)
  , opt_right_run_(nullptr)
  , browser_mode_(true)
  , browser_wnd_(nullptr)
- , combox_keyboard_(nullptr)
+ , key_com_wnd_(nullptr)
  , combox_keymap_(nullptr)
  , m_pMDLDropTarget(nullptr)
  , m_pMDLDragDataSrc(nullptr)
@@ -84,11 +84,7 @@ void CKeyWnd::InitWindow() {
 
     ReadCloudKeyboardToCombox();
 
-    UpdateSceneInfo();
-
-    LoadKeyItems();
-
-    UpdateCtrls();
+    SelectKeyItem(keymap_info_.size() > 0 ? 0 : -1);
 
     if (btn_tool_handle_) btn_tool_handle_->OnEvent += MakeDelegate(this, &CKeyWnd::OnToolEvent);
 
@@ -174,7 +170,6 @@ void CKeyWnd::ReadCloudKeyboardToCombox() {
     std::vector<std::wstring> vec_records; 
     PublicLib::SplitStringW(records, L",", vec_records);
     UpdateKeyboardCombox(vec_records);
-    SelectKeyItem(keymap_info_.size() > 0 ? 0 : -1);
 
 
     auto defined_config = CIosMgr::Instance()->GetKeyMapDir() + L"\\conf.xml";
@@ -186,8 +181,8 @@ void CKeyWnd::ReadCloudKeyboardToCombox() {
         xml.IntoElem();
         while (xml.FindElem(L"record")) {
             wstring key_name = xml.GetAttrib(L"name");
-            wstring key_file = xml.GetAttrib(L"file");
-            wstring key_default = xml.GetAttrib(L"default");
+            wstring key_file = CIosMgr::Instance()->GetKeyMapDir() + L"\\" + xml.GetAttrib(L"file");
+            wstring key_default = CIosMgr::Instance()->GetKeyMapDir() + L"\\" + xml.GetAttrib(L"default");
             int key_tag = _wtoi(xml.GetAttrib(L"tag").c_str());
             int key_index = _wtoi(xml.GetAttrib(L"index").c_str());
 
@@ -209,6 +204,12 @@ void CKeyWnd::SelectKeyItem(int index) {
         auto key_info = keymap_info_[index];
         combox_keymap_->SetTag(index);
         combox_keymap_->SetText(key_info.name_.c_str());
+
+        UpdateSceneInfo();
+
+        LoadKeyItems();
+
+        UpdateCtrls();
     }
 }
 
@@ -269,6 +270,8 @@ LRESULT CKeyWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
     case WM_SETCURSOR: lRes = OnSetCursor(wParam, lParam, bHandled); break;
     case WM_KEYWND_MSG_REMOVE_KEY: lRes = OnRemoveKey(wParam, lParam, bHandled); break;
+    case WM_KEYWND_MSG_CREATE_ITEM: lRes = OnCreateItem(wParam, lParam, bHandled); break;
+    case WM_KEYWND_MSG_SELECT_ITEM: lRes = OnSelectItem(wParam, lParam, bHandled); break;
     case WM_KEYWND_MSG_REMOVE_ITEM: lRes = OnRemoveItem(wParam, lParam, bHandled); break;
     default: bHandled = FALSE;
     }
@@ -714,57 +717,6 @@ LRESULT CKeyWnd::OnRemoveKey(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     else scene_bak_info_->DeleteKey(control->GetTag());
 
     key_body_->Remove(control);
-
-    return 0;
-}
-
-LRESULT CKeyWnd::OnRemoveItem(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    if (!combox_keyboard_) return 0;
-
-    int index = lParam;
-    if (index < 0) return 0;
-
-    CListLabelElementUI* key_elem = (CListLabelElementUI*)combox_keyboard_->GetItemAt(index);
-    if (!key_elem) return true;
-
-    auto config = CIosMgr::Instance()->GetKeyMapDir() + L"\\conf.ini";
-
-    WCHAR szDefined[MAX_PATH] = { 0 };
-    wsprintf(szDefined, L"defined_%d", key_elem->GetInheritableTag());
-
-    wstring strDefined = szDefined;
-
-    wchar_t szValue[1024] = { 0 };
-    DWORD dwLen = GetPrivateProfileString(L"setting", L"defined", L"", szValue, 1024, config.c_str());
-
-    wstring defineds = szValue;
-
-    auto pos = defineds.find(strDefined.c_str());
-
-    defineds = PublicLib::StrReplaceW(defineds, strDefined, L"");
-
-    if (pos != wstring::npos) {
-        if (pos == 0) {
-            if (defineds.length() > 0) defineds.erase(0, 1);
-        }
-        else {
-            defineds.erase(pos - 1, 1);
-        }
-
-        WritePrivateProfileString(L"setting", L"defined", defineds.c_str(), config.c_str());
-        WritePrivateProfileString(strDefined.c_str(), L"name", L"", config.c_str());
-        WritePrivateProfileString(strDefined.c_str(), L"file", L"", config.c_str());
-        WritePrivateProfileString(strDefined.c_str(), L"default", L"", config.c_str());
-        WritePrivateProfileString(strDefined.c_str(), L"tag", L"", config.c_str());
-        WritePrivateProfileString(strDefined.c_str(), L"index", L"", config.c_str());
-    }
-
-    ::DeleteFile(key_elem->GetUserData().GetData());
-    ::DeleteFile(key_elem->GetInheritableUserData().GetData());
-
-    if (index > 1) combox_keyboard_->SelectItem(index - 1);
-
-    combox_keyboard_->RemoveAt(index);
 
     return 0;
 }
@@ -1458,77 +1410,36 @@ bool CKeyWnd::OnKeyPosChanged(void* param) {
     return true;
 }
 
-bool CKeyWnd::OnComboxKeyboardSelected(void* param) {
-    if (!combox_keyboard_ || combox_keyboard_->GetCount() < 2) return true;
-
-    if (combox_keyboard_->GetCurSel() == 0) {
-        int nNum = GetUserDefinedNum();
-        if (nNum < 1) {
-            combox_keyboard_->SelectItem(1);
-            return true;
-        }
-
-        if (!AddDefinedKeyBoard(key_id_, nNum)) {
-            combox_keyboard_->SelectItem(1);
-            return true;
-        }
-
-        combox_keyboard_->SelectItem(combox_keyboard_->GetCount() - 1);
-
+bool CKeyWnd::OnClickBtnComKeyMap(void* param) {
+    if (key_com_wnd_ && IsWindow(*key_com_wnd_)) {
+        ::PostMessage(*key_com_wnd_, WM_CLOSE, 0, 0);
         return true;
     }
 
-    UpdateSceneInfo();
-
-    LoadKeyItems();
-
-    UpdateCtrls();
-
-    return true;
-}
-
-bool CKeyWnd::OnComboxKeyboardClick(void* param) {
-    TNotifyUI* notify = (TNotifyUI*)param;
-    if (!notify || !notify->pSender || !combox_keyboard_) return true;
-
-    auto control = notify->pSender;
-    QRect del_pos = control->GetPos();
-
-    del_pos.left += 165;
-    del_pos.top += 8;
-    del_pos.right = del_pos.left + 20;
-    del_pos.bottom = del_pos.top + 20;
-
-    if (::PtInRect(&del_pos, notify->ptMouse)) {
-        int index = combox_keyboard_->GetItemIndex(control);
-        ::PostMessage(m_hWnd, WM_KEYWND_MSG_REMOVE_ITEM, (LPARAM)((CControlUI*)control), (LPARAM)index);
-    }
-
-    return true;
-}
-
-bool CKeyWnd::OnClickBtnComKeyMap(void* param) {
     if (!combox_keymap_ || !browser_wnd_) return true;
 
-    CKeyComWnd* key_com_wnd = new CKeyComWnd();
-    if (!key_com_wnd) {
+    key_com_wnd_ = new CKeyComWnd(keymap_info_);
+    if (!key_com_wnd_) {
         OUTPUT_XYLOG(LEVEL_ERROR, L"malloc key combox window failed, nullptr!");
         return true;
     }
 
     const RECT& rc = combox_keymap_->GetPos();
     POINT pt = { rc.left, rc.bottom };
+
+    auto item_count = keymap_info_.size() + 1;
+
+    auto height = item_count * 35;
+
+    if (item_count > 4) pt.y = rc.top - height;
+
     ClientToScreen(*browser_wnd_, &pt);
 
-    key_com_wnd->Create(*browser_wnd_, false);
+    key_com_wnd_->Create(*browser_wnd_, false);
 
-    auto height = (keymap_info_.size() + 1) * 35;
+    ::MoveWindow(*key_com_wnd_, pt.x, pt.y, 200, height, TRUE);
 
-    ::MoveWindow(*key_com_wnd, pt.x, pt.y, 200, height, FALSE);
-
-    key_com_wnd->UpdateKeyCtrls(keymap_info_);
-
-    key_com_wnd->ShowWindow(true);
+    key_com_wnd_->ShowWindow(true);
 
     return true;
 }
@@ -1592,7 +1503,73 @@ void CKeyWnd::CreateDefinedKeyFile() {
     xml.Save(config);
 }
 
-bool CKeyWnd::AddDefinedKeyBoard(const string& app_id, int nNum) {
+LRESULT CKeyWnd::OnCreateItem(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    if (keymap_info_.size() < 1) return 0;
+
+    int tag = 0;
+    int index = 0;
+    if (!GetUserDefinedTagAndIndex(tag, index)) return 0;
+
+    if (!AddDefinedKeyBoard(key_id_, tag, index)) return 0;
+
+    SelectKeyItem(keymap_info_.size() - 1);
+
+    return 0;
+}
+
+LRESULT CKeyWnd::OnSelectItem(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    int index = wParam;
+
+    SelectKeyItem(index);
+
+    return 0;
+}
+
+LRESULT CKeyWnd::OnRemoveItem(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    int index = wParam;
+    int record_index = lParam;
+    if (index < 0 || !combox_keymap_) return 0;
+
+    if (index < 0 || index >= (int)keymap_info_.size()) return true;
+
+    auto key_info = keymap_info_[index];
+
+    wstring key_file = key_info.file_;
+    wstring key_default = key_info.default_;
+
+    auto config = CIosMgr::Instance()->GetKeyMapDir() + L"\\conf.xml";
+
+    PublicLib::CMarkupEx xml;
+    if (xml.Load(config.c_str())) {
+        if (xml.FindElem(L"list")) {
+            xml.IntoElem();
+
+            while (xml.FindElem(L"record")){
+                auto key_index = _wtoi(xml.GetAttrib(L"index").c_str());
+
+                if (record_index == key_index) {
+                    xml.RemoveElem();
+                    break;
+                }
+            }
+
+            xml.OutOfElem();
+        }
+
+        xml.Save(config);
+    }
+
+    if (combox_keymap_->GetTag() == index) SelectKeyItem(index - 1);
+
+    keymap_info_.erase(keymap_info_.begin() + index);
+
+    ::DeleteFile(key_file.c_str());
+    ::DeleteFile(key_default.c_str());
+    
+    return 0;
+}
+
+bool CKeyWnd::AddDefinedKeyBoard(const string& app_id, int tag, int index) {
     if (!combox_keymap_) return false;
 
     auto config = CIosMgr::Instance()->GetKeyMapDir() + L"\\conf.xml";
@@ -1607,26 +1584,6 @@ bool CKeyWnd::AddDefinedKeyBoard(const string& app_id, int nNum) {
 
     if (!xml.FindElem(L"list")) return false;
 
-    xml.IntoElem();
-    std::map<int, int> mapIndexs;
-    while (xml.FindElem(L"record")) {
-        int temp_index = _wtoi(xml.GetAttrib(L"index").c_str());
-        mapIndexs[temp_index] = 0;
-    }
-
-    int index = 1;
-    for (auto it = mapIndexs.begin(); it != mapIndexs.end(); ) {
-        if (it->first != index) break;
-
-        it++;
-        index++;
-    }
-
-    if (index > USER_DEFINED_KEYMAP_COUNT) {
-        xml.OutOfElem();
-        return false;
-    }
-
     char szDefined[MAX_PATH] = { 0 };
     sprintf(szDefined, "defined_%d", index);
 
@@ -1636,78 +1593,104 @@ bool CKeyWnd::AddDefinedKeyBoard(const string& app_id, int nNum) {
     wstring key_default = key_file + L"_default";
 
     WCHAR szName[MAX_PATH] = { 0 };
-    wsprintf(szName, index == 1 ? L"我的配置（本地）" : L"我的配置（本地%d）", index);
+    wsprintf(szName, tag == 1 ? L"我的配置（本地）" : L"我的配置（本地%d）", tag);
 
     wstring key_name = szName;
 
-    KeyMapInfo key_info = CreateKeyInfo(key_name, CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_file, CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_default, nNum, index);
+    KeyMapInfo key_info = CreateKeyInfo(key_name, CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_file, CIosMgr::Instance()->GetKeyMapDir() + L"\\" + key_default, tag, index);
 
     keymap_info_.push_back(key_info);
 
+    xml.IntoElem();
     xml.AddElem(L"record");
     xml.SetAttrib(L"name", key_name);
-    xml.SetAttrib(L"file_", key_file);
+    xml.SetAttrib(L"file", key_file);
     xml.SetAttrib(L"default", key_default);
-    xml.SetAttrib(L"tag", nNum);
+    xml.SetAttrib(L"tag", tag);
     xml.SetAttrib(L"index", index);
-
     xml.OutOfElem();
+
+    xml.Save(config);
 
     return true;
 }
 
-int CKeyWnd::GetUserDefinedNum() {
-    if (!combox_keyboard_ || combox_keyboard_->GetCount() < 2) return -1;
+bool CKeyWnd::GetUserDefinedTagAndIndex(int& tag, int& index) {
+    if (keymap_info_.empty()) return false;
 
     std::map<int, int> mapNums;
-    for (int i = 0; i < combox_keyboard_->GetCount(); i++) {
-        CListLabelElementUI* key_elem = (CListLabelElementUI*)combox_keyboard_->GetItemAt(i);
-        if (!key_elem) continue;
-        if (key_elem->GetTag() == 0) continue;
-
-        mapNums[key_elem->GetTag()] = 0;
+    std::map<int, int> mapIndexs;
+    for (auto it = keymap_info_.begin(); it != keymap_info_.end(); it++) {
+        if (it->index_ > 0) mapIndexs[it->index_] = 0;
+        if (it->tag_ > 0) mapNums[it->tag_] = 0;
     }
 
-    if (mapNums.empty()) return 1;
+    if (mapIndexs.size() >= USER_DEFINED_KEYMAP_COUNT 
+        || mapNums.size() >= USER_DEFINED_KEYMAP_COUNT) return false;
 
-    int nNum = 1;
-    auto it = mapNums.begin();
-    while (it != mapNums.end()) {
-        if (it->first != nNum) return nNum;
+    tag = 1;
+    for (auto it = mapNums.begin(); it!= mapNums.end(); ) {
+        if (it->first != tag) break;
 
         it++;
-        nNum++;
+        tag++;
     }
 
-    return nNum;
-}
-
-int CKeyWnd::GetUserDefinedIndex(const wstring& defineds) {
-    if (defineds.empty()) return 1;
-
-    std::vector<std::wstring> vec_defineds; 
-    PublicLib::SplitStringW(defineds, L",", vec_defineds);
-
-    std::map<int, int> mapIndexs;
-    for (auto it = vec_defineds.begin(); it != vec_defineds.end(); it++) {
-        wstring defined = *it;
-
-        auto pos = defined.rfind(L"_");
-        if (pos == wstring::npos) continue;
-
-        auto temp_index = _ttoi(defined.substr(pos + 1, defined.length() - pos - 1).c_str());
-
-        mapIndexs[temp_index] = 0;
-    }
-
-    int index = 1;
+    index = 1;
     for (auto it = mapIndexs.begin(); it != mapIndexs.end(); ) {
-        if (it->first != index) return index;
+        if (it->first != index) break;
 
         it++;
         index++;
     }
 
-    return index;
+    return true;
 }
 
+void CKeyWnd::ChangeKeyMapInfo(int index, int record_index, const wstring& key_name) {
+    if (!combox_keymap_) return;
+    if (index < 0 || index >= (int)keymap_info_.size()) return;
+
+    int tag = -1;
+    for (int nNum = 1; nNum < USER_DEFINED_KEYMAP_COUNT + 1; nNum ++) {
+        WCHAR szName[MAX_PATH] = { 0 };
+        wsprintf(szName, nNum == 1 ? L"我的配置（本地）" : L"我的配置（本地%d）", nNum);
+
+        if (key_name.find(szName) != wstring::npos) {
+            tag = nNum;
+            break;
+        }
+    }
+
+    auto it = keymap_info_.begin() + index;
+    if (it == keymap_info_.end()) return;
+
+    it->tag_ = tag;
+    it->name_ = key_name;
+
+    if (combox_keymap_->GetTag() == index) combox_keymap_->SetText(key_name.c_str());
+
+    auto config = CIosMgr::Instance()->GetKeyMapDir() + L"\\conf.xml";
+
+    PublicLib::CMarkupEx xml;
+    if (xml.Load(config.c_str())) {
+        if (xml.FindElem(L"list")) {
+            xml.IntoElem();
+
+            while (xml.FindElem(L"record")){
+                auto key_index = _wtoi(xml.GetAttrib(L"index").c_str());
+
+                if (key_index == record_index) {
+                    xml.SetAttrib(L"name", key_name);
+                    xml.SetAttrib(L"tag", tag);
+                    break;
+                }
+            }
+
+            xml.OutOfElem();
+        }
+
+        xml.Save(config);
+
+    } 
+}

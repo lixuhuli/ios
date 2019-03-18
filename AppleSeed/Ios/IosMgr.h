@@ -75,6 +75,8 @@ public:
 
     void CreateEngineOffTask();
 
+    CKeyWnd* GetKeyWndPtr();
+
 protected:
     int InstallAppThread(void * argument);
     int InstallFileThread(void * argument);
