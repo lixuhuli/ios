@@ -242,6 +242,11 @@ namespace DuiLib
 	LRESULT CEditWnd::OnKillFocus(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 	{
 		LRESULT lRes = ::DefWindowProc(m_hWnd, uMsg, wParam, lParam);
+        if (m_pOwner->IsSendEditWndClose()) {
+            CPaintManagerUI* pManager = m_pOwner->GetManager();
+            if (pManager)
+                pManager->SendNotify(m_pOwner, DUI_MSGTYPE_WND_KILLFOCUS, 0, 0, true);
+        }
 		if ( m_pOwner->IsRbtnupMenu() )
 			return lRes;
 		PostMessage(WM_CLOSE);
@@ -281,6 +286,7 @@ namespace DuiLib
 		, m_dwCaretColor(0)
 		, m_bShowDefMenu(true)
 		, m_bRbtnupMenu(false)
+        , m_bSendEditWndClose(false)
 		, m_pEditBkImage(new CDuiImage())
 	{
 		SetTextPadding(CDuiRect(4, 3, 4, 3));
@@ -689,6 +695,7 @@ namespace DuiLib
 		if( _tcscmp(pstrName, _T("readonly")) == 0 ) SetReadOnly(_tcscmp(pstrValue, _T("true")) == 0);
 		else if( _tcscmp(pstrName, _T("numberonly")) == 0 ) SetNumberOnly(_tcscmp(pstrValue, _T("true")) == 0);
 		else if( _tcscmp(pstrName, _T("password")) == 0 ) SetPasswordMode(_tcscmp(pstrValue, _T("true")) == 0);
+        else if( _tcscmp(pstrName, _T("eidtkillfocus")) == 0 ) SetSendEditWndClose(_tcscmp(pstrValue, _T("true")) == 0);
 		else if( _tcscmp(pstrName, _T("maxchar")) == 0 ) SetMaxChar(_ttoi(pstrValue));
 		else if( _tcscmp(pstrName, _T("normalimage")) == 0 ) SetNormalImage(pstrValue);
 		else if( _tcscmp(pstrName, _T("hotimage")) == 0 ) SetHotImage(pstrValue);

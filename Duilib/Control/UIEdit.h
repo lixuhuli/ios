@@ -80,6 +80,9 @@ namespace DuiLib
 		void	ReleaseEditImage();//释放背景位图对象
 		HWND	GetEditWnd();
 
+        bool    IsSendEditWndClose() { return m_bSendEditWndClose; }
+        void    SetSendEditWndClose(bool bSend) { m_bSendEditWndClose = bSend; }
+
 	protected:
 		CEditWnd*	m_pWindow;
 		CDuiImage*	m_pEditBkImage;//用于edit窗口 背景
@@ -101,6 +104,7 @@ namespace DuiLib
 		CDuiString m_szDefText;
 		DWORD	m_dwDefTextColor;
         SIZE    m_szWndOffset;
+        bool    m_bSendEditWndClose;
 	};
 }
 #endif // __UIEDIT_H__
