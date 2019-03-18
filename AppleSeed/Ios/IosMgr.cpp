@@ -453,7 +453,8 @@ void CIosMgr::CheckEngineUpdate() {
 
     if (GetEngineVersion(&version[0], &version[1], &version[2]) != 0) {
         ShowMsg(CGlobalData::Instance()->GetMainWnd(), L"提示", L"启动失败，请重启", MB_OK);
-        CreateEngineOffTask();
+        CGlobalData::Instance()->SetNeedReboot(true);
+        PostMessage(CGlobalData::Instance()->GetMainWnd(), WM_MAINWND_MSG_EXIT, 0, 0);
         return;
     }
     

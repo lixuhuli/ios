@@ -137,7 +137,8 @@ void CWndMain::InitWindow() {
     if (PathFileExistsA(iso_file.c_str())) {
         if (!LoadIosEngine()) {
             ShowMsg(m_hWnd, L"提示", L"启动失败，请重启", MB_OK);
-            CIosMgr::Instance()->CreateEngineOffTask();
+            CGlobalData::Instance()->SetNeedReboot(true);
+            ::PostMessage(m_hWnd, WM_MAINWND_MSG_EXIT, 0, 0);
             return;
         }
 
@@ -635,7 +636,8 @@ bool CWndMain::OnClickGetIsoSys(void* param) {
     if (PathFileExistsA(iso_file.c_str())) {
         if (!LoadIosEngine()) {
             ShowMsg(m_hWnd, L"提示", L"启动失败，请重启", MB_OK);
-            CIosMgr::Instance()->CreateEngineOffTask();
+            CGlobalData::Instance()->SetNeedReboot(true);
+            ::PostMessage(m_hWnd, WM_MAINWND_MSG_EXIT, 0, 0);
             return true;
         }
 
@@ -832,7 +834,8 @@ LRESULT CWndMain::OnMsgFileUnzip(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
 
     if (!LoadIosEngine()) {
         ShowMsg(m_hWnd, L"提示", L"启动失败，请重启", MB_OK);
-        CIosMgr::Instance()->CreateEngineOffTask();
+        CGlobalData::Instance()->SetNeedReboot(true);
+        ::PostMessage(m_hWnd, WM_MAINWND_MSG_EXIT, 0, 0);
         return 0;
     }
 
@@ -849,7 +852,8 @@ LRESULT CWndMain::OnMsgEmulatorAlready(WPARAM wParam, LPARAM lParam, BOOL& bHand
 LRESULT CWndMain::OnMsgLoadIosEngine(WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     if (!LoadIosEngine()) {
         ShowMsg(m_hWnd, L"提示", L"启动失败，请重启", MB_OK);
-        CIosMgr::Instance()->CreateEngineOffTask();
+        CGlobalData::Instance()->SetNeedReboot(true);
+        ::PostMessage(m_hWnd, WM_MAINWND_MSG_EXIT, 0, 0);
         return 0;
     }
 
