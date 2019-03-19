@@ -78,11 +78,6 @@ bool CIosMgr::IosEngineOn(const string& iso_file) {
     return (result == 0);
 }
 
-bool CIosMgr::IosCheckLicense(const char *serial) {
-    if (!serial) return false;
-    return (SetLicense(serial) == 0);
-}
-
 void CIosMgr::IosHome() {
     if (emulator_state_info_ && !emulator_state_info_->engine_off()) Home();
 }

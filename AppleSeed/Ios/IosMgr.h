@@ -53,7 +53,6 @@ public:
 
 public:
     bool IosEngineOn(const string& iso_file);
-    bool IosCheckLicense(const char *serial);
     void IosRestart();
     void IosHome();
     bool IosSnap(const std::string& save_path);
